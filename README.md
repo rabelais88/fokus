@@ -1,4 +1,4 @@
-# Wise Timer Chrome Extension
+# Fokus(chrome extension)
 
 [![Build Status](https://cloud.drone.io/api/badges/rabelais88/fokus/status.svg)](https://cloud.drone.io/rabelais88/fokus)
 
