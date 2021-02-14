@@ -1,6 +1,6 @@
 # Wise Timer Chrome Extension
 
-[![Build Status](https://cloud.drone.io/api/badges/rabelais88/wise-timer/status.svg)](https://cloud.drone.io/rabelais88/wise-timer)
+[![Build Status](https://cloud.drone.io/api/badges/rabelais88/fokus/status.svg)](https://cloud.drone.io/rabelais88/fokus)
 
 This Chrome Extension aims remove any distractions on the web
 
