@@ -1,10 +1,16 @@
 import React from 'react';
 import { render } from 'react-dom';
 
-import Options from './Options';
-import './index.css';
+import Document from '@/containers/Document';
+import { OptionsLayout } from '@/containers/layout';
+import { Heading } from '@chakra-ui/react';
 
-render(
-  <Options title={'settings'} />,
-  window.document.querySelector('#app-container')
+const Options = (
+  <Document>
+    <OptionsLayout>
+      <Heading>Options Page</Heading>
+    </OptionsLayout>
+  </Document>
 );
+
+render(Options, window.document.querySelector('#app-container'));

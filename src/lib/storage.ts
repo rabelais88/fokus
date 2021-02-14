@@ -14,7 +14,7 @@ const storage = () => {
     });
   };
 
-  const get = (key: string | string[]) => {
+  function get<T = unknown>(key: string | string[]): Promise<T> {
     return new Promise((resolve, reject) => {
       if (typeof key !== 'string' && Array.isArray(key)) {
         logger('key should be either string or collection of strings');
@@ -32,10 +32,10 @@ const storage = () => {
       }
 
       chrome.storage.sync.get(key, (items) => {
-        return resolve(items);
+        return resolve(<T>items);
       });
     });
-  };
+  }
 
   const remove = (key: string | string[]) => {
     return new Promise((resolve, reject) => {

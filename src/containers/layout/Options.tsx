@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Grid, GridItem } from '@chakra-ui/react';
 
-const LayoutNewtab: React.FC = (props) => {
+const LayoutOptions: React.FC = (props) => {
   return (
     <Grid
       p={[5, 25]}
-      className="fokus-newtab--layout"
+      className="fokus-options--layout"
       h="100vh"
       templateRows="repeat(3,1fr)"
     >
@@ -16,4 +16,4 @@ const LayoutNewtab: React.FC = (props) => {
   );
 };
 
-export default LayoutNewtab;
+export default LayoutOptions;

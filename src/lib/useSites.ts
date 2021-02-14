@@ -7,7 +7,7 @@ function useSites() {
   let loadState = LOAD_LOADING;
   if (error) loadState = LOAD_FAIL;
   if (!error && data) loadState = LOAD_SUCCESS;
-  return { sites: data, loadState };
+  return { sites: <{ description: string; regex: string }[]>data, loadState };
 }
 
 export default useSites;
