@@ -1,7 +1,4 @@
 import React from 'react';
-// import logo from '../../assets/img/logo.svg';
-// import './Newtab.css';
-// import './Newtab.scss';
 import Document from '@/containers/Document';
 import { Heading, Center, Text, Button } from '@chakra-ui/react';
 import { NewtabLayout } from '@/containers/layout';

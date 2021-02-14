@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './Popup.css';
 import popupSend from '@/lib/senders/fromPopup';
 import { MSG_CHANGE_COLOR } from '@/constants';
 import useSites from '@/lib/useSites';
