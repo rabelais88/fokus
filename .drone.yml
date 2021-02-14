@@ -1,0 +1,17 @@
+kind: pipeline
+type: docker
+name: unit-test
+
+platform:
+  os: linux
+  arch: amd64
+
+workspace:
+  path: /drone/src
+
+steps:
+  - name: 'jest unit test'
+    image: node:12.20.2
+    commands:
+      - yarn install
+      - yarn test
