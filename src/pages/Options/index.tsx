@@ -11,7 +11,7 @@ import { render } from 'react-dom';
 
 import Document from '@/containers/Document';
 import { OptionsLayout } from '@/containers/layout';
-import { Heading, Stack, Tab, TabList, Tabs } from '@chakra-ui/react';
+import { Box, Heading, Stack, Tab, TabList, Tabs } from '@chakra-ui/react';
 import Websites from './Websites';
 import makeLogger from '@/lib/makeLogger';
 
@@ -40,7 +40,12 @@ const NavMenu: React.FC = (props) => {
   };
 
   return (
-    <Tabs onChange={onTabChange} index={pathIndex}>
+    <Tabs
+      onChange={onTabChange}
+      index={pathIndex}
+      display="inline-block"
+      flexGrow={1}
+    >
       <TabList>
         <Tab>tasks</Tab>
         <Tab>websites</Tab>
@@ -54,8 +59,12 @@ const Options = (
   <Document>
     <OptionsLayout>
       <Router>
-        <Heading>Fokus</Heading>
-        <NavMenu />
+        <Box display="flex">
+          <Box display="inline-block" marginRight="3">
+            <Heading>Fokus</Heading>
+          </Box>
+          <NavMenu />
+        </Box>
         <Switch>
           <Route path="/tasks">tasks</Route>
           <Route path="/task">task</Route>

@@ -7,6 +7,10 @@ const getDefaultValues: defaultValueType = () => ({
   sites: {},
 });
 
+/**
+ * @description
+ * it does not work for Options.html
+ */
 const storage = () => {
   const set = (key: string, value: any) => {
     return new Promise((resolve, reject) => {
@@ -16,6 +20,7 @@ const storage = () => {
 
   function get<T = unknown>(key: string | string[]): Promise<T> {
     return new Promise((resolve, reject) => {
+      logger('get()', { key });
       if (typeof key !== 'string' && Array.isArray(key)) {
         logger('key should be either string or collection of strings');
         reject();

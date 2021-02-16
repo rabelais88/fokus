@@ -1,17 +1,63 @@
+import { Fragment } from 'react';
+import { LOAD_SUCCESS } from '@/constants';
 import useSites from '@/lib/useSites';
-import { Box, Heading, List, ListItem } from '@chakra-ui/react';
+import {
+  Box,
+  Center,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
+  List,
+  ListItem,
+  Skeleton,
+  Stack,
+} from '@chakra-ui/react';
 import React from 'react';
+import { SearchIcon, AddIcon } from '@chakra-ui/icons';
 
-const Websites: React.FC = (props) => {
-  const { loadState, sites } = useSites();
-  const _sites = sites || [];
+const WebsitesLoading: React.FC = (props) => {
   return (
-    <Box>
-      <Heading>Websites</Heading>
-      <List>
-        {_sites.map((site) => (
+    <Stack>
+      <Skeleton height="20px"></Skeleton>
+      <Skeleton height="20px"></Skeleton>
+      <Skeleton height="20px"></Skeleton>
+    </Stack>
+  );
+};
+
+const WebsitesLoaded: React.FC = (props) => {
+  const { sites } = useSites();
+
+  const Body = () => {
+    if (sites.length === 0) return <Center>no websites registered</Center>;
+    return (
+      <Fragment>
+        {sites.map((site) => (
           <ListItem>{site.description}</ListItem>
         ))}
+      </Fragment>
+    );
+  };
+  return (
+    <Fragment>
+      <InputGroup>
+        <InputLeftElement children={<SearchIcon />} />
+        <Input placeholder="sitename" variant="flushed" />
+        <InputRightElement children={<AddIcon />} />
+      </InputGroup>
+      <Body />
+    </Fragment>
+  );
+};
+
+const Websites: React.FC = (props) => {
+  const { loadState } = useSites();
+  return (
+    <Box>
+      <List>
+        {loadState === LOAD_SUCCESS && <WebsitesLoaded />}
+        {loadState !== LOAD_SUCCESS && <WebsitesLoading />}
       </List>
     </Box>
   );
