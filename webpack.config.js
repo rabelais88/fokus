@@ -5,11 +5,17 @@ var webpack = require('webpack'),
   { CleanWebpackPlugin } = require('clean-webpack-plugin'),
   CopyWebpackPlugin = require('copy-webpack-plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
-  TerserPlugin = require('terser-webpack-plugin');
+  TerserPlugin = require('terser-webpack-plugin'),
+  Dotenv = require('dotenv-webpack');
 
 const ASSET_PATH = process.env.ASSET_PATH || '/';
 
 const rootPath = path.join(__dirname, 'src');
+const envFiles = {
+  production: './.env.production',
+  development: './.env.development',
+};
+
 var alias = {
   'react-dom': '@hot-loader/react-dom',
   '@': rootPath,
@@ -173,6 +179,9 @@ var options = {
       filename: 'background.html',
       chunks: ['background'],
       cache: false,
+    }),
+    new Dotenv({
+      path: envFiles[process.env.NODE_ENV] || envFiles.development,
     }),
   ],
   infrastructureLogging: {

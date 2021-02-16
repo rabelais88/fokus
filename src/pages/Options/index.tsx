@@ -3,9 +3,9 @@ import {
   BrowserRouter as Router,
   Route,
   Switch,
-  Link,
   useLocation,
   useHistory,
+  Redirect,
 } from 'react-router-dom';
 import { render } from 'react-dom';
 
@@ -17,14 +17,6 @@ import makeLogger from '@/lib/makeLogger';
 
 const logger = makeLogger('pages/Options/index.tsx');
 
-const NavItem: React.FC<{ to: string }> = (props) => {
-  return (
-    <Tab>
-      <Link {...props} />
-    </Tab>
-  );
-};
-
 const pathIndexMap: { [key: string]: number } = {
   '/tasks': 0,
   '/task': 0,
@@ -33,23 +25,26 @@ const pathIndexMap: { [key: string]: number } = {
   '/donate': 2,
 };
 
+const tabPathMap = ['/tasks', '/websites', '/donate'];
+
 const NavMenu: React.FC = (props) => {
-  const path = useLocation().pathname;
+  const loc = useLocation();
+  const path = loc.pathname;
   const history = useHistory();
 
   const pathIndex = pathIndexMap[path];
 
   const onTabChange = (index: number) => {
-    const _path = Object.keys(pathIndexMap)[index];
+    const _path = tabPathMap[index];
     history.push(_path);
   };
 
   return (
     <Tabs onChange={onTabChange} index={pathIndex}>
       <TabList>
-        <NavItem to="/tasks">tasks</NavItem>
-        <NavItem to="/websites">websites</NavItem>
-        <NavItem to="/donate">donate</NavItem>
+        <Tab>tasks</Tab>
+        <Tab>websites</Tab>
+        <Tab>donate</Tab>
       </TabList>
     </Tabs>
   );
@@ -68,10 +63,8 @@ const Options = (
           <Route path="/websites">
             <Websites />
           </Route>
-          <Route path="/">
-            <Websites />
-          </Route>
           <Route path="/donate">donate</Route>
+          <Redirect to="/tasks" />
         </Switch>
       </Router>
     </OptionsLayout>
