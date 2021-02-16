@@ -5,6 +5,7 @@ import {
   Switch,
   Link,
   useLocation,
+  useHistory,
 } from 'react-router-dom';
 import { render } from 'react-dom';
 
@@ -24,17 +25,28 @@ const NavItem: React.FC<{ to: string }> = (props) => {
   );
 };
 
+const pathIndexMap: { [key: string]: number } = {
+  '/tasks': 0,
+  '/task': 0,
+  '/websites': 1,
+  '/website': 1,
+  '/donate': 2,
+};
+
 const NavMenu: React.FC = (props) => {
   const path = useLocation().pathname;
-  const pathIndexMap: { [key: string]: number } = {
-    '/tasks': 0,
-    '/websites': 1,
-  };
+  const history = useHistory();
+
   const pathIndex = pathIndexMap[path];
 
+  const onTabChange = (index: number) => {
+    const _path = Object.keys(pathIndexMap)[index];
+    history.push(_path);
+  };
+
   return (
-    <Tabs>
-      <TabList index={pathIndex}>
+    <Tabs onChange={onTabChange} index={pathIndex}>
+      <TabList>
         <NavItem to="/tasks">tasks</NavItem>
         <NavItem to="/websites">websites</NavItem>
         <NavItem to="/donate">donate</NavItem>
