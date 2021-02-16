@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import { SearchIcon, AddIcon } from '@chakra-ui/icons';
+import { NavLink } from '@/components';
 
 const WebsitesLoading: React.FC = (props) => {
   return (
@@ -44,7 +45,11 @@ const WebsitesLoaded: React.FC = (props) => {
       <InputGroup>
         <InputLeftElement children={<SearchIcon />} />
         <Input placeholder="sitename" variant="flushed" />
-        <InputRightElement children={<AddIcon />} />
+        <InputRightElement>
+          <NavLink to="/website">
+            <AddIcon />
+          </NavLink>
+        </InputRightElement>
       </InputGroup>
       <Body />
     </Fragment>

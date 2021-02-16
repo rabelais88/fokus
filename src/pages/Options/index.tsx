@@ -11,8 +11,9 @@ import { render } from 'react-dom';
 
 import Document from '@/containers/Document';
 import { OptionsLayout } from '@/containers/layout';
-import { Box, Heading, Stack, Tab, TabList, Tabs } from '@chakra-ui/react';
+import { Box, Heading, Tab, TabList, Tabs } from '@chakra-ui/react';
 import Websites from './Websites';
+import Website from './Website';
 import makeLogger from '@/lib/makeLogger';
 
 const logger = makeLogger('pages/Options/index.tsx');
@@ -68,7 +69,9 @@ const Options = (
         <Switch>
           <Route path="/tasks">tasks</Route>
           <Route path="/task">task</Route>
-          <Route path="/website">website</Route>
+          <Route path="/website">
+            <Website />
+          </Route>
           <Route path="/websites">
             <Websites />
           </Route>
