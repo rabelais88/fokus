@@ -19,3 +19,9 @@ type chromeMessage =
   | defaultChromeMessage
   | defaultChromeMessageWithData
   | msgColorChange;
+
+interface websiteData {
+  title: string;
+  description: string;
+  regex: string;
+}
