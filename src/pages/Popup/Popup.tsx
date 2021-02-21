@@ -12,7 +12,7 @@ import { Button, Heading, Input } from '@chakra-ui/react';
 const logger = makeLogger('Popup.jsx');
 
 const Popup = () => {
-  const { sites, loadState } = useSites();
+  const { sites, loadState } = useSites({});
   // const [userData, setUserData] = useState({ description: '', regex: '' });
 
   const sendMessage = () => {

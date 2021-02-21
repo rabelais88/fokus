@@ -69,6 +69,9 @@ const Options = (
         <Switch>
           <Route path="/tasks">tasks</Route>
           <Route path="/task">task</Route>
+          <Route path="/website/:websiteId">
+            <Website />
+          </Route>
           <Route path="/website">
             <Website />
           </Route>

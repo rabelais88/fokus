@@ -21,7 +21,30 @@ type chromeMessage =
   | msgColorChange;
 
 interface websiteData {
+  id: string;
   title: string;
   description: string;
-  regex: string;
+  urlRegex: string;
+  urlMode: 'URL_MODE_TEXT' | 'URL_MODE_REGEX';
 }
+
+interface websitesData {
+  [key: string]: websiteData;
+}
+
+// stores order of website ids
+type websitesIndex = string[];
+
+interface resolved<T = any> {
+  result: T;
+  error: null;
+  errorCode: '';
+}
+
+interface rejected<T = any> {
+  result: null;
+  error: T;
+  errorCode: string;
+}
+
+type resolvable = resolved | rejected;

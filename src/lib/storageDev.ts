@@ -1,10 +1,12 @@
+import { STORE_WEBSITES_INDEX, STORE_WEBSITES } from '@/constants/storeKey';
 import makeLogger from './makeLogger';
 
 const logger = makeLogger('storage(dev)');
 
 type defaultValueType = () => { [key: string]: any };
 const getDefaultValues: defaultValueType = () => ({
-  sites: {},
+  [STORE_WEBSITES_INDEX]: [],
+  [STORE_WEBSITES]: {},
 });
 
 /**
