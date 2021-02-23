@@ -1,0 +1,16 @@
+# https://github.com/bahmutov/cypress-open-from-docker-compose
+version: "3.8"
+services:
+  extension-runner:
+    build: ./
+    ports:
+      - 3000:3000
+  cypress:
+    image: cypress/included:3.4.0
+    depends_on:
+      - extension-runner
+    environment:
+      - CYPRESS_baseUrl=http://extension-runner:3000
+    working_dir: /e2e
+    volumes:
+      - ./e2e:/e2e
