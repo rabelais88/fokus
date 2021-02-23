@@ -14,4 +14,14 @@ steps:
     image: node:12.20.2
     commands:
       - yarn install
-      - yarn test
+      - yarn test-unit
+---
+kind: pipeline
+type: docker
+name: cypress-test
+steps:
+  - name: 'cypress-test'
+    image: cypress/included:3.4.0
+    commands:
+      - yarn install
+      - yarn test-e2e-ci
