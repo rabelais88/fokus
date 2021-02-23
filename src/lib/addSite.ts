@@ -1,13 +1,14 @@
 import { mutate } from 'swr';
 import storage from './storage';
-import { nanoid } from 'nanoid';
+import makeId from './makeId';
 import makeLogger from './makeLogger';
 import { STORE_WEBSITES, STORE_WEBSITES_INDEX } from '@/constants/storeKey';
 
 const logger = makeLogger('lib/addSite');
 
 async function addSite(_site: websiteData): Promise<resolvable> {
-  const id = nanoid();
+  const id = makeId();
+  console.log({ id });
 
   const site = {
     ..._site,
