@@ -14,7 +14,7 @@ steps:
     image: node:12.20.2
     commands:
       - yarn install
-      - yarn test
+      - yarn test-unit
   - name: cypress-test
     image: cypress/included:3.4.0
     commands:
