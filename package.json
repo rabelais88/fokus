@@ -13,7 +13,8 @@
     "prettier": "prettier --write '**/*.{js,jsx,css,html}'",
     "test-unit": "jest",
     "test-cypress": "cypress open --project ./e2e",
-    "test-e2e-ci": "CYPRESS_baseUrl=http://localhost:3000 start-server-and-test start http://localhost:3000 test-cypress"
+    "test-cypress-ci": "cypress run --project ./e2e",
+    "test-e2e-ci": "CYPRESS_baseUrl=http://localhost:3000 start-server-and-test start http://localhost:3000 test-cypress-ci"
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.0.5",
