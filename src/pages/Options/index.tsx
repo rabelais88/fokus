@@ -16,6 +16,7 @@ import Websites from './Websites';
 import Website from './Website';
 import Tasks from './Tasks';
 import makeLogger from '@/lib/makeLogger';
+import Task from './Task';
 
 const logger = makeLogger('pages/Options/index.tsx');
 
@@ -71,7 +72,12 @@ const Options = (
           <Route path="/tasks">
             <Tasks />
           </Route>
-          <Route path="/task">task</Route>
+          <Route path="/task/:taskId">
+            <Task />
+          </Route>
+          <Route path="/task">
+            <Task />
+          </Route>
           <Route path="/website/:websiteId">
             <Website />
           </Route>
