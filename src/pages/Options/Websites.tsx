@@ -116,7 +116,7 @@ const Websites: React.FC = (props) => {
           <Center mt="150">no websites found</Center>
         )}
         {loadState === LOAD_SUCCESS && !noSite && (
-          <Stack divider={<StackDivider borderColor="gray.200" />} spacing={4}>
+          <Stack divider={<StackDivider borderColor="gray.200" />} spacing={2}>
             {sites.map((site) => (
               <Flex
                 key={site.id}
