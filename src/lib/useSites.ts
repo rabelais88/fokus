@@ -11,25 +11,28 @@ function useSites({
 }: {
   keyword?: string;
   cursor?: number;
-}) {
+} = {}) {
   const websites = useSWR<websitesData>(STORE_WEBSITES, storage.get);
   const websitesId = useSWR<websitesIndex>(STORE_WEBSITES_INDEX, storage.get);
 
   logger({ websites, websitesId });
 
   let loadState = LOAD_LOADING;
-  if (websites.error || websitesId.error) loadState = LOAD_FAIL;
-  if (!websites.error && !websitesId.error && websites.data && websitesId.data)
-    loadState = LOAD_SUCCESS;
-  const sites = (websitesId.data || []).map(
-    (siteId) => (websites.data || {})[siteId]
-  );
+  const hasError = websites.error || websitesId.error;
+  if (hasError) loadState = LOAD_FAIL;
+  const noError = !websites.error && !websitesId.error;
+  const hasData = websites.data && websitesId.data;
+  if (noError && hasData) loadState = LOAD_SUCCESS;
+  const _websitesId = websitesId.data || [];
+  const _websites = websites.data || {};
+  const sites = _websitesId.map((siteId) => _websites[siteId]);
 
-  const re = new RegExp(keyword, 'ig');
+  const re = new RegExp(keyword, 'i');
   const filteredSites = sites.filter(
     (site) => re.test(site.description) || re.test(site.title)
   );
-  return { sites: filteredSites, loadState };
+  const noSite = filteredSites.length === 0;
+  return { sites: filteredSites, noSite, loadState };
 }
 
 export default useSites;

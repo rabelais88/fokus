@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import { LOAD_SUCCESS } from '@/constants';
 import useSites from '@/lib/useSites';
 import {
@@ -12,8 +12,6 @@ import {
   InputGroup,
   InputLeftElement,
   InputRightElement,
-  List,
-  ListItem,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -34,9 +32,8 @@ const Websites: React.FC = (props) => {
   const [keyword, setKeyword] = useState('');
   const [removeTargetSiteId, setRemoveTargetSiteId] = useState('');
   const [removeTargetSiteName, setRemoveTargetSiteName] = useState('');
-  const { sites, loadState } = useSites({ keyword });
+  const { sites, loadState, noSite } = useSites({ keyword });
 
-  const noSite = sites.length === 0;
   const hasKeyword = keyword.length >= 1;
   const { isOpen, onOpen, onClose } = useDisclosure();
 

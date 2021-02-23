@@ -35,6 +35,19 @@ interface websitesData {
 // stores order of website ids
 type websitesIndex = string[];
 
+interface taskData {
+  id: string;
+  title: string;
+  description: string;
+  blockedSiteIds: string[];
+  allowedSiteIds: string[];
+}
+interface tasksData {
+  [key: string]: taskData;
+}
+
+type tasksIndex = string[];
+
 interface resolved<T = any> {
   result: T;
   error: null;

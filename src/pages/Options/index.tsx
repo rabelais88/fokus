@@ -14,6 +14,7 @@ import { OptionsLayout } from '@/containers/layout';
 import { Box, Heading, Tab, TabList, Tabs } from '@chakra-ui/react';
 import Websites from './Websites';
 import Website from './Website';
+import Tasks from './Tasks';
 import makeLogger from '@/lib/makeLogger';
 
 const logger = makeLogger('pages/Options/index.tsx');
@@ -67,7 +68,9 @@ const Options = (
           <NavMenu />
         </Box>
         <Switch>
-          <Route path="/tasks">tasks</Route>
+          <Route path="/tasks">
+            <Tasks />
+          </Route>
           <Route path="/task">task</Route>
           <Route path="/website/:websiteId">
             <Website />
