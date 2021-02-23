@@ -15,7 +15,12 @@ steps:
     commands:
       - yarn install
       - yarn test-unit
-  - name: cypress-test
+---
+kind: pipeline
+type: docker
+name: cypress-test
+steps:
+  - name: 'cypress-test'
     image: cypress/included:3.4.0
     commands:
       - yarn install
