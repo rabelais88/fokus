@@ -15,19 +15,14 @@ steps:
     commands:
       - yarn install
       - yarn test
-
----
-kind: pipeline
-name: e2e-test
-
-steps:
-  name: cypress-test
+  - name: cypress-test
   image: compose:1.28.4
   volumes:
     - name: docker_sock
       path: /var/run/docker.sock
   commands:
     - up -f e2e.docker-compose.yml
+
 volumes:
   - name: docker_sock
     host:
