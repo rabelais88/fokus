@@ -87,7 +87,7 @@ const Options = (
           <Route path="/websites">
             <Websites />
           </Route>
-          <Route path="/donate">donate</Route>
+          <Route path="/donate">donate page</Route>
           <Redirect to="/tasks" />
         </Switch>
       </Router>
