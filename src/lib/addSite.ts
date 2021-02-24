@@ -26,11 +26,11 @@ async function addSite(_site: websiteData): Promise<resolvable> {
 
   logger({ newSites, newSitesId });
 
-  const tasks = [
+  const jobs = [
     storage.set(STORE_WEBSITES, newSites),
     storage.set(STORE_WEBSITES_INDEX, newSitesId),
   ];
-  await Promise.all(tasks);
+  await Promise.all(jobs);
   mutate(STORE_WEBSITES, newSites);
   mutate(STORE_WEBSITES_INDEX, newSitesId);
 

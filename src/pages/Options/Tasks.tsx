@@ -24,6 +24,7 @@ const Tasks: React.FC = (props) => {
 
   const { tasks, loadState, noTask } = useTasks({ keyword });
   const hasKeyword = keyword.length >= 1;
+
   return (
     <>
       <Box>

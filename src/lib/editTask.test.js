@@ -1,6 +1,6 @@
-import editSite from './editSite';
+import editTask from './editTask';
 import storage from './storage';
-import { STORE_WEBSITES } from '@/constants/storeKey';
+import { STORE_TASKS } from '@/constants/storeKey';
 import * as swr from 'swr';
 
 jest.mock('./storage');
@@ -21,17 +21,17 @@ storage.get = jest.fn().mockImplementation((key) =>
 );
 swr.mutate = jest.fn().mockImplementation();
 
-describe('editSite', () => {
-  it('should edit site and its property properly', async () => {
-    await editSite({
+describe('editTask', () => {
+  it('should edit task property properly', async () => {
+    await editTask({
       id: 'testId2',
       changed: true,
     });
-    const newSites = {
+    const newTasks = {
       testId1: { id: 'testId1', changed: false },
       testId2: { id: 'testId2', changed: true },
     };
-    expect(storage.set).toHaveBeenCalledWith(STORE_WEBSITES, newSites);
-    expect(swr.mutate).toHaveBeenCalledWith(STORE_WEBSITES, newSites);
+    expect(storage.set).toHaveBeenCalledWith(STORE_TASKS, newTasks);
+    expect(swr.mutate).toHaveBeenCalledWith(STORE_TASKS, newTasks);
   });
 });

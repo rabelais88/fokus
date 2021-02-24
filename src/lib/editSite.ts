@@ -1,9 +1,9 @@
 import { mutate } from 'swr';
 import storage from './storage';
 import makeLogger from './makeLogger';
-import { STORE_WEBSITES, STORE_WEBSITES_INDEX } from '@/constants/storeKey';
+import { STORE_WEBSITES } from '@/constants/storeKey';
 
-const logger = makeLogger('lib/addSite');
+const logger = makeLogger('lib/editSite');
 
 async function editSite(site: websiteData): Promise<resolvable> {
   const sites = await storage.get<websitesData>(STORE_WEBSITES);

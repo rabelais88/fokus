@@ -1,7 +1,7 @@
 import useSWR from 'swr';
 import storage from './storage';
 import { LOAD_SUCCESS, LOAD_LOADING, LOAD_FAIL } from '../constants/loadState';
-import { STORE_WEBSITES, STORE_WEBSITES_INDEX } from '@/constants/storeKey';
+import { STORE_WEBSITES } from '@/constants/storeKey';
 import makeLogger from './makeLogger';
 
 const logger = makeLogger('lib/useSite');

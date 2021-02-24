@@ -16,10 +16,6 @@ const getDefaultValues: defaultValueType = () => ({
   [STORE_TASKS]: {},
 });
 
-/**
- * @description
- * it does not work for Options.html
- */
 const storage = () => {
   let onChangeEvent: onStorageChange | Function = () => {};
 

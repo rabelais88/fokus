@@ -61,3 +61,7 @@ interface rejected<T = any> {
 }
 
 type resolvable = resolved | rejected;
+
+interface suggest {
+  <T>(keyword: string): Promise<T>;
+}
