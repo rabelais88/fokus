@@ -4,7 +4,7 @@ import React, { ChangeEvent } from 'react';
 interface SuggestionProps {
   onSuggest: suggest;
   value: string;
-  onKeywordChange: ChangeEvent;
+  onKeywordChange: (keyword: string) => void;
 }
 
 const Suggestion: React.FC<SuggestionProps> = ({
@@ -12,7 +12,7 @@ const Suggestion: React.FC<SuggestionProps> = ({
   value,
   onKeywordChange,
 }) => {
-  const _onKeywordChange = (ev) => {
+  const _onKeywordChange = (ev: ChangeEvent<HTMLInputElement>) => {
     const _value = ev.target.value;
     onKeywordChange(_value);
   };
