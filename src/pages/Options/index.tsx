@@ -63,7 +63,7 @@ const Options = (
     <OptionsLayout>
       <Router>
         <Box display="flex">
-          <Box display="inline-block" marginRight="3">
+          <Box display="inline-block" marginRight="3" role="logo">
             <Heading>Fokus</Heading>
           </Box>
           <NavMenu />
