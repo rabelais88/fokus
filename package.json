@@ -15,7 +15,9 @@
     "test-unit-ci": "jest",
     "test-cypress": "cypress open --project ./e2e",
     "test-cypress-ci": "cypress run --project ./e2e",
-    "test-e2e-ci": "CYPRESS_baseUrl=http://localhost:3000 start-server-and-test start http://localhost:3000 test-cypress-ci"
+    "test-e2e-ci": "CYPRESS_baseUrl=http://localhost:3000 start-server-and-test start http://localhost:3000 test-cypress-ci",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.0.5",
@@ -23,6 +25,7 @@
     "@emotion/react": "^11.1.5",
     "@emotion/styled": "^11.1.5",
     "@hot-loader/react-dom": "^17.0.1",
+    "@react-hook/debounce": "^3.0.0",
     "@types/chrome": "0.0.126",
     "@types/jest": "^26.0.20",
     "@types/react": "^17.0.0",
@@ -42,6 +45,10 @@
     "@babel/plugin-proposal-class-properties": "^7.12.1",
     "@babel/preset-env": "^7.12.10",
     "@babel/preset-react": "^7.12.10",
+    "@storybook/addon-actions": "^6.1.20",
+    "@storybook/addon-essentials": "^6.1.20",
+    "@storybook/addon-links": "^6.1.20",
+    "@storybook/react": "^6.1.20",
     "@testing-library/cypress": "^7.0.4",
     "@testing-library/react": "^11.2.5",
     "@types/react-router-dom": "^5.1.7",
