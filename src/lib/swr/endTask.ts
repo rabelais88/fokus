@@ -10,6 +10,7 @@ const endTask = async () => {
   if (reqHistory.error) return reqHistory;
 
   mutate(STORE_TASK_HISTORY, reqHistory.result);
+  logger('taskHistoryModified', reqHistory.result);
   return reqHistory;
 };
 

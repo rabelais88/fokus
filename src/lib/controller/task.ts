@@ -41,6 +41,7 @@ export const endTask: endTaskArg = async () => {
     newLastHistory.timeEnd = timeNow;
     const newHistory = _cloneDeep(history);
     newHistory[history.length - 1] = newLastHistory;
+    await storage.set(STORE_TASK_HISTORY, newHistory);
     return makeResult(newHistory);
   } catch (error) {
     return makeError(undefined, error);
