@@ -92,3 +92,9 @@ interface SuggestionMultipleProps<T = any> {
   noResultComponent: React.FC;
   hideSelected?: boolean;
 }
+
+interface taskHistory {
+  timeStart: number;
+  timeEnd: number;
+  taskId: string;
+}

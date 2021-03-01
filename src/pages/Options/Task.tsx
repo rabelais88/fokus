@@ -27,6 +27,7 @@ import useSite from '@/lib/useSite';
 import { LOAD_SUCCESS } from '@/constants';
 import addTask from '@/lib/addTask';
 import editTask from '@/lib/editTask';
+import { makeResult } from '@/lib';
 
 const logger = makeLogger('pages/Options/Task');
 
@@ -84,11 +85,7 @@ const Task: React.FC = (props) => {
       key: site.id,
       text: site.title,
     }));
-    return {
-      result,
-      error: null,
-      errorCode: '',
-    };
+    return makeResult(result);
   };
 
   const {

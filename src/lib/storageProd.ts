@@ -1,10 +1,19 @@
+import {
+  STORE_WEBSITES_INDEX,
+  STORE_WEBSITES,
+  STORE_TASKS,
+  STORE_TASKS_INDEX,
+} from '@/constants/storeKey';
 import makeLogger from './makeLogger';
 
 const logger = makeLogger('storage');
 
 type defaultValueType = () => { [key: string]: any };
 const getDefaultValues: defaultValueType = () => ({
-  sites: {},
+  [STORE_WEBSITES_INDEX]: [],
+  [STORE_WEBSITES]: {},
+  [STORE_TASKS_INDEX]: [],
+  [STORE_TASKS]: {},
 });
 
 /**
@@ -14,6 +23,7 @@ const getDefaultValues: defaultValueType = () => ({
 const storage = () => {
   const set = (key: string, value: any) => {
     return new Promise((resolve, reject) => {
+      logger('set()', { key, value });
       chrome.storage.sync.set({ [key]: value }, () => resolve(true));
     });
   };
