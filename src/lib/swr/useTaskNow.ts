@@ -2,8 +2,11 @@ import useSWR from 'swr';
 import storage from '@/lib/storage';
 import { STORE_TASKS, STORE_TASK_HISTORY } from '@/constants/storeKey';
 import { LOAD_FAIL, LOAD_LOADING, LOAD_SUCCESS } from '@/constants';
+import makeLogger from '@/lib/makeLogger';
 
 type taskNowType = taskData & taskHistory;
+
+const logger = makeLogger('lib/swr/useTaskNow');
 
 export function useTaskNow() {
   let taskNow: taskNowType = {
@@ -19,13 +22,14 @@ export function useTaskNow() {
   };
   const taskHistory = useSWR<taskHistory[]>(STORE_TASK_HISTORY, storage.get);
   const tasks = useSWR<tasksData>(STORE_TASKS, storage.get);
+  logger({ taskHistory, tasks });
   if (taskHistory.error || tasks.error)
     return { taskNow, hasTask: false, loadState: LOAD_LOADING };
   if (!taskHistory.data || !tasks.data)
     return { taskNow, hasTask: false, loadState: LOAD_SUCCESS };
   const lastTask = taskHistory.data[taskHistory.data.length - 1];
   if (!lastTask) return { taskNow, hasTask: false, loadState: LOAD_SUCCESS };
-  if (lastTask && lastTask.timeEnd === -1)
+  if (lastTask && lastTask.timeEnd !== -1)
     return { taskNow, hasTask: false, loadState: LOAD_SUCCESS };
 
   // task history is in tact, but task detail does not exist

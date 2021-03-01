@@ -50,6 +50,8 @@ const Popup = () => {
     return makeResult(result);
   };
 
+  logger({ taskNow, hasTask, taskNowLoadState });
+
   return (
     <Document>
       <PopupLayout>
