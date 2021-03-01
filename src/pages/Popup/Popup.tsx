@@ -13,6 +13,7 @@ import storage from '@/lib/storage';
 import startTask from '@/lib/swr/startTask';
 import { STORE_TASKS } from '@/constants/storeKey';
 import { makeResult } from '@/lib';
+import endTask from '@/lib/swr/endTask';
 
 const logger = makeLogger('Popup.jsx');
 
@@ -52,6 +53,12 @@ const Popup = () => {
 
   logger({ taskNow, hasTask, taskNowLoadState });
 
+  const onFinishTask = () => {
+    endTask();
+  };
+
+  const onCancelTask = () => {};
+
   return (
     <Document>
       <PopupLayout>
@@ -59,6 +66,8 @@ const Popup = () => {
         {taskNowLoadState === LOAD_SUCCESS && hasTask && (
           <Stack spacing={4}>
             <Text>{taskNow.title}</Text>
+            <Button onClick={() => onFinishTask()}>Finish</Button>
+            <Button onClick={() => onCancelTask()}>Cancel</Button>
           </Stack>
         )}
         {taskNowLoadState === LOAD_SUCCESS && !hasTask && (

@@ -39,9 +39,8 @@ export const endTask: endTaskArg = async () => {
     const newLastHistory = _cloneDeep(lastHistory);
     const timeNow = getTime();
     newLastHistory.timeEnd = timeNow;
-    const newHistory = (_cloneDeep(history)[
-      history.length - 1
-    ] = newLastHistory);
+    const newHistory = _cloneDeep(history);
+    newHistory[history.length - 1] = newLastHistory;
     return makeResult(newHistory);
   } catch (error) {
     return makeError(undefined, error);

@@ -29,13 +29,15 @@ export function useTaskNow() {
     return { taskNow, hasTask: false, loadState: LOAD_SUCCESS };
   const lastTask = taskHistory.data[taskHistory.data.length - 1];
   if (!lastTask) return { taskNow, hasTask: false, loadState: LOAD_SUCCESS };
+  logger({ lastTask });
   if (lastTask && lastTask.timeEnd !== -1)
     return { taskNow, hasTask: false, loadState: LOAD_SUCCESS };
 
   // task history is in tact, but task detail does not exist
   const taskData = tasks.data[lastTask.taskId];
   if (!taskData) return { taskNow, hasTask: false, loadState: LOAD_FAIL };
-  taskNow = { ...lastTask, ...taskData };
+  logger({ taskData });
+  taskNow = { ...taskData, ...lastTask };
   return { taskNow, hasTask: true, loadState: LOAD_SUCCESS };
 }
 
