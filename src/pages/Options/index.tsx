@@ -6,6 +6,7 @@ import {
   useLocation,
   useHistory,
   Redirect,
+  useRouteMatch,
 } from 'react-router-dom';
 import { render } from 'react-dom';
 
@@ -20,22 +21,20 @@ import Task from './Task';
 
 const logger = makeLogger('pages/Options/index.tsx');
 
-const pathIndexMap: { [key: string]: number } = {
-  '/tasks': 0,
-  '/task': 0,
-  '/websites': 1,
-  '/website': 1,
-  '/donate': 2,
-};
-
 const tabPathMap = ['/tasks', '/websites', '/donate'];
 
 const NavMenu: React.FC = (props) => {
   const loc = useLocation();
-  const path = loc.pathname;
   const history = useHistory();
 
-  const pathIndex = pathIndexMap[path];
+  const path = loc.pathname;
+  const isTabTask = /task/i.test(path);
+  const isTabWebsite = /website/i.test(path);
+  const isTabDonate = /donate/i.test(path);
+  let pathIndex = 0;
+  if (isTabTask) pathIndex = 0;
+  if (isTabWebsite) pathIndex = 1;
+  if (isTabDonate) pathIndex = 2;
 
   const onTabChange = (index: number) => {
     const _path = tabPathMap[index];

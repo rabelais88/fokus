@@ -60,12 +60,12 @@ interface rejected<T = any> {
   errorCode: string;
 }
 
-type resolvable<T> = resolved<T> | rejected<T>;
+type resolvable<T = any> = resolved<T> | rejected<T>;
 
 interface SuggestionItemProps {
   id: string;
   text: string;
-  onItemClick: (id: string, text: string);
+  onItemClick: (id: string, text: string) => void;
   selected: boolean;
 }
 
@@ -74,6 +74,17 @@ interface SuggestionProps<T = any> {
   keyword: string;
   value: string;
   onValueChange: (keyword: string) => void;
+  onKeywordChange: (keyword: string) => void;
+  itemComponent: React.FC<SuggestionItemProps>;
+  loadingComponent: React.FC;
+  noResultComponent: React.FC;
+}
+
+interface SuggestionMultipleProps<T = any> {
+  onSuggest: (keyword: string) => Promise<resolvable<T>>;
+  keyword: string;
+  value: string[];
+  onValueChange: (keyword: string[]) => void;
   onKeywordChange: (keyword: string) => void;
   itemComponent: React.FC<SuggestionItemProps>;
   loadingComponent: React.FC;
