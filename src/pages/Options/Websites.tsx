@@ -21,6 +21,7 @@ import {
   Skeleton,
   Stack,
   StackDivider,
+  Text,
   useDisclosure,
 } from '@chakra-ui/react';
 import React from 'react';
@@ -47,6 +48,8 @@ const Websites: React.FC = (props) => {
     removeSite(removeTargetSiteId);
     onClose();
   };
+
+  const siteAddable = noSite || keyword === '';
 
   return (
     <>
@@ -78,7 +81,7 @@ const Websites: React.FC = (props) => {
             key="website-search-keyword"
           />
           <InputRightElement>
-            {noSite && (
+            {siteAddable && (
               <NavLink
                 to={keyword === '' ? '/website' : `/website?title=${keyword}`}
               >
@@ -110,7 +113,9 @@ const Websites: React.FC = (props) => {
           </Stack>
         )}
         {loadState === LOAD_SUCCESS && noSite && (
-          <Center mt="150">no websites found</Center>
+          <Center mt="150">
+            <Text>no websites found</Text>
+          </Center>
         )}
         {loadState === LOAD_SUCCESS && !noSite && (
           <Stack divider={<StackDivider borderColor="gray.200" />} spacing={2}>
@@ -121,7 +126,9 @@ const Websites: React.FC = (props) => {
                 aria-label="website-item"
                 justifyContent="space-between"
               >
-                <NavLink to={`/website/${site.id}`}>{site.title}</NavLink>
+                <NavLink to={`/website/${site.id}`}>
+                  <Text>{site.title}</Text>
+                </NavLink>
                 <CloseButton
                   onClick={() => onRemoveSite(site.id, site.title)}
                 />

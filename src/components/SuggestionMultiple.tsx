@@ -15,6 +15,7 @@ const Suggestion: React.FC<SuggestionMultipleProps> = ({
   itemComponent: Item,
   loadingComponent: Loading,
   noResultComponent: NoResult,
+  hideSelected = true,
 }) => {
   const [loadState, setLoadState] = useState(LOAD_INIT);
   const [suggestions, setSuggestions] = useState<any[]>([]);
@@ -41,8 +42,9 @@ const Suggestion: React.FC<SuggestionMultipleProps> = ({
   };
 
   const onItemClick = (id: string, text: string) => {
-    onValueChange([...value, id]);
-    onKeywordChange(text);
+    const newValue = Array.from(new Set([...value, id]));
+    onValueChange(newValue);
+    onKeywordChange('');
     setFocus(false);
   };
 

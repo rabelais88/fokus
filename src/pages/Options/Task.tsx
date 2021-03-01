@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import makeLogger from '@/lib/makeLogger';
 import { useHistory, useParams } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
@@ -14,6 +14,10 @@ import {
   Tag,
   TagCloseButton,
   TagLabel,
+  Switch,
+  NumberInput,
+  NumberInputField,
+  Text,
 } from '@chakra-ui/react';
 import useTask from '@/lib/useTask';
 import SuggestionMultiple from '@/components/SuggestionMultiple';
@@ -21,6 +25,8 @@ import storage from '@/lib/storage';
 import { STORE_WEBSITES } from '@/constants/storeKey';
 import useSite from '@/lib/useSite';
 import { LOAD_SUCCESS } from '@/constants';
+import addTask from '@/lib/addTask';
+import editTask from '@/lib/editTask';
 
 const logger = makeLogger('pages/Options/Task');
 
@@ -91,12 +97,32 @@ const Task: React.FC = (props) => {
       description: '',
       blockedSiteIds: [],
       allowedSiteIds: [],
+      maxDuration: -1,
     },
     loadState,
   } = useTask(taskId || '');
 
+  const _addNewTask = async (taskData: taskData) => {
+    setLoading(true);
+    await addTask(taskData);
+    setLoading(false);
+    history.push('/tasks');
+  };
+
+  const _editTask = async (taskData: taskData) => {
+    setLoading(true);
+    await editTask(taskData);
+    setLoading(false);
+    history.push('/tasks');
+  };
+
   const onSubmit = (taskData: taskData) => {
     logger('onSubmit', taskData);
+    if (isNewTask) {
+      _addNewTask(taskData);
+      return;
+    }
+    _editTask({ ...task, ...taskData });
   };
 
   return (
@@ -130,7 +156,6 @@ const Task: React.FC = (props) => {
         </FormControl>
         <FormControl id="task-allowed-sites">
           <FormLabel htmlFor="allowed-sites">allowed sites</FormLabel>
-          <HStack></HStack>
           <Controller
             name="allowedSiteIds"
             control={control}
@@ -140,7 +165,7 @@ const Task: React.FC = (props) => {
                 _onChange(_value.filter((asid: string) => asid !== siteId));
               };
               return (
-                <>
+                <Stack spacing="10px">
                   <HStack>
                     {_value.map((allowedSiteId: string) => (
                       <SelectedSite
@@ -160,7 +185,7 @@ const Task: React.FC = (props) => {
                     noResultComponent={() => <div>no Result</div>}
                     onSuggest={suggestSites}
                   />
-                </>
+                </Stack>
               );
             }}
           ></Controller>
@@ -176,7 +201,7 @@ const Task: React.FC = (props) => {
                 _onChange(_value.filter((asid: string) => asid !== siteId));
               };
               return (
-                <>
+                <Stack spacing="10px">
                   <HStack>
                     {_value.map((blockedSiteId: string) => (
                       <SelectedSite
@@ -196,7 +221,41 @@ const Task: React.FC = (props) => {
                     noResultComponent={() => <div>no result</div>}
                     onSuggest={suggestSites}
                   />
-                </>
+                </Stack>
+              );
+            }}
+          />
+        </FormControl>
+        <FormControl id="task-max-duration">
+          <FormLabel htmlFor="max-duration">maximum duration(minute)</FormLabel>
+          <Controller
+            name="maxDuration"
+            control={control}
+            defaultValue={task.maxDuration}
+            render={({ onChange: _onChange, value: _value }) => {
+              const isUsed = _value !== -1;
+              return (
+                <Stack spacing="10px">
+                  <Switch
+                    onChange={(ev) => {
+                      logger({ ev, target: ev.target });
+                      _onChange(ev.target.checked ? 1 : -1);
+                    }}
+                    defaultChecked={isUsed}
+                  />
+                  {isUsed && (
+                    <NumberInput
+                      value={_value}
+                      onChange={(strVal) => _onChange(Number(strVal))}
+                      min={-1}
+                    >
+                      <NumberInputField />
+                    </NumberInput>
+                  )}
+                  {!isUsed && (
+                    <Text>duration is not limited for this task</Text>
+                  )}
+                </Stack>
               );
             }}
           />

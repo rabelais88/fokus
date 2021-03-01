@@ -14,19 +14,62 @@ import {
   StackDivider,
   Flex,
   CloseButton,
+  Modal,
+  ModalOverlay,
+  ModalCloseButton,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  Button,
+  useDisclosure,
+  Text,
 } from '@chakra-ui/react';
 import { AddIcon, CloseIcon, SearchIcon } from '@chakra-ui/icons';
 import { NavLink } from '@/components';
 import { LOAD_SUCCESS } from '@/constants';
+import removeTask from '@/lib/removeTask';
 
 const Tasks: React.FC = (props) => {
   const [keyword, setKeyword] = useState('');
+  const [removeTargetTaskId, setRemoveTargetTaskId] = useState('');
+  const [removeTargetTaskName, setRemoveTargetTaskName] = useState('');
 
   const { tasks, loadState, noTask } = useTasks({ keyword });
   const hasKeyword = keyword.length >= 1;
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const onRemoveTask = (taskId: string, taskTitle: string) => {
+    setRemoveTargetTaskId(taskId);
+    setRemoveTargetTaskName(taskTitle);
+    onOpen();
+  };
+
+  const onRemoveTaskConfirm = () => {
+    removeTask(removeTargetTaskId);
+    onClose();
+  };
+
+  const taskAddable = noTask || keyword === '';
 
   return (
     <>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalCloseButton />
+        <ModalContent>
+          <ModalBody>
+            would you like to remove <b>{removeTargetTaskName}</b> ?
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="solid" onClick={onRemoveTaskConfirm}>
+              Remove
+            </Button>
+            <Button variant="outline" onClick={onClose}>
+              No
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
       <Box>
         <InputGroup>
           <InputLeftElement children={<SearchIcon />} />
@@ -38,7 +81,7 @@ const Tasks: React.FC = (props) => {
             key="task-search-keyword"
           />
           <InputRightElement>
-            {noTask && (
+            {taskAddable && (
               <NavLink to={keyword === '' ? '/task' : `task?title=${keyword}`}>
                 <IconButton
                   icon={<AddIcon />}
@@ -68,7 +111,9 @@ const Tasks: React.FC = (props) => {
           </Stack>
         )}
         {loadState === LOAD_SUCCESS && noTask && (
-          <Center mt="150">no tasks found</Center>
+          <Center mt="150">
+            <Text>no tasks found</Text>
+          </Center>
         )}
         {loadState === LOAD_SUCCESS && !noTask && (
           <Stack divider={<StackDivider borderColor="gray.200" />} spacing={2}>
@@ -79,8 +124,12 @@ const Tasks: React.FC = (props) => {
                 aria-label="task-item"
                 justifyContent="space-between"
               >
-                <NavLink to={`/task/${task.id}`}>{task.title}</NavLink>
-                <CloseButton onClick={() => {}} />
+                <NavLink to={`/task/${task.id}`}>
+                  <Text>{task.title}</Text>
+                </NavLink>
+                <CloseButton
+                  onClick={() => onRemoveTask(task.id, task.title)}
+                />
               </Flex>
             ))}
           </Stack>

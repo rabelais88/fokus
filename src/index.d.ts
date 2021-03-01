@@ -41,6 +41,7 @@ interface taskData {
   description: string;
   blockedSiteIds: string[];
   allowedSiteIds: string[];
+  maxDuration: number;
 }
 interface tasksData {
   [key: string]: taskData;
@@ -89,4 +90,5 @@ interface SuggestionMultipleProps<T = any> {
   itemComponent: React.FC<SuggestionItemProps>;
   loadingComponent: React.FC;
   noResultComponent: React.FC;
+  hideSelected?: boolean;
 }
