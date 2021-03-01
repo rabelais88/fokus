@@ -16,12 +16,13 @@ import { Box, Heading, Tab, TabList, Tabs } from '@chakra-ui/react';
 import Websites from './Websites';
 import Website from './Website';
 import Tasks from './Tasks';
+import Stats from './Stats';
 import makeLogger from '@/lib/makeLogger';
 import Task from './Task';
 
 const logger = makeLogger('pages/Options/index.tsx');
 
-const tabPathMap = ['/tasks', '/websites', '/donate'];
+const tabPathMap = ['/tasks', '/websites', '/stats', '/donate'];
 
 const NavMenu: React.FC = (props) => {
   const loc = useLocation();
@@ -31,10 +32,12 @@ const NavMenu: React.FC = (props) => {
   const isTabTask = /task/i.test(path);
   const isTabWebsite = /website/i.test(path);
   const isTabDonate = /donate/i.test(path);
+  const isTabStats = /stats/i.test(path);
   let pathIndex = 0;
   if (isTabTask) pathIndex = 0;
   if (isTabWebsite) pathIndex = 1;
-  if (isTabDonate) pathIndex = 2;
+  if (isTabStats) pathIndex = 2;
+  if (isTabDonate) pathIndex = 3;
 
   const onTabChange = (index: number) => {
     const _path = tabPathMap[index];
@@ -51,6 +54,7 @@ const NavMenu: React.FC = (props) => {
       <TabList>
         <Tab>tasks</Tab>
         <Tab>websites</Tab>
+        <Tab>stats</Tab>
         <Tab>donate</Tab>
       </TabList>
     </Tabs>
@@ -85,6 +89,9 @@ const Options = (
           </Route>
           <Route path="/websites">
             <Websites />
+          </Route>
+          <Route path="/stats">
+            <Stats />
           </Route>
           <Route path="/donate">donate page</Route>
           <Redirect to="/tasks" />
