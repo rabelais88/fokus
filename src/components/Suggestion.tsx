@@ -1,5 +1,5 @@
 import { LOAD_FAIL, LOAD_INIT, LOAD_LOADING, LOAD_SUCCESS } from '@/constants';
-import { Box, Input, Stack } from '@chakra-ui/react';
+import { Box, Input, Stack, Divider } from '@chakra-ui/react';
 import React, { ChangeEvent, useState } from 'react';
 import { useDebounceCallback } from '@react-hook/debounce';
 import makeLogger from '@/lib/makeLogger';
@@ -59,7 +59,7 @@ const Suggestion: React.FC<SuggestionProps> = ({
         onFocus={onInputFocus}
       />
       {focused && loadState === LOAD_SUCCESS && suggestions.length >= 1 && (
-        <Stack>
+        <Stack spacing={2} divider={<Divider />} boxShadow="md">
           {suggestions.map(({ key, text }) => (
             <Item
               id={key}
