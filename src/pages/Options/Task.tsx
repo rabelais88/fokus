@@ -28,26 +28,9 @@ import { LOAD_SUCCESS } from '@/constants';
 import addTask from '@/lib/addTask';
 import editTask from '@/lib/editTask';
 import { makeResult } from '@/lib';
+import SuggestionListItem from '@/stories/SuggestionListItem';
 
 const logger = makeLogger('pages/Options/Task');
-
-const allowedSiteItem: React.FC<SuggestionItemProps> = ({
-  id,
-  text,
-  onItemClick,
-  selected,
-}) => {
-  return <div onClick={() => onItemClick(id, text)}>{text}</div>;
-};
-
-const blockedSiteItem: React.FC<SuggestionItemProps> = ({
-  id,
-  text,
-  onItemClick,
-  selected,
-}) => {
-  return <div onClick={() => onItemClick(id, text)}>{text}</div>;
-};
 
 const SelectedSite: React.FC<{ siteId: string; onClick: () => void }> = ({
   siteId,
@@ -177,10 +160,10 @@ const Task: React.FC = (props) => {
                     onKeywordChange={(v) => setAllowedSiteKeyword(v)}
                     value={_value}
                     onValueChange={_onChange}
-                    itemComponent={allowedSiteItem}
                     loadingComponent={() => <div>loading</div>}
                     noResultComponent={() => <div>no Result</div>}
                     onSuggest={suggestSites}
+                    itemComponent={(arg) => <SuggestionListItem {...arg} />}
                   />
                 </Stack>
               );
@@ -213,9 +196,9 @@ const Task: React.FC = (props) => {
                     onKeywordChange={(v) => setBlockedSiteKeyword(v)}
                     value={_value}
                     onValueChange={_onChange}
-                    itemComponent={blockedSiteItem}
                     loadingComponent={() => <div>loading</div>}
                     noResultComponent={() => <div>no result</div>}
+                    itemComponent={(arg) => <SuggestionListItem {...arg} />}
                     onSuggest={suggestSites}
                   />
                 </Stack>

@@ -7,6 +7,7 @@ const LayoutOptions: React.FC = (props) => {
       <Box
         width={['95%', '1000px']}
         paddingTop={['5px', '30px']}
+        paddingX={['15px', 'none']}
         className="fokus-options--layout"
         h="100vh"
       >

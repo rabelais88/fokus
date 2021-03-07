@@ -1,4 +1,5 @@
 import Suggestion from '@/components/Suggestion.tsx';
+import { Box, Text } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import SuggestionListItem from './SuggestionListItem';
 
@@ -35,8 +36,8 @@ const SuggestionWrapper = () => {
   };
 
   return (
-    <div>
-      <span>current value: {`${value}`}</span>
+    <Box height="100%">
+      <Text>current value: {`${value}`}</Text>
       <Suggestion
         keyword={keyword}
         onKeywordChange={(v) => setKeyword(v)}
@@ -47,7 +48,7 @@ const SuggestionWrapper = () => {
         loadingComponent={LoadingComponent}
         noResultComponent={noResultComponent}
       />
-    </div>
+    </Box>
   );
 };
 

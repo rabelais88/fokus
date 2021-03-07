@@ -1,3 +1,4 @@
+import { Box } from '@chakra-ui/react';
 import React from 'react';
 
 const SuggestionListItem: React.FC<SuggestionItemProps> = ({
@@ -6,9 +7,23 @@ const SuggestionListItem: React.FC<SuggestionItemProps> = ({
   onItemClick,
   selected,
 }) => {
-  const _style = selected ? { backgroundColor: 'red' } : {};
+  if (selected)
+    return (
+      <Box
+        onClick={() => onItemClick(id, text)}
+        paddingX="4"
+        paddingY="4"
+        backgroundColor="gray"
+        role="li"
+      >{`${text}`}</Box>
+    );
   return (
-    <div onClick={() => onItemClick(id, text)} style={_style}>{`${text}`}</div>
+    <Box
+      onClick={() => onItemClick(id, text)}
+      paddingX="4"
+      paddingY="4"
+      role="li"
+    >{`${text}`}</Box>
   );
 };
 

@@ -14,6 +14,7 @@ import startTask from '@/lib/swr/startTask';
 import { STORE_TASKS } from '@/constants/storeKey';
 import { makeResult } from '@/lib';
 import endTask from '@/lib/swr/endTask';
+import SuggestionListItem from '@/stories/SuggestionListItem';
 
 const logger = makeLogger('Popup.jsx');
 
@@ -25,14 +26,6 @@ const Popup = () => {
 
   const { taskNow, hasTask, loadState: taskNowLoadState } = useTaskNow();
   const [keyword, setKeyword] = useState('');
-
-  const TaskSuggestItem: React.FC<SuggestionItemProps> = ({
-    id,
-    text,
-    onItemClick,
-  }) => {
-    return <Box onClick={() => onItemClick(id, text)}>{text}</Box>;
-  };
 
   const onTaskChange = (taskId: string) => {
     startTask(taskId);
@@ -77,7 +70,7 @@ const Popup = () => {
             <Suggestion
               keyword={keyword}
               onKeywordChange={(v) => setKeyword}
-              itemComponent={TaskSuggestItem}
+              itemComponent={(arg) => <SuggestionListItem {...arg} />}
               loadingComponent={() => <Box>loading...</Box>}
               noResultComponent={() => <Box>no task found</Box>}
               value={''}

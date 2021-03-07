@@ -54,12 +54,18 @@ const Suggestion: React.FC<SuggestionProps> = ({
   return (
     <Box>
       <Input
+        type="text"
         value={keyword}
         onChange={_onKeywordChange}
         onFocus={onInputFocus}
       />
       {focused && loadState === LOAD_SUCCESS && suggestions.length >= 1 && (
-        <Stack spacing={2} divider={<Divider />} boxShadow="md">
+        <Stack
+          spacing={2}
+          divider={<Divider />}
+          boxShadow="md"
+          borderRadius="12px"
+        >
           {suggestions.map(({ key, text }) => (
             <Item
               id={key}
@@ -72,9 +78,9 @@ const Suggestion: React.FC<SuggestionProps> = ({
         </Stack>
       )}
       {focused && loadState === LOAD_SUCCESS && suggestions.length === 0 && (
-        <Loading />
+        <NoResult />
       )}
-      {focused && loadState === LOAD_LOADING && <NoResult />}
+      {focused && loadState === LOAD_LOADING && <Loading />}
     </Box>
   );
 };
