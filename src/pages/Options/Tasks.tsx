@@ -23,11 +23,13 @@ import {
   Button,
   useDisclosure,
   Text,
+  Badge,
 } from '@chakra-ui/react';
 import { AddIcon, CloseIcon, SearchIcon } from '@chakra-ui/icons';
 import { NavLink } from '@/components';
 import { LOAD_SUCCESS } from '@/constants';
 import removeTask from '@/lib/removeTask';
+import useTaskNow from '@/lib/swr/useTaskNow';
 
 const Tasks: React.FC = (props) => {
   const [keyword, setKeyword] = useState('');
@@ -35,6 +37,9 @@ const Tasks: React.FC = (props) => {
   const [removeTargetTaskName, setRemoveTargetTaskName] = useState('');
 
   const { tasks, loadState, noTask } = useTasks({ keyword });
+  const { taskNow } = useTaskNow();
+  const taskIdNow = (taskNow || {}).id;
+
   const hasKeyword = keyword.length >= 1;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -125,7 +130,19 @@ const Tasks: React.FC = (props) => {
                 justifyContent="space-between"
               >
                 <NavLink to={`/task/${task.id}`}>
-                  <Text>{task.title}</Text>
+                  <Text>
+                    {task.title}
+                    {taskIdNow === task.id && (
+                      <Badge
+                        size="sm"
+                        variant="solid"
+                        colorScheme="teal"
+                        ml={5}
+                      >
+                        NOW
+                      </Badge>
+                    )}
+                  </Text>
                 </NavLink>
                 <CloseButton
                   onClick={() => onRemoveTask(task.id, task.title)}

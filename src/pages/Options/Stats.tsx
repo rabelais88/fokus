@@ -7,8 +7,10 @@ const Stats: React.FC = () => {
   const { taskHistory, noTaskHistory, loadState } = useTaskHistory();
   return (
     <Box>
-      <Box>
-        <Heading>Daily Task</Heading>
+      <Box mt={5}>
+        <Heading as="h2" size="md">
+          Statistics
+        </Heading>
         <DailyTask taskHistory={taskHistory} width={500} height={500} />
       </Box>
     </Box>
