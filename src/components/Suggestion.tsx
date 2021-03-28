@@ -51,6 +51,10 @@ const Suggestion: React.FC<SuggestionProps> = ({
     requestSuggestion(keyword);
   };
 
+  const onInputBlur: React.FocusEventHandler = (ev) => {
+    logger('blur', { event: ev });
+  };
+
   return (
     <Box>
       <Input
@@ -58,6 +62,7 @@ const Suggestion: React.FC<SuggestionProps> = ({
         value={keyword}
         onChange={_onKeywordChange}
         onFocus={onInputFocus}
+        onBlur={onInputBlur}
       />
       {focused && loadState === LOAD_SUCCESS && suggestions.length >= 1 && (
         <Stack

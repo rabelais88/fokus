@@ -9,7 +9,7 @@ const Stats: React.FC = () => {
     <Box>
       <Box>
         <Heading>Daily Task</Heading>
-        <DailyTask taskHistory={taskHistory} />
+        <DailyTask taskHistory={taskHistory} width={500} height={500} />
       </Box>
     </Box>
   );

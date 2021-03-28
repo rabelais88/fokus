@@ -1,7 +1,12 @@
 import useSWR from 'swr';
 import storage from '@/lib/storage';
 import { STORE_TASKS, STORE_TASK_HISTORY } from '@/constants/storeKey';
-import { LOAD_FAIL, LOAD_LOADING, LOAD_SUCCESS } from '@/constants';
+import {
+  BLOCK_MODE_BLOCK_ALL,
+  LOAD_FAIL,
+  LOAD_LOADING,
+  LOAD_SUCCESS,
+} from '@/constants';
 import makeLogger from '@/lib/makeLogger';
 
 type taskNowType = taskData & taskHistory;
@@ -19,6 +24,7 @@ export function useTaskNow() {
     timeStart: -1,
     timeEnd: -1,
     taskId: '',
+    blockMode: BLOCK_MODE_BLOCK_ALL,
   };
   const taskHistory = useSWR<taskHistory[]>(STORE_TASK_HISTORY, storage.get);
   const tasks = useSWR<tasksData>(STORE_TASKS, storage.get);

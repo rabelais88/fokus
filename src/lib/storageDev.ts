@@ -1,22 +1,7 @@
-import {
-  STORE_WEBSITES_INDEX,
-  STORE_WEBSITES,
-  STORE_TASKS,
-  STORE_TASKS_INDEX,
-  STORE_TASK_HISTORY,
-} from '@/constants/storeKey';
 import makeLogger from './makeLogger';
+import getDefaultValues from '@/constants/getStoreDefault';
 
 const logger = makeLogger('storage(dev)');
-
-type defaultValueType = () => { [key: string]: any };
-const getDefaultValues: defaultValueType = () => ({
-  [STORE_WEBSITES_INDEX]: [],
-  [STORE_WEBSITES]: {},
-  [STORE_TASKS_INDEX]: [],
-  [STORE_TASKS]: {},
-  [STORE_TASK_HISTORY]: [],
-});
 
 const storage = () => {
   let onChangeEvent: onStorageChange | Function = () => {};

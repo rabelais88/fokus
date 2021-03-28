@@ -12,7 +12,7 @@ import { render } from 'react-dom';
 
 import Document from '@/containers/Document';
 import { OptionsLayout } from '@/containers/layout';
-import { Box, Heading, Tab, TabList, Tabs } from '@chakra-ui/react';
+import { Box, Heading, Link, Tab, TabList, Tabs } from '@chakra-ui/react';
 import Websites from './Websites';
 import Website from './Website';
 import Tasks from './Tasks';
@@ -93,7 +93,13 @@ const Options = (
           <Route path="/stats">
             <Stats />
           </Route>
-          <Route path="/donate">donate page</Route>
+          <Route path="/donate">
+            <Box mt={5}>
+              <Link to="https://patreon.com/fokus_extension">
+                🙇‍♂️please support this extension on pateron!🥳
+              </Link>
+            </Box>
+          </Route>
           <Redirect to="/tasks" />
         </Switch>
       </Router>

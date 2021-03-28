@@ -13,6 +13,12 @@ interface d3states {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined> | null;
 }
 
+const translate = (x: number = 0, y: number = 0, k: number = 0) => {
+  let t = `translate(${x}, ${y})`;
+  if (k >= 1) t = [t, `scale(${k})`].join(' ');
+  return k;
+};
+
 const logger = makeLogger('DailyTask');
 
 const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
@@ -36,13 +42,14 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
     }
   }, [refChart.current]);
 
-  const enterTask = (scaleY) => (
+  const enterTask = (scaleY: d3.ScaleLinear<number, number>) => (
     tsk: d3.Selection<d3.EnterElement, taskHistory, SVGSVGElement, unknown>
   ) => {
     return tsk
       .append('text')
       .text((d) => JSON.stringify(d))
-      .attr('dominant-baseline', 'hanging');
+      .attr('dominant-baseline', 'hanging')
+      .attr('transform', (d) => translate(0, scaleY(d.timeStart)));
   };
 
   function d3render() {
@@ -56,7 +63,8 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
     const timeMin = d3.min(times) || -1;
     const timeMax = d3.max(times) || -1;
 
-    const scaleY = d3.scaleLinear().domain([timeMin, timeMax]);
+    const scaleY = d3.scaleLinear<number, number>().domain([timeMin, timeMax]);
+    logger(times);
     nodes.svg
       .selectAll<SVGSVGElement, taskHistory[]>('.text')
       .data(taskHistory)

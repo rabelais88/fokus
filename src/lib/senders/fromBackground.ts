@@ -1,6 +1,7 @@
 import makeLogger from '../makeLogger';
 
 const logger = makeLogger('backgroundSend');
+
 // to content script(tab)
 const backgroundSend = (code = 'NO_CODE') => {
   logger('message sent', code);

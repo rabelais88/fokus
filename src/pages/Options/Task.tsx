@@ -18,13 +18,19 @@ import {
   NumberInput,
   NumberInputField,
   Text,
+  RadioGroup,
+  Radio,
 } from '@chakra-ui/react';
 import useTask from '@/lib/useTask';
 import SuggestionMultiple from '@/components/SuggestionMultiple';
 import storage from '@/lib/storage';
 import { STORE_WEBSITES } from '@/constants/storeKey';
 import useSite from '@/lib/useSite';
-import { LOAD_SUCCESS } from '@/constants';
+import {
+  BLOCK_MODE_ALLOW_ALL,
+  BLOCK_MODE_BLOCK_ALL,
+  LOAD_SUCCESS,
+} from '@/constants';
 import addTask from '@/lib/addTask';
 import editTask from '@/lib/editTask';
 import { makeResult } from '@/lib';
@@ -78,6 +84,7 @@ const Task: React.FC = (props) => {
       blockedSiteIds: [],
       allowedSiteIds: [],
       maxDuration: -1,
+      blockMode: BLOCK_MODE_BLOCK_ALL,
     },
     loadState,
   } = useTask(taskId || '');
@@ -132,6 +139,24 @@ const Task: React.FC = (props) => {
             placeholder="description"
             defaultValue={task.description}
             ref={register}
+          />
+        </FormControl>
+        <FormControl id="task-block-mode">
+          <FormLabel htmlFor="block-mode">block mode</FormLabel>
+          <Controller
+            name="blockMode"
+            control={control}
+            defaultValue={task.blockMode}
+            render={({ onChange: _onChange, value: _value }) => {
+              return (
+                <RadioGroup spacing="10px" onChange={_onChange} value={_value}>
+                  <Stack direction="row">
+                    <Radio value={BLOCK_MODE_ALLOW_ALL}>allow all sites</Radio>
+                    <Radio value={BLOCK_MODE_BLOCK_ALL}>block all sites</Radio>
+                  </Stack>
+                </RadioGroup>
+              );
+            }}
           />
         </FormControl>
         <FormControl id="task-allowed-sites">

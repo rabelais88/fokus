@@ -41,6 +41,7 @@ interface taskData {
   description: string;
   blockedSiteIds: string[];
   allowedSiteIds: string[];
+  blockMode: 'BLOCK_MODE_BLOCK_ALL' | 'BLOCK_MODE_ALLOW_ALL';
   maxDuration: number;
 }
 interface tasksData {

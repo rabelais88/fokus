@@ -16,11 +16,11 @@ export const startTask: startTaskArg = async (taskId: string) => {
     const history = await storage.get<taskHistory[]>(STORE_TASK_HISTORY);
     const timeNow = getTime();
 
-    const newHistory = [
-      ...history,
-      { taskId, timeStart: timeNow, timeEnd: -1 },
-    ];
+    const currentTask = { taskId, timeStart: timeNow, timeEnd: -1 };
+
+    const newHistory = [...history, currentTask];
     await storage.set(STORE_TASK_HISTORY, newHistory);
+    await storage.set(STORE_TASK_HISTORY_NOW, currentTask);
     return makeResult(newHistory);
   } catch (error) {
     return makeError(undefined, error);
@@ -42,6 +42,11 @@ export const endTask: endTaskArg = async () => {
     const newHistory = _cloneDeep(history);
     newHistory[history.length - 1] = newLastHistory;
     await storage.set(STORE_TASK_HISTORY, newHistory);
+    await storage.set(STORE_TASK_HISTORY_NOW, {
+      taskId: '',
+      timeStart: -1,
+      timeEnd: -1,
+    });
     return makeResult(newHistory);
   } catch (error) {
     return makeError(undefined, error);
