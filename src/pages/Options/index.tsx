@@ -95,7 +95,7 @@ const Options = (
           </Route>
           <Route path="/donate">
             <Box mt={5}>
-              <Link to="https://patreon.com/fokus_extension">
+              <Link href="https://patreon.com/fokus_extension">
                 🙇‍♂️please support this extension on pateron!🥳
               </Link>
             </Box>
