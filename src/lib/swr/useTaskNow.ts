@@ -9,8 +9,6 @@ import {
 } from '@/constants';
 import makeLogger from '@/lib/makeLogger';
 
-type taskNowType = taskData & taskHistory;
-
 const logger = makeLogger('lib/swr/useTaskNow');
 
 export function useTaskNow() {

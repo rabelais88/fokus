@@ -99,3 +99,5 @@ interface taskHistory {
   timeEnd: number;
   taskId: string;
 }
+
+type taskNowType = taskData & taskHistory;
