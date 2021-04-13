@@ -1,10 +1,10 @@
 import addTask from './addTask';
-import storage from './storage';
+import storage from '@/lib/storage';
 import { STORE_TASKS, STORE_TASKS_INDEX } from '@/constants/storeKey';
 import * as swr from 'swr';
 import makeId from './makeId';
 
-jest.mock('./storage');
+jest.mock('@/lib/storage');
 jest.mock('./makeId');
 jest.mock('swr');
 

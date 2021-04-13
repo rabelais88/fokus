@@ -1,5 +1,5 @@
 import useSWR from 'swr';
-import storage from './storage';
+import storage from '@/lib/storage';
 import { LOAD_SUCCESS, LOAD_LOADING, LOAD_FAIL } from '../constants/loadState';
 import { STORE_WEBSITES } from '@/constants/storeKey';
 import makeLogger from './makeLogger';

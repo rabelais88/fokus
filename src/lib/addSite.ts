@@ -1,5 +1,5 @@
 import { mutate } from 'swr';
-import storage from './storage';
+import storage from '@/lib/storage';
 import makeId from './makeId';
 import makeLogger from './makeLogger';
 import { STORE_WEBSITES, STORE_WEBSITES_INDEX } from '@/constants/storeKey';

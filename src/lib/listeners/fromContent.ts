@@ -1,6 +1,6 @@
 import makeLogger from '../makeLogger';
 import { MSG_CHANGE_COLOR } from '../../constants';
-import storage from '../storage';
+import storage from '@/lib/storage';
 
 const logger = makeLogger('listenFromContent');
 

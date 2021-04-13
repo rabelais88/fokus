@@ -4,12 +4,9 @@ import getDefaultValues from '@/constants/getStoreDefault';
 const logger = makeLogger('storage(dev)');
 
 const storage = () => {
-  let onChangeEvent: onStorageChange | Function = () => {};
-
   const set = (key: string, value: any) => {
     return new Promise((resolve, reject) => {
       localStorage.setItem(key, JSON.stringify(value));
-      onChangeEvent(localStorage, 'sync');
       resolve(true);
     });
   };
@@ -46,7 +43,9 @@ const storage = () => {
   };
 
   const onChange = (funcOnChange: onStorageChange) => {
-    onChangeEvent = funcOnChange;
+    window.onstorage = (ev: StorageEvent) => {
+      funcOnChange({ ...localStorage }, ev.newValue || '');
+    };
   };
 
   return { set, get, remove, onChange };

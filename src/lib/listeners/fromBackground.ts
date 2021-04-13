@@ -1,7 +1,7 @@
 import makeLogger from '../makeLogger';
 import sendFromBackground from '../senders/fromBackground';
 import { MSG_CHANGE_COLOR } from '../../constants';
-import storage from '../storage';
+import storage from '@/lib/storage';
 import {
   STORE_TASKS,
   STORE_TASK_HISTORY_NOW,

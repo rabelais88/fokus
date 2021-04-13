@@ -1,9 +1,9 @@
 import editTask from './editTask';
-import storage from './storage';
+import storage from '@/lib/storage';
 import { STORE_TASKS } from '@/constants/storeKey';
 import * as swr from 'swr';
 
-jest.mock('./storage');
+jest.mock('@/lib/storage');
 jest.mock('swr');
 
 storage.set = jest.fn().mockResolvedValue();

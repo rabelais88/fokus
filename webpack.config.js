@@ -16,10 +16,14 @@ const envFiles = {
   development: './.env.development',
 };
 
+const isDevEnv = env.NODE_ENV === 'development'
+const isProdEnv = env.NODE_ENV === 'production'
+
 var alias = {
   'react-dom': '@hot-loader/react-dom',
   '@': rootPath,
 };
+if (isDevEnv) alias['@/lib/storage'] = path.join(rootPath, 'lib', 'storageDev')
 
 // load the secrets
 var secretsPath = path.join(__dirname, 'secrets.' + env.NODE_ENV + '.js');

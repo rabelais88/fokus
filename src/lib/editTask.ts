@@ -1,5 +1,5 @@
 import { mutate } from 'swr';
-import storage from './storage';
+import storage from '@/lib/storage';
 import makeLogger from './makeLogger';
 import { STORE_TASKS } from '@/constants/storeKey';
 

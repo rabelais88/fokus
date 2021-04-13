@@ -29,15 +29,20 @@ const NavMenu: React.FC = (props) => {
   const history = useHistory();
 
   const path = loc.pathname;
-  const isTabTask = /task/i.test(path);
-  const isTabWebsite = /website/i.test(path);
-  const isTabDonate = /donate/i.test(path);
-  const isTabStats = /stats/i.test(path);
+
   let pathIndex = 0;
-  if (isTabTask) pathIndex = 0;
-  if (isTabWebsite) pathIndex = 1;
-  if (isTabStats) pathIndex = 2;
-  if (isTabDonate) pathIndex = 3;
+  const pathToTab = {
+    'task': /task/i,
+    'website': /website/i,
+    'stats': /stats/i,
+    'donate': /donate/i,
+  }
+
+  Object.entries(pathToTab).find(([key, re], idx) => {
+    const matched = re.test(path)
+    if (matched) pathIndex = idx
+    return matched
+  })
 
   const onTabChange = (index: number) => {
     const _path = tabPathMap[index];

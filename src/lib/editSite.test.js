@@ -1,9 +1,9 @@
 import editSite from './editSite';
-import storage from './storage';
+import storage from '@/lib/storage';
 import { STORE_WEBSITES } from '@/constants/storeKey';
 import * as swr from 'swr';
 
-jest.mock('./storage');
+jest.mock('@/lib/storage');
 jest.mock('swr');
 
 storage.set = jest.fn().mockResolvedValue();
