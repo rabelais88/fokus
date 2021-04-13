@@ -24,7 +24,7 @@ import {
 import useTask from '@/lib/useTask';
 import SuggestionMultiple from '@/components/SuggestionMultiple';
 import storage from '@/lib/storage';
-import { STORE_WEBSITES } from '@/constants/storeKey';
+import { STORE_TASK_HISTORY_NOW, STORE_WEBSITES } from '@/constants/storeKey';
 import useSite from '@/lib/useSite';
 import {
   BLOCK_MODE_ALLOW_ALL,
@@ -35,6 +35,9 @@ import addTask from '@/lib/addTask';
 import editTask from '@/lib/editTask';
 import { makeResult } from '@/lib';
 import SuggestionListItem from '@/stories/SuggestionListItem';
+import useTaskNow from '@/lib/swr/useTaskNow';
+import startTask from '@/lib/swr/startTask';
+import endTask from '@/lib/swr/endTask';
 
 const logger = makeLogger('pages/Options/Task');
 
@@ -56,6 +59,11 @@ const SelectedSite: React.FC<{ siteId: string; onClick: () => void }> = ({
 const Task: React.FC = (props) => {
   const { taskId } = useParams<{ taskId: string | undefined }>();
   const isNewTask = !taskId;
+  const { taskNow, hasTask, loadState: taskNowLoadState } = useTaskNow();
+  let taskInProgress = false;
+  if (taskNowLoadState === LOAD_SUCCESS && hasTask && !isNewTask) {
+    taskInProgress = taskNow.taskId === taskId;
+  }
 
   const { handleSubmit, errors, register, control } = useForm();
   const query = useQuery();
@@ -110,6 +118,15 @@ const Task: React.FC = (props) => {
       return;
     }
     _editTask({ ...task, ...taskData });
+  };
+
+  const onTaskStart = () => {
+    if (!taskId) return;
+    startTask(taskId);
+  };
+
+  const onTaskStop = () => {
+    endTask();
   };
 
   return (
@@ -274,6 +291,14 @@ const Task: React.FC = (props) => {
           <Button type="submit" isLoading={loading} variant="solid">
             Edit
           </Button>
+        )}
+        {!isNewTask && !taskInProgress && (
+          <Button variant="solid" colorScheme="teal" onClick={onTaskStart}>
+            Start this task
+          </Button>
+        )}
+        {!isNewTask && taskInProgress && (
+          <Button onClick={onTaskStop}>Stop this task</Button>
         )}
       </Stack>
     </form>

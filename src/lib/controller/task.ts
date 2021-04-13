@@ -9,7 +9,9 @@ import makeError from '@/lib/makeError';
 import _cloneDeep from 'lodash/cloneDeep';
 
 interface startTaskArg {
-  (taskId: string): Promise<resolvable<taskHistory[]>>;
+  (taskId: string): Promise<
+    resolvable<{ history: taskHistory[]; now: taskNowType }>
+  >;
 }
 export const startTask: startTaskArg = async (taskId: string) => {
   try {
@@ -21,7 +23,7 @@ export const startTask: startTaskArg = async (taskId: string) => {
     const newHistory = [...history, currentTask];
     await storage.set(STORE_TASK_HISTORY, newHistory);
     await storage.set(STORE_TASK_HISTORY_NOW, currentTask);
-    return makeResult(newHistory);
+    return makeResult({ history: newHistory, now: currentTask });
   } catch (error) {
     return makeError(undefined, error);
   }
