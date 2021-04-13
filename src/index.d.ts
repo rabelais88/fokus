@@ -101,3 +101,7 @@ interface taskHistory {
 }
 
 type taskNowType = taskData & taskHistory;
+
+type queryType = {
+  [key: string]: string;
+};

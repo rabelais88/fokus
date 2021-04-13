@@ -1,39 +1,67 @@
 import makeLogger from '../makeLogger';
 import sendFromBackground from '../senders/fromBackground';
-import { MSG_CHANGE_COLOR } from '../../constants';
-import storage from '@/lib/storage';
 import {
-  STORE_TASKS,
-  STORE_TASK_HISTORY_NOW,
-  STORE_WEBSITES,
-} from '@/constants/storeKey';
+  BLOCK_MODE_ALLOW_ALL,
+  BLOCK_MODE_BLOCK_ALL,
+  MSG_CHANGE_COLOR,
+  URL_MODE_REGEX,
+  URL_MODE_TEXT,
+} from '../../constants';
+import getTaskInfo from '@/lib/getTaskInfo';
+import storage from '@/lib/storage';
+import openSettings from '../openSettings';
+import getSettingsUrl from '../getSettingsUrl';
 
 const logger = makeLogger('listenFromBackground');
 
-const onTabUpdate = async (_tab: chrome.tabs.Tab) => {
-  logger('tab updated', _tab);
-  const [taskHistoryNow, tasksById, sitesById] = await Promise.all([
-    storage.get<taskHistory>(STORE_TASK_HISTORY_NOW),
-    storage.get<tasksData>(STORE_TASKS),
-    storage.get<websitesData>(STORE_WEBSITES),
-  ]);
-  logger('current task', taskHistoryNow);
-  if (taskHistoryNow.taskId === '') {
-    logger('no task is running at this moment', taskHistoryNow);
-    return;
+export const validateUrl = async (url: string) => {
+  if (url.includes(chrome.extension.getURL('options.html'))) return true;
+  if (url === '') return true;
+  const { allowedSites, blockedSites, blockMode } = await getTaskInfo();
+  logger('validateUrl', { url, allowedSites, blockedSites, blockMode });
+  if (blockMode === BLOCK_MODE_ALLOW_ALL) {
+    const result = blockedSites.findIndex((blockedSite) => {
+      if (blockedSite.urlMode === URL_MODE_TEXT)
+        return url.includes(blockedSite.urlRegex);
+      if (blockedSite.urlMode === URL_MODE_REGEX)
+        return new RegExp(blockedSite.urlRegex, 'i').test(url);
+      // if mode is faulty, the site remains accessible
+      return false;
+    });
+    return result === -1;
   }
-  const taskNow = tasksById[taskHistoryNow.taskId];
-  const allowedSites = taskNow.allowedSiteIds.map(
-    (siteId) => sitesById[siteId]
-  );
-  const blockedSites = taskNow.blockedSiteIds.map(
-    (siteId) => sitesById[siteId]
-  );
-  logger({ allowedSites, blockedSites });
+  if (blockMode === BLOCK_MODE_BLOCK_ALL) {
+    const result = allowedSites.findIndex((allowedSite) => {
+      if (allowedSite.urlMode === URL_MODE_TEXT)
+        return url.includes(allowedSite.urlRegex);
+      if (allowedSite.urlMode === URL_MODE_REGEX)
+        return new RegExp(allowedSite.urlRegex);
+      // if mode is faulty, the site remains accessible
+      return true;
+    });
+    return result !== -1;
+  }
+
+  // if block mode is faulty, the site remains accessible
+  return true;
 };
 
-const onTick = () => {
+const onTabUpdate = async (_tab: chrome.tabs.Tab) => {
+  const isValid = await validateUrl(_tab.url || '');
+  logger('tab update', { tab: _tab, isValid });
+  if (isValid) return;
+  if (typeof _tab.id === 'number') {
+    // await openSettings({ 'blocked-url': _tab.url || '' });
+    const url = getSettingsUrl({ 'blocked-url': _tab.url || 'unknown' });
+    chrome.tabs.update({ url });
+  }
+};
+
+const onTick = async () => {
   logger('ticking...');
+  chrome.tabs.query({}, (tabs) => {
+    tabs.forEach(onTabUpdate);
+  });
 };
 
 const onStorageChange = () => {
@@ -56,7 +84,7 @@ const listenFromBackground = () => {
   });
   chrome.tabs.onCreated.addListener(onTabUpdate);
   storage.onChange(onStorageChange);
-  setInterval(onTick, 5000);
+  setInterval(onTick, 1000);
 };
 
 export default listenFromBackground;

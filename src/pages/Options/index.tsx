@@ -23,6 +23,7 @@ import Task from './Task';
 const logger = makeLogger('pages/Options/index.tsx');
 
 const tabPathMap = ['/tasks', '/websites', '/stats', '/donate'];
+const pathToTab = [/task/i, /website/i, /stats/i, /donate/i];
 
 const NavMenu: React.FC = (props) => {
   const loc = useLocation();
@@ -31,18 +32,12 @@ const NavMenu: React.FC = (props) => {
   const path = loc.pathname;
 
   let pathIndex = 0;
-  const pathToTab = {
-    'task': /task/i,
-    'website': /website/i,
-    'stats': /stats/i,
-    'donate': /donate/i,
-  }
 
-  Object.entries(pathToTab).find(([key, re], idx) => {
-    const matched = re.test(path)
-    if (matched) pathIndex = idx
-    return matched
-  })
+  pathToTab.find((re, idx) => {
+    const matched = re.test(path);
+    if (matched) pathIndex = idx;
+    return matched;
+  });
 
   const onTabChange = (index: number) => {
     const _path = tabPathMap[index];
@@ -105,7 +100,7 @@ const Options = (
               </Link>
             </Box>
           </Route>
-          <Redirect to="/tasks" />
+          <Redirect to={`/tasks${window.location.search}`} />
         </Switch>
       </Router>
     </OptionsLayout>

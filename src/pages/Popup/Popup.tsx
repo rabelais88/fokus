@@ -34,7 +34,7 @@ const Popup = () => {
   const onSuggestTasks = async (keyword: string) => {
     const reqTasks = await storage.get<tasksData>(STORE_TASKS);
     const reKeyword = new RegExp(keyword, 'i');
-    const matchKeywords = Object.values(reqTasks).filter(
+    const matchKeywords = Object.values<taskData>(reqTasks).filter(
       (task) => reKeyword.test(task.title) || reKeyword.test(task.description)
     );
     const result: any = matchKeywords.map((task) => ({
@@ -79,7 +79,7 @@ const Popup = () => {
             />
           </Stack>
         )}
-        <Button onClick={openSettings}>open settings</Button>
+        <Button onClick={() => openSettings()}>open settings</Button>
       </PopupLayout>
     </Document>
   );
