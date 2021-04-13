@@ -15,6 +15,7 @@ import { STORE_TASKS } from '@/constants/storeKey';
 import { makeResult } from '@/lib';
 import endTask from '@/lib/swr/endTask';
 import SuggestionListItem from '@/stories/SuggestionListItem';
+import '@/i18n';
 
 const logger = makeLogger('Popup.jsx');
 

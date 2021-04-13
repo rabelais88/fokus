@@ -19,6 +19,8 @@ import Tasks from './Tasks';
 import Stats from './Stats';
 import makeLogger from '@/lib/makeLogger';
 import Task from './Task';
+import '@/i18n';
+import { useTranslation, Trans } from 'react-i18next';
 
 const logger = makeLogger('pages/Options/index.tsx');
 
@@ -28,6 +30,7 @@ const pathToTab = [/task/i, /website/i, /stats/i, /donate/i];
 const NavMenu: React.FC = (props) => {
   const loc = useLocation();
   const history = useHistory();
+  const { t, i18n } = useTranslation();
 
   const path = loc.pathname;
 
@@ -52,10 +55,10 @@ const NavMenu: React.FC = (props) => {
       flexGrow={1}
     >
       <TabList>
-        <Tab>tasks</Tab>
-        <Tab>websites</Tab>
-        <Tab>stats</Tab>
-        <Tab>donate</Tab>
+        <Tab>{t('tab-tasks')}</Tab>
+        <Tab>{t('tab-websites')}</Tab>
+        <Tab>{t('tab-stats')}</Tab>
+        <Tab>{t('tab-donate')}</Tab>
       </TabList>
     </Tabs>
   );
@@ -96,7 +99,7 @@ const Options = (
           <Route path="/donate">
             <Box mt={5}>
               <Link href="https://patreon.com/fokus_extension">
-                🙇‍♂️please support this extension on pateron!🥳
+                🙇‍♂️<Trans>patreon-link</Trans>🥳
               </Link>
             </Box>
           </Route>
