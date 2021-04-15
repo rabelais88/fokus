@@ -5,15 +5,25 @@ var webpack = require('webpack'),
   { CleanWebpackPlugin } = require('clean-webpack-plugin'),
   CopyWebpackPlugin = require('copy-webpack-plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
-  TerserPlugin = require('terser-webpack-plugin');
+  TerserPlugin = require('terser-webpack-plugin'),
+  Dotenv = require('dotenv-webpack');
 
 const ASSET_PATH = process.env.ASSET_PATH || '/';
 
 const rootPath = path.join(__dirname, 'src');
+const envFiles = {
+  production: './.env.production',
+  development: './.env.development',
+};
+
+const isDevEnv = env.NODE_ENV === 'development'
+const isProdEnv = env.NODE_ENV === 'production'
+
 var alias = {
   'react-dom': '@hot-loader/react-dom',
   '@': rootPath,
 };
+if (isDevEnv) alias['@/lib/storage'] = path.join(rootPath, 'lib', 'storageDev')
 
 // load the secrets
 var secretsPath = path.join(__dirname, 'secrets.' + env.NODE_ENV + '.js');
@@ -173,6 +183,9 @@ var options = {
       filename: 'background.html',
       chunks: ['background'],
       cache: false,
+    }),
+    new Dotenv({
+      path: envFiles[process.env.NODE_ENV] || envFiles.development,
     }),
   ],
   infrastructureLogging: {

@@ -1,8 +1,95 @@
 import makeLogger from '../makeLogger';
 import sendFromBackground from '../senders/fromBackground';
-import { MSG_CHANGE_COLOR } from '../../constants';
+import {
+  BLOCK_MODE_ALLOW_ALL,
+  BLOCK_MODE_BLOCK_ALL,
+  MSG_CHANGE_COLOR,
+  QUERY_BLOCKED_URL,
+  URL_MODE_REGEX,
+  URL_MODE_TEXT,
+} from '../../constants';
+import getTaskInfo from '@/lib/getTaskInfo';
+import storage from '@/lib/storage';
+import getSettingsUrl from '../getSettingsUrl';
+import { STORE_TASK_HISTORY_NOW } from '@/constants/storeKey';
+import checkChromeUrl from '../checkChromeUrl';
+import getNewTabUrl from '../getNewTabUrl';
 
 const logger = makeLogger('listenFromBackground');
+
+type regexMode = typeof URL_MODE_TEXT | typeof URL_MODE_REGEX;
+export const matchUrlRegex = (
+  mode: regexMode,
+  urlRegex: string,
+  urlTarget: string
+) => {
+  logger('matchUrlRegex', mode, urlRegex, urlTarget);
+  if (mode === URL_MODE_TEXT) return urlTarget.includes(urlRegex);
+  if (mode === URL_MODE_REGEX) return new RegExp(urlRegex, 'i').test(urlTarget);
+  return undefined;
+};
+
+export const validateUrl = async (url: string) => {
+  const extensionUrl = getSettingsUrl();
+  if (url.includes(extensionUrl)) return true;
+  if (url === '') return true;
+  const { allowedSites, blockedSites, blockMode } = await getTaskInfo();
+  logger('validateUrl', { url, allowedSites, blockedSites, blockMode });
+  if (blockMode === BLOCK_MODE_ALLOW_ALL) {
+    const result = blockedSites.findIndex(({ urlMode, urlRegex }) => {
+      const valid = matchUrlRegex(urlMode, urlRegex, url);
+      // if mode is faulty, the site remains accessible
+      if (valid === undefined) return false;
+      return valid;
+    });
+    return result === -1;
+  }
+
+  if (blockMode === BLOCK_MODE_BLOCK_ALL) {
+    const result = allowedSites.findIndex(({ urlMode, urlRegex }) => {
+      const valid = matchUrlRegex(urlMode, urlRegex, url);
+      // if mode is faulty, the site remains accessible
+      if (valid === undefined) return true;
+      return valid;
+    });
+    return result !== -1;
+  }
+
+  // if block mode is faulty, the site remains accessible
+  return true;
+};
+
+const onTabUpdate = async (_tab: chrome.tabs.Tab) => {
+  logger('onTabUpdate', { tab: _tab, url: _tab.url });
+  const currentTask = await storage.get<taskHistory>(STORE_TASK_HISTORY_NOW);
+  // if it's not a site with proper url(i.g. new tab), just show.
+  if (!_tab.url || !_tab.id) return;
+  // eslint-disable-next-line
+  if (checkChromeUrl(_tab.url)) return;
+  if (currentTask.taskId === '') {
+    chrome.tabs.update(_tab.id, { url: getNewTabUrl() });
+    return;
+  }
+  const isValid = await validateUrl(_tab.url || '');
+  logger('tab update', { tab: _tab, isValid, url: _tab.url });
+  if (isValid) return;
+  if (typeof _tab.id === 'number') {
+    const url = getSettingsUrl({ [QUERY_BLOCKED_URL]: _tab.url || 'unknown' });
+    chrome.tabs.update(_tab.id, { url });
+  }
+};
+
+const onTick = async () => {
+  logger('ticking...');
+  chrome.tabs.query({}, (tabs) => {
+    tabs.forEach(onTabUpdate);
+  });
+};
+
+const onStorageChange = () => {
+  logger('storage data changed');
+};
+
 // listen from background
 const listenFromBackground = () => {
   logger('listening...');
@@ -13,6 +100,13 @@ const listenFromBackground = () => {
     reply({ message: 'hello from background!' });
     // return true;
   });
+
+  chrome.tabs.onUpdated.addListener((_tabId, _changeInfo, tab) => {
+    onTabUpdate(tab);
+  });
+  chrome.tabs.onCreated.addListener(onTabUpdate);
+  storage.onChange(onStorageChange);
+  setInterval(onTick, 1000);
 };
 
 export default listenFromBackground;

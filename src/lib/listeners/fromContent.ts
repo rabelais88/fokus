@@ -1,6 +1,6 @@
 import makeLogger from '../makeLogger';
 import { MSG_CHANGE_COLOR } from '../../constants';
-import storage from '../storage';
+import storage from '@/lib/storage';
 
 const logger = makeLogger('listenFromContent');
 
@@ -30,6 +30,7 @@ const onListen = async (
 const listenFromContent = () => {
   logger('listening...');
   chrome.runtime.onMessage.addListener(onListen);
+
   // https://developer.chrome.com/docs/extensions/reference/tabs/#event-onUpdated
   // chrome.tabs.onUpdated.addListener()
   // https://developer.chrome.com/docs/extensions/reference/tabs/#event-onCreated

@@ -1,21 +1,23 @@
-import makeLogger from './makeLogger';
+import makeLogger from '@/lib/makeLogger';
+import getDefaultValues from '@/constants/getStoreDefault';
 
 const logger = makeLogger('storage');
 
-type defaultValueType = () => { [key: string]: any };
-const getDefaultValues: defaultValueType = () => ({
-  sites: {},
-});
-
+/**
+ * @description
+ * it does not work for Options.html
+ */
 const storage = () => {
   const set = (key: string, value: any) => {
     return new Promise((resolve, reject) => {
+      logger('set()', { key, value });
       chrome.storage.sync.set({ [key]: value }, () => resolve(true));
     });
   };
 
-  const get = (key: string | string[]) => {
+  function get<T = unknown>(key: string | string[]): Promise<T> {
     return new Promise((resolve, reject) => {
+      logger('get()', { key });
       if (typeof key !== 'string' && Array.isArray(key)) {
         logger('key should be either string or collection of strings');
         reject();
@@ -32,10 +34,10 @@ const storage = () => {
       }
 
       chrome.storage.sync.get(key, (items) => {
-        return resolve(items);
+        return resolve(<T>items);
       });
     });
-  };
+  }
 
   const remove = (key: string | string[]) => {
     return new Promise((resolve, reject) => {

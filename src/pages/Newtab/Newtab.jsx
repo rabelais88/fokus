@@ -1,26 +1,29 @@
 import React from 'react';
-// import logo from '../../assets/img/logo.svg';
-// import './Newtab.css';
-// import './Newtab.scss';
 import Document from '@/containers/Document';
 import { Heading, Center, Text, Button } from '@chakra-ui/react';
 import { NewtabLayout } from '@/containers/layout';
 import openSettings from '@/lib/openSettings';
+import { Trans } from 'react-i18next';
 
 const Newtab = () => {
   return (
     <Document>
       <NewtabLayout>
         <Center>
-          <Heading>Welcome🤚</Heading>
-          <Text>before proceeding to web pages,</Text>
+          <Heading>
+            <Trans>newtab-heading</Trans>🤚
+          </Heading>
         </Center>
         <Center>
-          <Text>Please check these to get focused on your work</Text>
+          <Text>
+            <Trans>newtab-description</Trans>
+          </Text>
         </Center>
-        <Button onClick={openSettings}>
-          click this button to open settings
-        </Button>
+        <Center>
+          <Button onClick={() => openSettings()}>
+            <Trans>newtab-open-settings</Trans>
+          </Button>
+        </Center>
       </NewtabLayout>
     </Document>
   );

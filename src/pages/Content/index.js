@@ -1,9 +1,9 @@
-import { printLine } from './modules/print';
 import listenFromContent from '@/lib/listeners/fromContent';
+import makeLogger from '@/lib/makeLogger';
 
-console.log('Content script works!');
-console.log('Must reload extension for modifications to take effect.');
+const logger = makeLogger('Content/index.js');
 
-printLine("Using the 'printLine' function from the Print Module");
+logger('Content script works!');
+logger('Must reload extension for modifications to take effect.');
 
 listenFromContent();

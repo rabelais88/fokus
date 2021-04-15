@@ -1,6 +1,7 @@
 {
-  "extends": "react-app",
+  "extends": ["react-app", "plugin:cypress/recommended"],
   "globals": {
     "chrome": "readonly"
-  }
+  },
+  "plugins": ["cypress"]
 }

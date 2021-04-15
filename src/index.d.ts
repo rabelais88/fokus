@@ -19,3 +19,89 @@ type chromeMessage =
   | defaultChromeMessage
   | defaultChromeMessageWithData
   | msgColorChange;
+
+interface websiteData {
+  id: string;
+  title: string;
+  description: string;
+  urlRegex: string;
+  urlMode: 'URL_MODE_TEXT' | 'URL_MODE_REGEX';
+}
+
+interface websitesData {
+  [key: string]: websiteData;
+}
+
+// stores order of website ids
+type websitesIndex = string[];
+
+interface taskData {
+  id: string;
+  title: string;
+  description: string;
+  blockedSiteIds: string[];
+  allowedSiteIds: string[];
+  blockMode: 'BLOCK_MODE_BLOCK_ALL' | 'BLOCK_MODE_ALLOW_ALL';
+  maxDuration: number;
+}
+interface tasksData {
+  [key: string]: taskData;
+}
+
+type tasksIndex = string[];
+
+interface resolved<T = any> {
+  result: T;
+  error: null;
+  errorCode: '';
+}
+
+interface rejected<T = any> {
+  result: null;
+  error: T;
+  errorCode: string;
+}
+
+type resolvable<T = any> = resolved<T> | rejected<T>;
+
+interface SuggestionItemProps {
+  id: string;
+  text: string;
+  onItemClick: (id: string, text: string) => void;
+  selected: boolean;
+}
+
+interface SuggestionProps<T = any> {
+  onSuggest: (keyword: string) => Promise<resolvable<T>>;
+  keyword: string;
+  value: string;
+  onValueChange: (keyword: string) => void;
+  onKeywordChange: (keyword: string) => void;
+  itemComponent: React.FC<SuggestionItemProps>;
+  loadingComponent: React.FC;
+  noResultComponent: React.FC;
+}
+
+interface SuggestionMultipleProps<T = any> {
+  onSuggest: (keyword: string) => Promise<resolvable<T>>;
+  keyword: string;
+  value: string[];
+  onValueChange: (keyword: string[]) => void;
+  onKeywordChange: (keyword: string) => void;
+  itemComponent: React.FC<SuggestionItemProps>;
+  loadingComponent: React.FC;
+  noResultComponent: React.FC;
+  hideSelected?: boolean;
+}
+
+interface taskHistory {
+  timeStart: number;
+  timeEnd: number;
+  taskId: string;
+}
+
+type taskNowType = taskData & taskHistory;
+
+type queryType = {
+  [key: string]: string;
+};

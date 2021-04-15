@@ -5,7 +5,7 @@ const LayoutNewtab: React.FC = (props) => {
   return (
     <Grid
       p={[5, 25]}
-      className="wisetimer-newtab--layout"
+      className="fokus-newtab--layout"
       h="100vh"
       templateRows="repeat(3,1fr)"
     >
