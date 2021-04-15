@@ -6,21 +6,22 @@ import {
   useLocation,
   useHistory,
   Redirect,
-  useRouteMatch,
 } from 'react-router-dom';
 import { render } from 'react-dom';
 
 import Document from '@/containers/Document';
 import { OptionsLayout } from '@/containers/layout';
-import { Box, Heading, Link, Tab, TabList, Tabs } from '@chakra-ui/react';
+import { Box, Heading, Link, Tab, TabList, Tabs, Text } from '@chakra-ui/react';
 import Websites from './Websites';
 import Website from './Website';
 import Tasks from './Tasks';
 import Stats from './Stats';
 import makeLogger from '@/lib/makeLogger';
 import Task from './Task';
-import '@/i18n';
 import { useTranslation, Trans } from 'react-i18next';
+import useQuery from '@/lib/useQuery';
+import { QUERY_BLOCKED_URL } from '@/constants';
+import Blocked from './Blocked';
 
 const logger = makeLogger('pages/Options/index.tsx');
 
@@ -64,50 +65,62 @@ const NavMenu: React.FC = (props) => {
   );
 };
 
-const Options = (
-  <Document>
-    <OptionsLayout>
-      <Router>
-        <Box display="flex">
-          <Box display="inline-block" marginRight="3" role="logo">
-            <Heading>Fokus</Heading>
-          </Box>
-          <NavMenu />
-        </Box>
-        <Switch>
-          <Route path="/tasks">
-            <Tasks />
-          </Route>
-          <Route path="/task/:taskId">
-            <Task />
-          </Route>
-          <Route path="/task">
-            <Task />
-          </Route>
-          <Route path="/website/:websiteId">
-            <Website />
-          </Route>
-          <Route path="/website">
-            <Website />
-          </Route>
-          <Route path="/websites">
-            <Websites />
-          </Route>
-          <Route path="/stats">
-            <Stats />
-          </Route>
-          <Route path="/donate">
-            <Box mt={5}>
-              <Link href="https://patreon.com/fokus_extension">
-                🙇‍♂️<Trans>patreon-link</Trans>🥳
-              </Link>
+const Options = () => {
+  return (
+    <Router>
+      <Document>
+        <OptionsLayout>
+          <Box display="flex">
+            <Box display="inline-block" marginRight="3" role="logo">
+              <Heading>Fokus</Heading>
             </Box>
-          </Route>
-          <Redirect to={`/tasks${window.location.search}`} />
-        </Switch>
-      </Router>
-    </OptionsLayout>
-  </Document>
-);
+            <NavMenu />
+          </Box>
+          <OptionsInner />
+        </OptionsLayout>
+      </Document>
+    </Router>
+  );
+};
 
-render(Options, window.document.querySelector('#app-container'));
+const OptionsInner = () => {
+  const queryBlockedUrl = useQuery().get(QUERY_BLOCKED_URL);
+  const isBlockedUrl = queryBlockedUrl !== '' && queryBlockedUrl;
+  if (isBlockedUrl) return <Blocked />;
+
+  return (
+    <Switch>
+      <Route path="/tasks">
+        <Tasks />
+      </Route>
+      <Route path="/task/:taskId">
+        <Task />
+      </Route>
+      <Route path="/task">
+        <Task />
+      </Route>
+      <Route path="/website/:websiteId">
+        <Website />
+      </Route>
+      <Route path="/website">
+        <Website />
+      </Route>
+      <Route path="/websites">
+        <Websites />
+      </Route>
+      <Route path="/stats">
+        <Stats />
+      </Route>
+      <Route path="/donate">
+        <Box mt={5}>
+          <Link href="https://patreon.com/fokus_extension">
+            🙇‍♂️<Trans>patreon-link</Trans>🥳
+          </Link>
+        </Box>
+      </Route>
+      <Redirect to={`/tasks${window.location.search}`} />
+    </Switch>
+  );
+};
+
+render(<Options />, window.document.querySelector('#app-container'));

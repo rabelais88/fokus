@@ -1,5 +1,9 @@
+import { isTestEnv } from './env';
+
 const getSettingsUrl = (query?: queryType) => {
-  let url = chrome.extension.getURL('options.html');
+  let url = isTestEnv
+    ? 'chrome:extension'
+    : chrome.extension.getURL('options.html');
   if (query) {
     const queryUrl = Object.entries(query)
       .map(([key, value]) => [key, value].join('='))

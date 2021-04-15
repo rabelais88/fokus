@@ -15,7 +15,7 @@ import { STORE_TASKS } from '@/constants/storeKey';
 import { makeResult } from '@/lib';
 import endTask from '@/lib/swr/endTask';
 import SuggestionListItem from '@/stories/SuggestionListItem';
-import '@/i18n';
+import { Trans } from 'react-i18next';
 
 const logger = makeLogger('Popup.jsx');
 
@@ -60,14 +60,22 @@ const Popup = () => {
         {taskNowLoadState === LOAD_SUCCESS && hasTask && (
           <Stack spacing={4}>
             <Text>{taskNow.title}</Text>
-            <Button onClick={() => onFinishTask()}>Finish</Button>
-            <Button onClick={() => onCancelTask()}>Cancel</Button>
+            <Button onClick={() => onFinishTask()}>
+              <Trans>finish-task</Trans>
+            </Button>
+            <Button onClick={() => onCancelTask()}>
+              <Trans>cancel-task</Trans>
+            </Button>
           </Stack>
         )}
         {taskNowLoadState === LOAD_SUCCESS && !hasTask && (
           <Stack>
-            <Heading textAlign="center">Hey!</Heading>
-            <Text>choose a task before browsing</Text>
+            <Heading textAlign="center">
+              <Trans>no-task-heading</Trans>
+            </Heading>
+            <Text>
+              <Trans>no-task-text</Trans>
+            </Text>
             <Suggestion
               keyword={keyword}
               onKeywordChange={(v) => setKeyword}
@@ -80,7 +88,9 @@ const Popup = () => {
             />
           </Stack>
         )}
-        <Button onClick={() => openSettings()}>open settings</Button>
+        <Button onClick={() => openSettings()}>
+          <Trans>open-settings</Trans>
+        </Button>
       </PopupLayout>
     </Document>
   );

@@ -1,6 +1,7 @@
 import {
   BLOCK_MODE_ALLOW_ALL,
   BLOCK_MODE_BLOCK_ALL,
+  URL_MODE_REGEX,
   URL_MODE_TEXT,
 } from '../../constants';
 import * as fromBackground from './fromBackground';
@@ -9,7 +10,15 @@ jest.mock('./fromBackground');
 jest.mock('../getTaskInfo');
 
 describe('fromBackground', () => {
-  it('should block the site in allow all sites mode', async () => {
+  beforeAll(() => {
+    fromBackground.validateUrl = jest.requireActual(
+      './fromBackground'
+    ).validateUrl;
+    fromBackground.matchUrlRegex = jest.requireActual(
+      './fromBackground'
+    ).matchUrlRegex;
+  });
+  it('block a site in allow-all + plain url', async () => {
     const blockedSite = {
       urlMode: URL_MODE_TEXT,
       urlRegex: 'blockedsite.test',
@@ -19,14 +28,11 @@ describe('fromBackground', () => {
       blockedSites: [blockedSite],
     };
     getTaskInfo.mockImplementation(() => Promise.resolve(testData));
-    fromBackground.validateUrl = jest.requireActual(
-      './fromBackground'
-    ).validateUrl;
     const isValid = await fromBackground.validateUrl('blockedsite.test');
     expect(isValid).toEqual(false);
   });
 
-  it('should allow the site in allow all sites mode', async () => {
+  it('allow a site in allow-all + plain url', async () => {
     const blockedSite = {
       urlMode: URL_MODE_TEXT,
       urlRegex: 'blockedsite.test',
@@ -36,13 +42,10 @@ describe('fromBackground', () => {
       blockedSites: [blockedSite],
     };
     getTaskInfo.mockImplementation(() => Promise.resolve(testData));
-    fromBackground.validateUrl = jest.requireActual(
-      './fromBackground'
-    ).validateUrl;
     const isValid = await fromBackground.validateUrl('allowedsite.test');
     expect(isValid).toEqual(true);
   });
-  it('should block the site in block all sites mode', async () => {
+  it('block a site in block-all + plain url', async () => {
     const allowedSite = {
       urlMode: URL_MODE_TEXT,
       urlRegex: 'allowedsite.test',
@@ -52,13 +55,10 @@ describe('fromBackground', () => {
       allowedSites: [allowedSite],
     };
     getTaskInfo.mockImplementation(() => Promise.resolve(testData));
-    fromBackground.validateUrl = jest.requireActual(
-      './fromBackground'
-    ).validateUrl;
     const isValid = await fromBackground.validateUrl('blockedsite.test');
     expect(isValid).toEqual(false);
   });
-  it('should allow the site in block all sites mode', async () => {
+  it('allow a site in block-all + plain url', async () => {
     const allowedSite = {
       urlMode: URL_MODE_TEXT,
       urlRegex: 'allowedsite.test',
@@ -68,10 +68,22 @@ describe('fromBackground', () => {
       allowedSites: [allowedSite],
     };
     getTaskInfo.mockImplementation(() => Promise.resolve(testData));
-    fromBackground.validateUrl = jest.requireActual(
-      './fromBackground'
-    ).validateUrl;
     const isValid = await fromBackground.validateUrl('allowedsite.test');
     expect(isValid).toEqual(true);
+  });
+  it('url regex mode should work', () => {
+    // eslint-disable-next-line
+    const valid = fromBackground.matchUrlRegex(
+      URL_MODE_REGEX,
+      '[a-z]{3}.[1-9]',
+      'aaa.1234'
+    );
+    expect(valid).toEqual(true);
+    const wrong = fromBackground.matchUrlRegex(
+      URL_MODE_REGEX,
+      '^[a-z]+$',
+      'imperial.aaa'
+    );
+    expect(wrong).toEqual(false);
   });
 });
