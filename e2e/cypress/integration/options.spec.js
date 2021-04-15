@@ -25,11 +25,11 @@ it('options.html should load properly', () => {
 it('websites tab should be accessible', () => {
   cy.visit('/options.html');
   cy.findByRole('tab', { name: 'websites' }).click();
-  cy.findByText(/no websites found/i, { timeout: 3000 }).should('exist');
+  cy.findByText(/website/i, { timeout: 3000 }).should('exist');
 });
 
 it('donation tab should be accessible', () => {
   cy.visit('/options.html');
   cy.findByRole('tab', { name: 'donate' }).click();
-  cy.findByText(/donate page/, { timeout: 3000 });
+  cy.findByText(/patreon/, { timeout: 3000 });
 });
