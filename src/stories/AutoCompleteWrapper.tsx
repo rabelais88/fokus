@@ -1,19 +1,8 @@
-import Suggestion from '@/components/Suggestion.tsx';
-import { Box, Text } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import SuggestionListItem from './SuggestionListItem';
+import AutoComplete from '@/components/AutoComplete';
+import { Box, Text } from '@chakra-ui/layout';
 
-const LoadingComponent = () => {
-  return <div>loading</div>;
-};
-
-const noResultComponent = () => {
-  return <div>no result</div>;
-};
-
-const SuggestionWrapper = () => {
-  const [keyword, setKeyword] = useState('');
-  const [value, setValue] = useState('');
+const AutoCompleteWrapper = () => {
   const onSuggest = async (keyword: string) => {
     try {
       const url = 'https://jsonplaceholder.typicode.com/posts';
@@ -35,21 +24,27 @@ const SuggestionWrapper = () => {
     }
   };
 
+  const [value, setValue] = useState('');
+
+  const onChange = (_value: string) => {
+    if (_value === '') return;
+    setValue(_value);
+  };
+
   return (
-    <Box height="100%">
-      <Text>current value: {`${value}`}</Text>
-      <Suggestion
-        keyword={keyword}
-        onKeywordChange={(v) => setKeyword(v)}
-        value={value}
-        onValueChange={(v) => setValue(v)}
-        itemComponent={SuggestionListItem}
+    <Box>
+      <Text>current value: {value}</Text>
+      <AutoComplete
         onSuggest={onSuggest}
-        loadingComponent={LoadingComponent}
-        noResultComponent={noResultComponent}
+        onChange={onChange}
+        showSupplement
+        onSupplement={() => {
+          alert('adding new item');
+        }}
       />
+      <Text>sample text...</Text>
     </Box>
   );
 };
 
-export default SuggestionWrapper;
+export default AutoCompleteWrapper;
