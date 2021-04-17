@@ -7,15 +7,13 @@ import Document from '@/containers/Document';
 import { PopupLayout } from '@/containers/layout';
 import { Box, Button, Heading, Stack, Text } from '@chakra-ui/react';
 import useTaskNow from '@/lib/swr/useTaskNow';
-import useTaskHistory from '@/lib/swr/useTaskHistory';
-import Suggestion from '@/components/Suggestion';
 import storage from '@/lib/storage';
 import startTask from '@/lib/swr/startTask';
 import { STORE_TASKS } from '@/constants/storeKey';
 import { makeResult } from '@/lib';
 import endTask from '@/lib/swr/endTask';
-import SuggestionListItem from '@/stories/SuggestionListItem';
 import { Trans } from 'react-i18next';
+import AutoComplete from '@/components/AutoComplete';
 
 const logger = makeLogger('Popup.jsx');
 
@@ -26,7 +24,6 @@ const Popup = () => {
   };
 
   const { taskNow, hasTask, loadState: taskNowLoadState } = useTaskNow();
-  const [keyword, setKeyword] = useState('');
 
   const onTaskChange = (taskId: string) => {
     startTask(taskId);
@@ -76,16 +73,7 @@ const Popup = () => {
             <Text>
               <Trans>no-task-text</Trans>
             </Text>
-            <Suggestion
-              keyword={keyword}
-              onKeywordChange={(v) => setKeyword}
-              itemComponent={(arg) => <SuggestionListItem {...arg} />}
-              loadingComponent={() => <Box>loading...</Box>}
-              noResultComponent={() => <Box>no task found</Box>}
-              value={''}
-              onValueChange={onTaskChange}
-              onSuggest={onSuggestTasks}
-            />
+            <AutoComplete onSuggest={onSuggestTasks} onChange={onTaskChange} />
           </Stack>
         )}
         <Button onClick={() => openSettings()}>

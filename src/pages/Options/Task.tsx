@@ -22,7 +22,6 @@ import {
   Radio,
 } from '@chakra-ui/react';
 import useTask from '@/lib/useTask';
-import SuggestionMultiple from '@/components/SuggestionMultiple';
 import storage from '@/lib/storage';
 import { STORE_TASK_HISTORY_NOW, STORE_WEBSITES } from '@/constants/storeKey';
 import useSite from '@/lib/useSite';
@@ -34,10 +33,10 @@ import {
 import addTask from '@/lib/addTask';
 import editTask from '@/lib/editTask';
 import { makeResult } from '@/lib';
-import SuggestionListItem from '@/stories/SuggestionListItem';
 import useTaskNow from '@/lib/swr/useTaskNow';
 import startTask from '@/lib/swr/startTask';
 import endTask from '@/lib/swr/endTask';
+import AutoComplete from '@/components/AutoComplete';
 
 const logger = makeLogger('pages/Options/Task');
 
@@ -69,8 +68,6 @@ const Task: React.FC = (props) => {
   const query = useQuery();
   const [loading, setLoading] = useState(false);
   const history = useHistory();
-  const [allowedSiteKeyword, setAllowedSiteKeyword] = useState('');
-  const [blockedSiteKeyword, setBlockedSiteKeyword] = useState('');
 
   const suggestSites = async (keyword: string) => {
     const reqSites = await storage.get<websitesData>(STORE_WEBSITES);
@@ -186,6 +183,10 @@ const Task: React.FC = (props) => {
               const removeSite = (siteId: string) => {
                 _onChange(_value.filter((asid: string) => asid !== siteId));
               };
+              const addSite = (siteId: string) => {
+                if (!siteId || siteId === '') return;
+                _onChange([..._value, siteId]);
+              };
               return (
                 <Stack spacing="10px">
                   <HStack>
@@ -197,16 +198,7 @@ const Task: React.FC = (props) => {
                       />
                     ))}
                   </HStack>
-                  <SuggestionMultiple
-                    keyword={allowedSiteKeyword}
-                    onKeywordChange={(v) => setAllowedSiteKeyword(v)}
-                    value={_value}
-                    onValueChange={_onChange}
-                    loadingComponent={() => <div>loading</div>}
-                    noResultComponent={() => <div>no Result</div>}
-                    onSuggest={suggestSites}
-                    itemComponent={(arg) => <SuggestionListItem {...arg} />}
-                  />
+                  <AutoComplete onSuggest={suggestSites} onChange={addSite} />
                 </Stack>
               );
             }}
@@ -222,6 +214,10 @@ const Task: React.FC = (props) => {
               const removeSite = (siteId: string) => {
                 _onChange(_value.filter((asid: string) => asid !== siteId));
               };
+              const addSite = (siteId: string) => {
+                if (!siteId || siteId === '') return;
+                _onChange([..._value, siteId]);
+              };
               return (
                 <Stack spacing="10px">
                   <HStack>
@@ -233,16 +229,7 @@ const Task: React.FC = (props) => {
                       />
                     ))}
                   </HStack>
-                  <SuggestionMultiple
-                    keyword={blockedSiteKeyword}
-                    onKeywordChange={(v) => setBlockedSiteKeyword(v)}
-                    value={_value}
-                    onValueChange={_onChange}
-                    loadingComponent={() => <div>loading</div>}
-                    noResultComponent={() => <div>no result</div>}
-                    itemComponent={(arg) => <SuggestionListItem {...arg} />}
-                    onSuggest={suggestSites}
-                  />
+                  <AutoComplete onSuggest={suggestSites} onChange={addSite} />
                 </Stack>
               );
             }}

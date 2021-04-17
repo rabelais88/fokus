@@ -22,8 +22,10 @@ import { useTranslation, Trans } from 'react-i18next';
 import useQuery from '@/lib/useQuery';
 import { QUERY_BLOCKED_URL } from '@/constants';
 import Blocked from './Blocked';
+import { env } from '@/lib/env';
 
 const logger = makeLogger('pages/Options/index.tsx');
+logger({ env });
 
 const tabPathMap = ['/tasks', '/websites', '/stats', '/donate'];
 const pathToTab = [/task/i, /website/i, /stats/i, /donate/i];
