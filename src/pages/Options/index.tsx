@@ -11,7 +11,18 @@ import { render } from 'react-dom';
 
 import Document from '@/containers/Document';
 import { OptionsLayout } from '@/containers/layout';
-import { Box, Heading, Link, Tab, TabList, Tabs, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  HStack,
+  IconButton,
+  Link,
+  Tab,
+  TabList,
+  Tabs,
+} from '@chakra-ui/react';
 import Websites from './Websites';
 import Website from './Website';
 import Tasks from './Tasks';
@@ -23,6 +34,10 @@ import useQuery from '@/lib/useQuery';
 import { QUERY_BLOCKED_URL } from '@/constants';
 import Blocked from './Blocked';
 import { env } from '@/lib/env';
+import { AttachmentIcon, DownloadIcon } from '@chakra-ui/icons';
+import readFile from '@/lib/file/readFile';
+import send from '@/lib/senders/fromOptions';
+import { EXPORT_SETTINGS } from '@/constants/messages';
 
 const logger = makeLogger('pages/Options/index.tsx');
 logger({ env });
@@ -67,17 +82,38 @@ const NavMenu: React.FC = (props) => {
   );
 };
 
+const exportSettings = () => {
+  send(EXPORT_SETTINGS);
+};
+const importSettings = async () => {
+  const req = await readFile('.json');
+};
+
 const Options = () => {
   return (
     <Router>
       <Document>
         <OptionsLayout>
-          <Box display="flex">
+          <Flex>
             <Box display="inline-block" marginRight="3" role="logo">
               <Heading>Fokus</Heading>
             </Box>
             <NavMenu />
-          </Box>
+            <HStack>
+              <IconButton
+                variant="ghost"
+                icon={<DownloadIcon />}
+                aria-label="export settings as json"
+                onClick={exportSettings}
+              />
+              <IconButton
+                variant="ghost"
+                icon={<AttachmentIcon />}
+                aria-label="import json settings"
+                onClick={importSettings}
+              />
+            </HStack>
+          </Flex>
           <OptionsInner />
         </OptionsLayout>
       </Document>
