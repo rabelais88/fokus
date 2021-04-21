@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChakraProvider, Modal } from '@chakra-ui/react';
 import '@/i18n';
+import chakraTheme from '@/lib/chakraTheme';
 // import { getDefaultModalState, MODAL_NONE } from '@/constants/modalState';
 // import ModalContext from '@/lib/context/ModalContext';
 
@@ -30,7 +31,7 @@ const Document: React.FC = (props) => {
 
   return (
     // <ModalContext.Provider value={{ ...stateModal, openModal, closeModal }}>
-    <ChakraProvider>{props.children}</ChakraProvider>
+    <ChakraProvider theme={chakraTheme}>{props.children}</ChakraProvider>
     // </ModalContext.Provider>
   );
 };

@@ -4,40 +4,21 @@ import {
   BLOCK_MODE_ALLOW_ALL,
   BLOCK_MODE_BLOCK_ALL,
   EXPORT_SETTINGS,
-  MSG_CHANGE_COLOR,
   QUERY_BLOCKED_URL,
-  URL_MODE_REGEX,
-  URL_MODE_TEXT,
 } from '../../constants';
 import getTaskInfo from '@/lib/getTaskInfo';
 import storage from '@/lib/storage';
 import getSettingsUrl from '../getSettingsUrl';
 import {
   STORE_PRESERVED_KEYS,
-  STORE_TASKS,
-  STORE_TASKS_INDEX,
-  STORE_TASK_HISTORY,
   STORE_TASK_HISTORY_NOW,
-  STORE_WEBSITES,
-  STORE_WEBSITES_INDEX,
 } from '@/constants/storeKey';
 import checkChromeUrl from '../checkChromeUrl';
 import getNewTabUrl from '../getNewTabUrl';
 import saveJson from '@/lib/file/saveJson';
+import matchUrlRegex from '@/lib/matchUrlRegex';
 
 const logger = makeLogger('listenFromBackground');
-
-type regexMode = typeof URL_MODE_TEXT | typeof URL_MODE_REGEX;
-export const matchUrlRegex = (
-  mode: regexMode,
-  urlRegex: string,
-  urlTarget: string
-) => {
-  logger('matchUrlRegex', mode, urlRegex, urlTarget);
-  if (mode === URL_MODE_TEXT) return urlTarget.includes(urlRegex);
-  if (mode === URL_MODE_REGEX) return new RegExp(urlRegex, 'i').test(urlTarget);
-  return undefined;
-};
 
 export const validateUrl = async (url: string) => {
   const extensionUrl = getSettingsUrl();

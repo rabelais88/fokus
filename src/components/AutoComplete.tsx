@@ -1,10 +1,12 @@
 import { Box, BoxProps, Divider, Stack } from '@chakra-ui/layout';
 import React, { useState } from 'react';
-import { resetIdCounter, useCombobox } from 'downshift';
-import { Input } from '@chakra-ui/input';
+import { useCombobox } from 'downshift';
+import { Input, InputGroup, InputRightElement } from '@chakra-ui/input';
 import makeLogger from '@/lib/makeLogger';
 import { forwardRef } from '@chakra-ui/system';
 import _omit from 'lodash/omit';
+import { IconButton } from '@chakra-ui/button';
+import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
 
 const logger = makeLogger('AutoComplete');
 
@@ -39,6 +41,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   showSupplement,
   onSupplement,
   supplementItem = { text: 'add new item', key: 'ADD_NEW_ITEM' },
+  disabled,
 }) => {
   const [suggestions, _setSuggestions] = useState<{ key: any; text: string }[]>(
     []
@@ -53,6 +56,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
     getMenuProps,
     getComboboxProps,
     getItemProps,
+    getToggleButtonProps,
     highlightedIndex,
     isOpen,
     reset,
@@ -82,25 +86,44 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
       }
       onChange(selectedItem.key);
     },
+    async onIsOpenChange({ isOpen, inputValue }) {
+      if (!isOpen) return;
+      const req = await onSuggest(inputValue || '');
+      if (req.error) return;
+      setSuggestions(req.result);
+    },
   });
 
   return (
     <Box {...getComboboxProps()} position="relative">
-      <Input
-        {...getInputProps()}
-        type="text"
-        height="2.5rem"
-        borderRadius="8px"
-      />
+      <InputGroup>
+        <Input
+          {...getInputProps()}
+          type="text"
+          height="2.5rem"
+          borderRadius="8px"
+          disabled={disabled}
+        />
+        <InputRightElement>
+          <IconButton
+            {...getToggleButtonProps()}
+            aria-label="toggle menu"
+            icon={isOpen ? <TriangleUpIcon /> : <TriangleDownIcon />}
+            size="sm"
+            disabled={disabled}
+          />
+        </InputRightElement>
+      </InputGroup>
       <Stack
         position="absolute"
         {...getMenuProps()}
         divider={<Divider />}
         boxShadow="md"
-        maxHeight="200px"
+        maxHeight="300px"
         overflowY="auto"
         backgroundColor="white"
-        zIndex={1}
+        zIndex={10}
+        width="100%"
       >
         {isOpen &&
           suggestions.map((item, index) => (

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { useState } from 'react';
 import makeLogger from '@/lib/makeLogger';
 import { useHistory, useParams } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
@@ -65,7 +65,7 @@ const Task: React.FC = (props) => {
     taskInProgress = taskNow.taskId === taskId;
   }
 
-  const { handleSubmit, errors, register, control } = useForm();
+  const { handleSubmit, errors, register, control, watch } = useForm();
   const query = useQuery();
   const [loading, setLoading] = useState(false);
   const history = useHistory();
@@ -101,7 +101,7 @@ const Task: React.FC = (props) => {
     await addTask(taskData);
     setLoading(false);
     history.push('/tasks');
-    toast({ status: 'success', title: 'new task added' });
+    toast({ status: 'success', title: 'new task has been added' });
   };
 
   const _editTask = async (taskData: taskData) => {
@@ -128,6 +128,13 @@ const Task: React.FC = (props) => {
 
   const onTaskStop = () => {
     endTask();
+  };
+
+  // temporary state while editing form
+  const tempBlockMode = watch('blockMode', task.blockMode);
+
+  const onAddNewSite = () => {
+    history.push('/website');
   };
 
   return (
@@ -202,7 +209,19 @@ const Task: React.FC = (props) => {
                       />
                     ))}
                   </HStack>
-                  <AutoComplete onSuggest={suggestSites} onChange={addSite} />
+                  <AutoComplete
+                    onSuggest={suggestSites}
+                    onChange={addSite}
+                    disabled={
+                      tempBlockMode === BLOCK_MODE_ALLOW_ALL || undefined
+                    }
+                    showSupplement
+                    supplementItem={{
+                      text: 'add new site',
+                      key: 'ADD_NEW_SITE',
+                    }}
+                    onSupplement={onAddNewSite}
+                  />
                 </Stack>
               );
             }}
@@ -233,7 +252,19 @@ const Task: React.FC = (props) => {
                       />
                     ))}
                   </HStack>
-                  <AutoComplete onSuggest={suggestSites} onChange={addSite} />
+                  <AutoComplete
+                    onSuggest={suggestSites}
+                    onChange={addSite}
+                    disabled={
+                      tempBlockMode === BLOCK_MODE_BLOCK_ALL || undefined
+                    }
+                    showSupplement
+                    supplementItem={{
+                      text: 'add new site',
+                      key: 'ADD_NEW_SITE',
+                    }}
+                    onSupplement={onAddNewSite}
+                  />
                 </Stack>
               );
             }}
