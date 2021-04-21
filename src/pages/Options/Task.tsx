@@ -196,6 +196,7 @@ const Task: React.FC = (props) => {
               };
               const addSite = (siteId: string) => {
                 if (!siteId || siteId === '') return;
+                if (_value.includes(siteId)) return;
                 _onChange([..._value, siteId]);
               };
               return (
@@ -239,6 +240,7 @@ const Task: React.FC = (props) => {
               };
               const addSite = (siteId: string) => {
                 if (!siteId || siteId === '') return;
+                if (_value.includes(siteId)) return;
                 _onChange([..._value, siteId]);
               };
               return (

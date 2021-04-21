@@ -190,10 +190,13 @@ const OptionsInner = () => {
           </List>
           <Text>
             If you're pleased with this app, <br />
-            buy me a coffee☕ <br />
-            or you can share your thoughts on{' '}
-            <Link href="https://github.com/rabelais88/fokus">Github</Link>
+            please buy me a coffee☕ <br />
+            or share your thoughts on
+            <Link href="https://github.com/rabelais88/fokus" color="teal">
+              This Github
+            </Link>
           </Text>
+          <Text>this extension will stay free forever!</Text>
         </Box>
       </Route>
       <Redirect to={`/tasks${window.location.search}`} />
