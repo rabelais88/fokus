@@ -20,6 +20,7 @@ import {
   Text,
   RadioGroup,
   Radio,
+  useToast,
 } from '@chakra-ui/react';
 import useTask from '@/lib/useTask';
 import storage from '@/lib/storage';
@@ -68,6 +69,7 @@ const Task: React.FC = (props) => {
   const query = useQuery();
   const [loading, setLoading] = useState(false);
   const history = useHistory();
+  const toast = useToast();
 
   const suggestSites = async (keyword: string) => {
     const reqSites = await storage.get<websitesData>(STORE_WEBSITES);
@@ -99,6 +101,7 @@ const Task: React.FC = (props) => {
     await addTask(taskData);
     setLoading(false);
     history.push('/tasks');
+    toast({ status: 'success', title: 'new task added' });
   };
 
   const _editTask = async (taskData: taskData) => {
@@ -106,6 +109,7 @@ const Task: React.FC = (props) => {
     await editTask(taskData);
     setLoading(false);
     history.push('/tasks');
+    toast({ status: 'success', title: 'task has been edited' });
   };
 
   const onSubmit = (taskData: taskData) => {

@@ -11,7 +11,20 @@ import { render } from 'react-dom';
 
 import Document from '@/containers/Document';
 import { OptionsLayout } from '@/containers/layout';
-import { Box, Heading, Link, Tab, TabList, Tabs, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  HStack,
+  IconButton,
+  Link,
+  Tab,
+  TabList,
+  Tabs,
+  Tooltip,
+  useToast,
+} from '@chakra-ui/react';
 import Websites from './Websites';
 import Website from './Website';
 import Tasks from './Tasks';
@@ -23,6 +36,10 @@ import useQuery from '@/lib/useQuery';
 import { QUERY_BLOCKED_URL } from '@/constants';
 import Blocked from './Blocked';
 import { env } from '@/lib/env';
+import { AttachmentIcon, DownloadIcon } from '@chakra-ui/icons';
+import send from '@/lib/senders/fromOptions';
+import { EXPORT_SETTINGS } from '@/constants/messages';
+import importSettings from '@/lib/importSettings';
 
 const logger = makeLogger('pages/Options/index.tsx');
 logger({ env });
@@ -67,17 +84,56 @@ const NavMenu: React.FC = (props) => {
   );
 };
 
+const exportSettings = () => {
+  send(EXPORT_SETTINGS);
+};
+
+const ToolMenu = () => {
+  const toast = useToast();
+
+  const _importSettings = async () => {
+    const req = await importSettings();
+    if (req.error) {
+      toast({ status: 'error', title: 'failed while import settings' });
+      return;
+    }
+    toast({ status: 'success', title: 'setting is now imported' });
+    logger(req.result);
+  };
+  return (
+    <HStack>
+      <Tooltip label="export settings as json">
+        <IconButton
+          variant="ghost"
+          icon={<DownloadIcon />}
+          aria-label="export settings as json"
+          onClick={exportSettings}
+        />
+      </Tooltip>
+      <Tooltip label="import json settings">
+        <IconButton
+          variant="ghost"
+          icon={<AttachmentIcon />}
+          aria-label="import json settings"
+          onClick={_importSettings}
+        />
+      </Tooltip>
+    </HStack>
+  );
+};
+
 const Options = () => {
   return (
     <Router>
       <Document>
         <OptionsLayout>
-          <Box display="flex">
+          <Flex>
             <Box display="inline-block" marginRight="3" role="logo">
               <Heading>Fokus</Heading>
             </Box>
             <NavMenu />
-          </Box>
+            <ToolMenu />
+          </Flex>
           <OptionsInner />
         </OptionsLayout>
       </Document>

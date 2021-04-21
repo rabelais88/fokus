@@ -3,6 +3,7 @@ import sendFromBackground from '../senders/fromBackground';
 import {
   BLOCK_MODE_ALLOW_ALL,
   BLOCK_MODE_BLOCK_ALL,
+  EXPORT_SETTINGS,
   MSG_CHANGE_COLOR,
   QUERY_BLOCKED_URL,
   URL_MODE_REGEX,
@@ -11,9 +12,18 @@ import {
 import getTaskInfo from '@/lib/getTaskInfo';
 import storage from '@/lib/storage';
 import getSettingsUrl from '../getSettingsUrl';
-import { STORE_TASK_HISTORY_NOW } from '@/constants/storeKey';
+import {
+  STORE_PRESERVED_KEYS,
+  STORE_TASKS,
+  STORE_TASKS_INDEX,
+  STORE_TASK_HISTORY,
+  STORE_TASK_HISTORY_NOW,
+  STORE_WEBSITES,
+  STORE_WEBSITES_INDEX,
+} from '@/constants/storeKey';
 import checkChromeUrl from '../checkChromeUrl';
 import getNewTabUrl from '../getNewTabUrl';
+import saveJson from '@/lib/file/saveJson';
 
 const logger = makeLogger('listenFromBackground');
 
@@ -90,15 +100,24 @@ const onStorageChange = () => {
   logger('storage data changed');
 };
 
+const onExportSettings = async () => {
+  logger('onExportSettings');
+  const readers = STORE_PRESERVED_KEYS.map(storage.get);
+  const data = {
+    settings: await Promise.all(readers),
+  };
+  saveJson(data, 'settings.json');
+};
+
 // listen from background
 const listenFromBackground = () => {
   logger('listening...');
-  chrome.runtime.onMessage.addListener(function (message, sender, reply) {
+  chrome.runtime.onMessage.addListener(function (message = {}, sender, reply) {
+    const { code } = message;
+    if (code === EXPORT_SETTINGS) onExportSettings();
     logger('onMessage', { message, sender, reply });
     // chrome.runtime.onMessage.removeListener(event);
-    sendFromBackground(MSG_CHANGE_COLOR);
-    reply({ message: 'hello from background!' });
-    // return true;
+    // reply({ message: 'hello from background!' });
   });
 
   chrome.tabs.onUpdated.addListener((_tabId, _changeInfo, tab) => {
@@ -106,7 +125,7 @@ const listenFromBackground = () => {
   });
   chrome.tabs.onCreated.addListener(onTabUpdate);
   storage.onChange(onStorageChange);
-  setInterval(onTick, 1000);
+  // setInterval(onTick, 5000);
 };
 
 export default listenFromBackground;

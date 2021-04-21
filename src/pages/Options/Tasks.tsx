@@ -24,6 +24,8 @@ import {
   useDisclosure,
   Text,
   Badge,
+  Tooltip,
+  HStack,
 } from '@chakra-ui/react';
 import { AddIcon, CloseIcon, SearchIcon } from '@chakra-ui/icons';
 import { NavLink } from '@/components';
@@ -66,12 +68,18 @@ const Tasks: React.FC = (props) => {
             would you like to remove <b>{removeTargetTaskName}</b> ?
           </ModalBody>
           <ModalFooter>
-            <Button variant="solid" onClick={onRemoveTaskConfirm}>
-              Remove
-            </Button>
-            <Button variant="outline" onClick={onClose}>
-              No
-            </Button>
+            <HStack>
+              <Button
+                variant="solid"
+                colorScheme="red"
+                onClick={onRemoveTaskConfirm}
+              >
+                Remove
+              </Button>
+              <Button variant="outline" onClick={onClose}>
+                No
+              </Button>
+            </HStack>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -88,12 +96,14 @@ const Tasks: React.FC = (props) => {
           <InputRightElement>
             {taskAddable && (
               <NavLink to={keyword === '' ? '/task' : `task?title=${keyword}`}>
-                <IconButton
-                  icon={<AddIcon />}
-                  size="sm"
-                  aria-label="add new task"
-                  variant="ghost"
-                />
+                <Tooltip label="add new task">
+                  <IconButton
+                    icon={<AddIcon />}
+                    size="sm"
+                    aria-label="add new task"
+                    variant="ghost"
+                  />
+                </Tooltip>
               </NavLink>
             )}
             {hasKeyword && (

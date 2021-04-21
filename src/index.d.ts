@@ -83,3 +83,16 @@ type taskNowType = taskData & taskHistory;
 type queryType = {
   [key: string]: string;
 };
+
+// interface openModalFunc {
+//   (arg: { type: string; onYes?: () => {}; onNo?: () => {} }): void;
+// }
+
+// interface defaultModalState {
+//   modalType: string;
+//   modalBody: JSX.Element;
+//   openModal: openModalFunc;
+//   closeModal: () => {};
+//   onYes: () => {};
+//   onNo: () => {};
+// }
