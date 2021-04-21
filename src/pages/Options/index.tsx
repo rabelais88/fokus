@@ -19,9 +19,12 @@ import {
   HStack,
   IconButton,
   Link,
+  List,
+  ListItem,
   Tab,
   TabList,
   Tabs,
+  Text,
   Tooltip,
   useToast,
 } from '@chakra-ui/react';
@@ -174,6 +177,23 @@ const OptionsInner = () => {
           <Link href="https://patreon.com/fokus_extension">
             🙇‍♂️<Trans>patreon-link</Trans>🥳
           </Link>
+          <Text>I made this chrome extension because,</Text>
+          <List>
+            <ListItem>Say no to clunky UIs</ListItem>
+            <ListItem>Say no to unnecessary sign-in steps</ListItem>
+            <ListItem>No more Pay-to-unlock apps</ListItem>
+            <ListItem>
+              To put priority on my work, no time to waste for chores
+            </ListItem>
+            <ListItem>To stay away from addictive internet</ListItem>
+            <ListItem>To remain connected to outside world</ListItem>
+          </List>
+          <Text>
+            If you're pleased with this app, <br />
+            buy me a coffee☕ <br />
+            or you can share your thoughts on{' '}
+            <Link href="https://github.com/rabelais88/fokus">Github</Link>
+          </Text>
         </Box>
       </Route>
       <Redirect to={`/tasks${window.location.search}`} />
