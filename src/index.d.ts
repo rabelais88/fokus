@@ -70,6 +70,7 @@ interface AutoCompleteProps<T = any> {
   showSupplement?: boolean;
   onSupplement?: (key: string) => void;
   supplementItem?: { key: string; text: string };
+  disabled?: boolean;
 }
 
 interface taskHistory {
