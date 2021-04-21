@@ -119,10 +119,11 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
         {...getMenuProps()}
         divider={<Divider />}
         boxShadow="md"
-        maxHeight="200px"
+        maxHeight="300px"
         overflowY="auto"
         backgroundColor="white"
-        zIndex={1}
+        zIndex={10}
+        width="100%"
       >
         {isOpen &&
           suggestions.map((item, index) => (
