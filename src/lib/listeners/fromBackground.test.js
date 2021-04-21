@@ -71,19 +71,4 @@ describe('fromBackground', () => {
     const isValid = await fromBackground.validateUrl('allowedsite.test');
     expect(isValid).toEqual(true);
   });
-  it('url regex mode should work', () => {
-    // eslint-disable-next-line
-    const valid = fromBackground.matchUrlRegex(
-      URL_MODE_REGEX,
-      '[a-z]{3}.[1-9]',
-      'aaa.1234'
-    );
-    expect(valid).toEqual(true);
-    const wrong = fromBackground.matchUrlRegex(
-      URL_MODE_REGEX,
-      '^[a-z]+$',
-      'imperial.aaa'
-    );
-    expect(wrong).toEqual(false);
-  });
 });

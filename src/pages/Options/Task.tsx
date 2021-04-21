@@ -101,7 +101,7 @@ const Task: React.FC = (props) => {
     await addTask(taskData);
     setLoading(false);
     history.push('/tasks');
-    toast({ status: 'success', title: 'new task added' });
+    toast({ status: 'success', title: 'new task has been added' });
   };
 
   const _editTask = async (taskData: taskData) => {

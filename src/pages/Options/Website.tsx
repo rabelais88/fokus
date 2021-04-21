@@ -10,11 +10,16 @@ import {
   RadioGroup,
   Stack,
   Text,
+  useToast,
 } from '@chakra-ui/react';
 import React, { ChangeEvent, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { URL_MODE_TEXT, URL_MODE_REGEX } from '@/constants';
+import {
+  URL_MODE_TEXT,
+  URL_MODE_REGEX,
+  URL_MODE_REGEX_IGNORE_PROTOCOL,
+} from '@/constants';
 import useQuery from '@/lib/useQuery';
 import makeLogger from '@/lib/makeLogger';
 import addSite from '@/lib/addSite';
@@ -43,12 +48,14 @@ const Website: React.FC = (props) => {
   const [loading, setLoading] = useState(false);
   const [sampleUrl, setSampleUrl] = useState('');
   const history = useHistory();
+  const toast = useToast();
 
   const _addNewSite = async (siteData: websiteData) => {
     setLoading(true);
     await addSite(siteData);
     setLoading(false);
     history.push('/websites');
+    toast({ status: 'success', title: 'new website has been added' });
   };
 
   const _editSite = async (siteData: websiteData) => {
@@ -56,6 +63,7 @@ const Website: React.FC = (props) => {
     await editSite({ ...siteData, id: site.id });
     setLoading(false);
     history.push('/websites');
+    toast({ status: 'success', title: 'website has been edited' });
   };
 
   const onSubmit = (siteData: websiteData) => {
@@ -113,6 +121,13 @@ const Website: React.FC = (props) => {
               <Radio name="urlMode" value={URL_MODE_REGEX} ref={register}>
                 regex(js)
               </Radio>
+              <Radio
+                name="urlMode"
+                value={URL_MODE_REGEX_IGNORE_PROTOCOL}
+                ref={register}
+              >
+                regex(js) + ignore protocol(http, https, file...)
+              </Radio>
             </HStack>
           </RadioGroup>
         </FormControl>
@@ -126,12 +141,25 @@ const Website: React.FC = (props) => {
             defaultValue={site.urlRegex}
             ref={register({ required: true })}
           />
+          {tempUrlMode === URL_MODE_REGEX && (
+            <FormHelperText>
+              {'i.g. (http|https):'}\/\/google\.com
+            </FormHelperText>
+          )}
+          {tempUrlMode === URL_MODE_TEXT && (
+            <FormHelperText>i.g. google.com, test.net</FormHelperText>
+          )}
+          {tempUrlMode === URL_MODE_REGEX_IGNORE_PROTOCOL && (
+            <FormHelperText>
+              i.g. ^(www\.|)google.com, ^(www\.|)test.net
+            </FormHelperText>
+          )}
           <FormErrorMessage>
             {errors.urlRegex && errors.urlRegex.message}
           </FormErrorMessage>
         </FormControl>
 
-        <FormControl id="url-regex-test">
+        <FormControl id="url-regex-test" isInvalid={!sampleUrlMatch}>
           <FormLabel htmlFor="urlRegexTest">test url(regex)</FormLabel>
           <Input
             name="urlRegexTest"
@@ -146,9 +174,9 @@ const Website: React.FC = (props) => {
             <FormHelperText>url matches with given regex(url)</FormHelperText>
           )}
           {!sampleUrlMatch && (
-            <FormHelperText>
+            <FormErrorMessage>
               url does not match with given regex(url)
-            </FormHelperText>
+            </FormErrorMessage>
           )}
         </FormControl>
 

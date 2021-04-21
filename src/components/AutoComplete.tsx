@@ -110,6 +110,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
             aria-label="toggle menu"
             icon={isOpen ? <TriangleUpIcon /> : <TriangleDownIcon />}
             size="sm"
+            disabled={disabled}
           />
         </InputRightElement>
       </InputGroup>
