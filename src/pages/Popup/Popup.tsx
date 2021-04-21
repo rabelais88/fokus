@@ -60,7 +60,8 @@ const Popup = () => {
           )}
           {taskNowLoadState === LOAD_SUCCESS && hasTask && (
             <>
-              <Heading>{taskNow.title}</Heading>
+              <Heading size="md">Current Task</Heading>
+              <Heading size="sm">{taskNow.title}</Heading>
               <HStack>
                 <Button onClick={() => onFinishTask()} leftIcon={<CheckIcon />}>
                   <Trans>finish-task</Trans>
