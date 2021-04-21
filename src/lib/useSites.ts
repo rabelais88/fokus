@@ -28,9 +28,10 @@ function useSites({
   const sites = _websitesId.map((siteId) => _websites[siteId]);
 
   const re = new RegExp(keyword, 'i');
-  const filteredSites = sites.filter(
-    (site) => re.test(site.description) || re.test(site.title)
-  );
+  const filteredSites = sites.filter((site) => {
+    if (!site) return false;
+    return re.test(site.description) || re.test(site.title);
+  });
   const noSite = filteredSites.length === 0;
   return { sites: filteredSites, noSite, loadState };
 }

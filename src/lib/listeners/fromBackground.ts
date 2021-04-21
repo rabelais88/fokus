@@ -13,6 +13,7 @@ import getTaskInfo from '@/lib/getTaskInfo';
 import storage from '@/lib/storage';
 import getSettingsUrl from '../getSettingsUrl';
 import {
+  STORE_PRESERVED_KEYS,
   STORE_TASKS,
   STORE_TASKS_INDEX,
   STORE_TASK_HISTORY,
@@ -101,13 +102,7 @@ const onStorageChange = () => {
 
 const onExportSettings = async () => {
   logger('onExportSettings');
-  const storeKeys = [
-    STORE_TASKS,
-    STORE_TASKS_INDEX,
-    STORE_WEBSITES_INDEX,
-    STORE_WEBSITES,
-  ];
-  const readers = storeKeys.map(storage.get);
+  const readers = STORE_PRESERVED_KEYS.map(storage.get);
   const data = {
     settings: await Promise.all(readers),
   };

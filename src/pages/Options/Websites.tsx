@@ -7,6 +7,7 @@ import {
   Center,
   CloseButton,
   Flex,
+  HStack,
   IconButton,
   Input,
   InputGroup,
@@ -22,6 +23,7 @@ import {
   Stack,
   StackDivider,
   Text,
+  Tooltip,
   useDisclosure,
 } from '@chakra-ui/react';
 import React from 'react';
@@ -61,12 +63,18 @@ const Websites: React.FC = (props) => {
             would you like to remove <b>{removeTargetSiteName}</b> ?
           </ModalBody>
           <ModalFooter>
-            <Button variant="solid" onClick={onRemoveSiteConfirm}>
-              Remove
-            </Button>
-            <Button variant="outline" onClick={onClose}>
-              No
-            </Button>
+            <HStack>
+              <Button
+                variant="solid"
+                colorScheme="red"
+                onClick={onRemoveSiteConfirm}
+              >
+                Remove
+              </Button>
+              <Button variant="outline" onClick={onClose}>
+                No
+              </Button>
+            </HStack>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -85,12 +93,14 @@ const Websites: React.FC = (props) => {
               <NavLink
                 to={keyword === '' ? '/website' : `/website?title=${keyword}`}
               >
-                <IconButton
-                  icon={<AddIcon />}
-                  size="sm"
-                  aria-label="add new website"
-                  variant="ghost"
-                />
+                <Tooltip label="add new website">
+                  <IconButton
+                    icon={<AddIcon />}
+                    size="sm"
+                    aria-label="add new website"
+                    variant="ghost"
+                  />
+                </Tooltip>
               </NavLink>
             )}
             {hasKeyword && (

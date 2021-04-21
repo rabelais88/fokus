@@ -22,6 +22,8 @@ import {
   Tab,
   TabList,
   Tabs,
+  Tooltip,
+  useToast,
 } from '@chakra-ui/react';
 import Websites from './Websites';
 import Website from './Website';
@@ -35,9 +37,9 @@ import { QUERY_BLOCKED_URL } from '@/constants';
 import Blocked from './Blocked';
 import { env } from '@/lib/env';
 import { AttachmentIcon, DownloadIcon } from '@chakra-ui/icons';
-import readFile from '@/lib/file/readFile';
 import send from '@/lib/senders/fromOptions';
 import { EXPORT_SETTINGS } from '@/constants/messages';
+import importSettings from '@/lib/importSettings';
 
 const logger = makeLogger('pages/Options/index.tsx');
 logger({ env });
@@ -85,8 +87,39 @@ const NavMenu: React.FC = (props) => {
 const exportSettings = () => {
   send(EXPORT_SETTINGS);
 };
-const importSettings = async () => {
-  const req = await readFile('.json');
+
+const ToolMenu = () => {
+  const toast = useToast();
+
+  const _importSettings = async () => {
+    const req = await importSettings();
+    if (req.error) {
+      toast({ status: 'error', title: 'failed while import settings' });
+      return;
+    }
+    toast({ status: 'success', title: 'setting is now imported' });
+    logger(req.result);
+  };
+  return (
+    <HStack>
+      <Tooltip label="export settings as json">
+        <IconButton
+          variant="ghost"
+          icon={<DownloadIcon />}
+          aria-label="export settings as json"
+          onClick={exportSettings}
+        />
+      </Tooltip>
+      <Tooltip label="import json settings">
+        <IconButton
+          variant="ghost"
+          icon={<AttachmentIcon />}
+          aria-label="import json settings"
+          onClick={_importSettings}
+        />
+      </Tooltip>
+    </HStack>
+  );
 };
 
 const Options = () => {
@@ -99,20 +132,7 @@ const Options = () => {
               <Heading>Fokus</Heading>
             </Box>
             <NavMenu />
-            <HStack>
-              <IconButton
-                variant="ghost"
-                icon={<DownloadIcon />}
-                aria-label="export settings as json"
-                onClick={exportSettings}
-              />
-              <IconButton
-                variant="ghost"
-                icon={<AttachmentIcon />}
-                aria-label="import json settings"
-                onClick={importSettings}
-              />
-            </HStack>
+            <ToolMenu />
           </Flex>
           <OptionsInner />
         </OptionsLayout>
