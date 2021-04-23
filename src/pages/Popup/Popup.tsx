@@ -5,7 +5,15 @@ import makeLogger from '@/lib/makeLogger';
 import openSettings from '@/lib/openSettings';
 import Document from '@/containers/Document';
 import { PopupLayout } from '@/containers/layout';
-import { Button, Heading, HStack, Text, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Center,
+  Heading,
+  HStack,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import useTaskNow from '@/lib/swr/useTaskNow';
 import storage from '@/lib/storage';
 import startTask from '@/lib/swr/startTask';
@@ -54,14 +62,16 @@ const Popup = () => {
   return (
     <Document>
       <PopupLayout>
-        <VStack spacing={2}>
+        <VStack spacing={6}>
           {taskNowLoadState === LOAD_LOADING && (
             <Text>loading current task</Text>
           )}
           {taskNowLoadState === LOAD_SUCCESS && hasTask && (
             <>
-              <Heading size="md">Current Task</Heading>
-              <Heading size="sm">{taskNow.title}</Heading>
+              <VStack backgroundColor="teal" color="white" mb={5}>
+                <Heading size="sm">Current Task</Heading>
+                <Heading size="md">{taskNow.title}</Heading>
+              </VStack>
               <HStack>
                 <Button onClick={() => onFinishTask()} leftIcon={<CheckIcon />}>
                   <Trans>finish-task</Trans>
