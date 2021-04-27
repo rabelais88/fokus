@@ -171,9 +171,14 @@ const Task: React.FC = (props) => {
             control={control}
             defaultValue={task.emojiId}
             render={({ onChange: _onChange, value: _value }) => {
+              const onAddIcon = () => {
+                _onChange('thumbsup');
+                setOpenEmotePicker(true);
+              };
+
               if (_value === '')
                 return (
-                  <Button size="sm" onClick={() => _onChange('thumbsup')}>
+                  <Button size="sm" onClick={onAddIcon}>
                     Add Icon
                   </Button>
                 );
