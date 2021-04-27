@@ -21,6 +21,8 @@ module.exports = {
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
       '@': rootPath,
+      // https://github.com/chakra-ui/chakra-ui/issues/2527
+      // chakra-ui fix for storybook
       '@emotion/core': toPath('node_modules/@emotion/react'),
       'emotion-theming': toPath('node_modules/@emotion/react'),
     };
