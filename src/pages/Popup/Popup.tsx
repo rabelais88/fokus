@@ -8,6 +8,7 @@ import { PopupLayout } from '@/containers/layout';
 import {
   Box,
   Button,
+  ButtonGroup,
   Center,
   Heading,
   HStack,
@@ -76,12 +77,17 @@ const Popup = () => {
                 boxSizing="border-box"
                 pt={3}
                 pb={3}
+                borderRadius={3}
               >
                 <Heading size="sm">Current Task</Heading>
                 <Heading size="md">{taskNow.title}</Heading>
               </VStack>
-              <HStack>
-                <Button onClick={() => onFinishTask()} leftIcon={<CheckIcon />}>
+              <ButtonGroup isAttached variant="outline" size="sm">
+                <Button
+                  colorScheme="teal"
+                  onClick={() => onFinishTask()}
+                  leftIcon={<CheckIcon />}
+                >
                   <Trans>finish-task</Trans>
                 </Button>
                 <Button
@@ -90,7 +96,7 @@ const Popup = () => {
                 >
                   <Trans>cancel-task</Trans>
                 </Button>
-              </HStack>
+              </ButtonGroup>
             </>
           )}
           {taskNowLoadState === LOAD_SUCCESS && !hasTask && (

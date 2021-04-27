@@ -2,14 +2,19 @@ import React, { useState } from 'react';
 import { ChakraProvider, Modal } from '@chakra-ui/react';
 import '@/i18n';
 import chakraTheme from '@/lib/chakraTheme';
+import 'emoji-mart/css/emoji-mart.css';
 // import { getDefaultModalState, MODAL_NONE } from '@/constants/modalState';
 // import ModalContext from '@/lib/context/ModalContext';
+
+interface DocumentProp {
+  resetCSS?: boolean;
+}
 
 /**
  * @description
  * the top container that includes all default styles & settings for the rest
  */
-const Document: React.FC = (props) => {
+const Document: React.FC<DocumentProp> = (props) => {
   // const [stateModal, setStateModal] = useState(getDefaultModalState());
 
   // const closeModal = () => {
@@ -31,7 +36,9 @@ const Document: React.FC = (props) => {
 
   return (
     // <ModalContext.Provider value={{ ...stateModal, openModal, closeModal }}>
-    <ChakraProvider theme={chakraTheme}>{props.children}</ChakraProvider>
+    <ChakraProvider theme={chakraTheme} resetCSS={props.resetCSS}>
+      {props.children}
+    </ChakraProvider>
     // </ModalContext.Provider>
   );
 };

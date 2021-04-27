@@ -1,4 +1,4 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import Document from '@/containers/Document';
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
@@ -6,8 +6,8 @@ export const parameters = {
 
 export const decorators = [
   (Story) => (
-    <ChakraProvider>
+    <Document resetCSS>
       <Story />
-    </ChakraProvider>
+    </Document>
   ),
 ];

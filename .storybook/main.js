@@ -1,4 +1,5 @@
 const path = require('path');
+const toPath = (_path) => path.join(process.cwd(), _path);
 
 module.exports = {
   stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
@@ -16,7 +17,13 @@ module.exports = {
   webpackFinal: async (config, { configType }) => {
     const rootPath = path.resolve(__dirname, '../src');
     config.resolve.modules.push(rootPath);
-    config.resolve.alias['@'] = rootPath;
+
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      '@': rootPath,
+      '@emotion/core': toPath('node_modules/@emotion/react'),
+      'emotion-theming': toPath('node_modules/@emotion/react'),
+    };
 
     return config;
   },
