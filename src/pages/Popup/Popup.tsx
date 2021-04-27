@@ -24,6 +24,7 @@ import endTask from '@/lib/swr/endTask';
 import { Trans } from 'react-i18next';
 import AutoComplete from '@/components/AutoComplete';
 import { CheckIcon, SettingsIcon, SmallCloseIcon } from '@chakra-ui/icons';
+import Emote from '@/components/Emote';
 
 const logger = makeLogger('Popup.jsx');
 
@@ -80,7 +81,12 @@ const Popup = () => {
                 borderRadius={3}
               >
                 <Heading size="sm">Current Task</Heading>
-                <Heading size="md">{taskNow.title}</Heading>
+                <HStack>
+                  {taskNow.emojiId !== '' && (
+                    <Emote emoji={taskNow.emojiId} size={32} />
+                  )}
+                  <Heading size="md">{taskNow.title}</Heading>
+                </HStack>
               </VStack>
               <ButtonGroup isAttached variant="outline" size="sm">
                 <Button

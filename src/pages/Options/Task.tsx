@@ -169,7 +169,7 @@ const Task: React.FC = (props) => {
           <Controller
             name="emojiId"
             control={control}
-            defaultValue={task.emojiId}
+            defaultValue={task.emojiId || ''}
             render={({ onChange: _onChange, value: _value }) => {
               const onAddIcon = () => {
                 _onChange('thumbsup');

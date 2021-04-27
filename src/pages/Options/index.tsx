@@ -43,6 +43,7 @@ import { AttachmentIcon, DownloadIcon } from '@chakra-ui/icons';
 import send from '@/lib/senders/fromOptions';
 import { EXPORT_SETTINGS } from '@/constants/messages';
 import importSettings from '@/lib/importSettings';
+import Donate from './Donate';
 
 const logger = makeLogger('pages/Options/index.tsx');
 logger({ env });
@@ -173,31 +174,7 @@ const OptionsInner = () => {
         <Stats />
       </Route>
       <Route path="/donate">
-        <Box mt={5}>
-          <Link href="https://patreon.com/fokus_extension">
-            🙇‍♂️<Trans>patreon-link</Trans>🥳
-          </Link>
-          <Text>I made this chrome extension because,</Text>
-          <List>
-            <ListItem>Say no to clunky UIs</ListItem>
-            <ListItem>Say no to unnecessary sign-in steps</ListItem>
-            <ListItem>No more Pay-to-unlock apps</ListItem>
-            <ListItem>
-              To put priority on my work, no time to waste for chores
-            </ListItem>
-            <ListItem>To stay away from addictive internet</ListItem>
-            <ListItem>To remain connected to outside world</ListItem>
-          </List>
-          <Text>
-            If you're pleased with this app, <br />
-            please buy me a coffee☕ <br />
-            or share your thoughts on
-            <Link href="https://github.com/rabelais88/fokus" color="teal">
-              This Github
-            </Link>
-          </Text>
-          <Text>this extension will stay free forever!</Text>
-        </Box>
+        <Donate />
       </Route>
       <Redirect to={`/tasks${window.location.search}`} />
     </Switch>
