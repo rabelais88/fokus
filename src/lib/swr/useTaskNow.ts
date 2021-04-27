@@ -15,6 +15,7 @@ export function useTaskNow() {
   let taskNow: taskNowType = {
     title: '',
     id: '',
+    emojiId: '',
     description: '',
     blockedSiteIds: [],
     allowedSiteIds: [],

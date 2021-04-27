@@ -37,6 +37,7 @@ type websitesIndex = string[];
 
 interface taskData {
   id: string;
+  emojiId: string;
   title: string;
   description: string;
   blockedSiteIds: string[];

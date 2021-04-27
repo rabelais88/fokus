@@ -122,7 +122,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
         maxHeight="300px"
         overflowY="auto"
         backgroundColor="white"
-        zIndex={10}
+        zIndex="dropdown"
         width="100%"
       >
         {isOpen &&

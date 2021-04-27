@@ -16,6 +16,9 @@ export default extendTheme({
     '8xl': '6rem',
     '9xl': '8rem',
   },
+  zIndices: {
+    dropdown: 10,
+  },
   // colors: {
   //   point1: { ...theme.colors.teal }
   // },
