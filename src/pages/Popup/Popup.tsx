@@ -68,7 +68,15 @@ const Popup = () => {
           )}
           {taskNowLoadState === LOAD_SUCCESS && hasTask && (
             <>
-              <VStack backgroundColor="teal" color="white" mb={5}>
+              <VStack
+                backgroundColor="teal"
+                color="white"
+                mb={5}
+                w="100%"
+                boxSizing="border-box"
+                pt={3}
+                pb={3}
+              >
                 <Heading size="sm">Current Task</Heading>
                 <Heading size="md">{taskNow.title}</Heading>
               </VStack>
