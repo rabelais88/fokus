@@ -23,6 +23,7 @@ import {
   useToast,
   ButtonGroup,
   Box,
+  IconButton,
 } from '@chakra-ui/react';
 import useTask from '@/lib/useTask';
 import storage from '@/lib/storage';
@@ -43,6 +44,7 @@ import AutoComplete from '@/components/AutoComplete';
 import Emote from '@/components/Emote';
 import EmotePicker from '@/components/EmotePicker';
 import { EmojiData } from 'emoji-mart';
+import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 
 const logger = makeLogger('pages/Options/Task');
 
@@ -195,10 +197,18 @@ const Task: React.FC = (props) => {
                     <EmotePicker onSelect={onEmoteSelect} emoji={_value} />
                   )}
                   <ButtonGroup isAttached size="sm">
-                    <Button onClick={() => setOpenEmotePicker(true)}>
-                      Edit Icon
-                    </Button>
-                    <Button onClick={() => _onChange('')}>Delete Icon</Button>
+                    <IconButton
+                      onClick={() => setOpenEmotePicker(true)}
+                      icon={<EditIcon />}
+                      aria-label="edit icon"
+                      variant="outline"
+                    />
+                    <IconButton
+                      onClick={() => _onChange('')}
+                      icon={<DeleteIcon />}
+                      aria-label="delete icon"
+                      variant="outline"
+                    />
                   </ButtonGroup>
                 </HStack>
               );

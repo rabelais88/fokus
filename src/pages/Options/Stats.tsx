@@ -52,7 +52,7 @@ const Stats: React.FC = () => {
           tasks={tasksById}
           width={500}
           height={500}
-          padding={20}
+          padding={35}
         />
       </Box>
     </Box>

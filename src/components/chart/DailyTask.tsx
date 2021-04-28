@@ -40,8 +40,8 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
   });
   const chartXstart = padding;
   const chartYstart = padding;
-  const chartXend = useMemo(() => width - padding, [width, padding]);
-  const chartYend = useMemo(() => height - padding, [height, padding]);
+  const chartXend = useMemo(() => width - padding * 2, [width, padding]);
+  const chartYend = useMemo(() => height - padding * 2, [height, padding]);
 
   useEffect(() => {
     if (refChart.current !== null && refChart.current !== undefined) {
@@ -65,7 +65,7 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
       ),
     [taskHistory]
   );
-  const timeMin = useMemo(() => d3.min(times) || -1, [times]);
+  const timeMin = useMemo(() => d3.min(times) || 0, [times]);
   const timeMax = useMemo(() => d3.max(times) || -1, [times]);
   logger({ timeMin, timeMax });
 
@@ -90,7 +90,8 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
       tsk
         .append('text')
         .text((d: taskHistory) => tasks[d.taskId].title)
-        .attr('dominant-baseline', 'hanging'),
+        .attr('dominant-baseline', 'hanging')
+        .attr('transform', translate(35)),
     [tasks]
   );
 
@@ -102,7 +103,7 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
         .append('g')
         .attr('class', 'task')
         .attr('transform', (d: taskHistory) =>
-          translate(chartXstart, scaleY(d.timeStart))
+          translate(chartXstart + 15, scaleY(d.timeStart))
         )
         .call(drawTaskDot)
         .call(drawTaskTitle);
