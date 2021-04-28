@@ -8,9 +8,17 @@ const DailyTaskWrapper = () => {
       width={500}
       height={500}
       padding={20}
-      taskHistory={[
-        { timeStart: 1000, timeEnd: 3000, taskId: 'task1' },
-        { timeStart: 3500, timeEnd: -1, taskId: 'task2' },
+      history={[
+        {
+          timeStart: new Date('2020-01-01 08:00').getTime(),
+          timeEnd: new Date('2020-01-01 10:00').getTime(),
+          taskId: 'task1',
+        },
+        {
+          timeStart: new Date('2020-01-01 22:00').getTime(),
+          timeEnd: -1,
+          taskId: 'task2',
+        },
       ]}
       tasks={{
         task1: {
@@ -27,7 +35,7 @@ const DailyTaskWrapper = () => {
           id: 'task1',
           emojiId: 'coffee',
           title: 'my second task',
-          description: 'this is my first task',
+          description: 'this is my second task',
           blockedSiteIds: [],
           allowedSiteIds: [],
           blockMode: BLOCK_MODE_ALLOW_ALL,

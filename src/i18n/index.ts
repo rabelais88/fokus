@@ -3,6 +3,8 @@ import detector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 import enUS from './enUS.json';
 import ko from './ko.json';
+import analyzeTime from '@/lib/analyzeTime';
+import _padStart from 'lodash/padStart';
 
 const resources = {
   'en-US': { translation: enUS },
@@ -10,12 +12,12 @@ const resources = {
 };
 
 const formatters: { [key: string]: FormatFunction } = {
-  // time(_value, format, lng) {
-  //   let value =
-  //     typeof _value === 'number' ? dayjs(new Date(_value)) : dayjs(_value);
-  //   value.month()
-  //   return value;
-  // },
+  hourMinute(_value, _, lng) {
+    const { hour24, minute } = analyzeTime(_value);
+    const _hour = _padStart(hour24.toString(), 2, '0');
+    const _minute = _padStart(minute.toString(), 2, '0');
+    return `${_hour}:${_minute}`;
+  },
 };
 
 const format: FormatFunction = (value, format, lng) => {

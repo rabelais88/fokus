@@ -48,7 +48,7 @@ const Stats: React.FC = () => {
           <CurrentTaskDisplay taskNow={taskNow} hasTask={hasTask} />
         )}
         <DailyTask
-          taskHistory={taskHistory}
+          history={taskHistory}
           tasks={tasksById}
           width={500}
           height={500}

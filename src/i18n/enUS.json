@@ -13,5 +13,5 @@
   "newtab-heading": "Welcome",
   "newtab-description": "before proceeding to web pages,<br />please set task to get focused on your work",
   "newtab-open-settings": "open settings",
-  "daily-task-time-format": "{{time}}"
+  "daily-task-time-format": "{{time, hourMinute}}"
 }
