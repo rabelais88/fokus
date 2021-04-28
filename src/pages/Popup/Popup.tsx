@@ -29,11 +29,6 @@ import Emote from '@/components/Emote';
 const logger = makeLogger('Popup.jsx');
 
 const Popup = () => {
-  const sendMessage = () => {
-    popupSend('TEST_MESSAGE');
-    popupSend(MSG_CHANGE_COLOR, 'black');
-  };
-
   const { taskNow, hasTask, loadState: taskNowLoadState } = useTaskNow();
 
   const onTaskChange = (taskId: string) => {
