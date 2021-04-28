@@ -19,6 +19,10 @@ interface TaskHistoryChartProps {
   padding?: number;
 }
 
+interface chartHistory extends taskHistory {
+  yFiltered: number;
+}
+
 interface d3states {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined> | null;
 }
@@ -29,7 +33,32 @@ const translate = (x: number = 0, y: number = 0, k: number = 0) => {
   return t;
 };
 
-const px = (x: number) => `${x}px`;
+function dodge(
+  positions: number[],
+  separation = 30,
+  maxiter = 10,
+  maxerror = 1e-1
+) {
+  let n = positions.length;
+  if (!positions.every(isFinite)) throw new Error('invalid position');
+  if (!(n > 1)) return positions;
+  let index = d3.range(positions.length);
+  for (let iter = 0; iter < maxiter; ++iter) {
+    index.sort((i, j) => d3.ascending(positions[i], positions[j]));
+    let error = 0;
+    for (let i = 1; i < n; ++i) {
+      let delta = positions[index[i]] - positions[index[i - 1]];
+      if (delta < separation) {
+        delta = (separation - delta) / 2;
+        error = Math.max(error, delta);
+        positions[index[i - 1]] -= delta;
+        positions[index[i]] += delta;
+      }
+    }
+    if (error < maxerror) break;
+  }
+  return positions;
+}
 
 const logger = makeLogger('DailyTask');
 
@@ -78,6 +107,19 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
     [timeMin, timeMax, height]
   );
 
+  const historyCoordsY = useMemo(
+    () => dodge(history.map((hist) => scaleY(hist.timeStart))),
+    [history]
+  );
+  const historyWithCoords = useMemo(
+    () =>
+      history.map((hist, i) => ({
+        ...hist,
+        yFiltered: historyCoordsY[i],
+      })),
+    [historyCoordsY]
+  );
+
   const drawTaskDot = useCallback(
     (tsk) =>
       tsk
@@ -85,7 +127,7 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
         .attr('r', 14)
         .attr('cx', 14)
         .attr('cy', 7)
-        .attr('fill', (d: taskHistory) => strToHexColor(d.taskId)),
+        .attr('fill', (d: chartHistory) => strToHexColor(d.taskId)),
     [tasks]
   );
 
@@ -93,7 +135,7 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
     (tsk) =>
       tsk
         .append('text')
-        .text((d: taskHistory) => tasks[d.taskId].title)
+        .text((d: chartHistory) => tasks[d.taskId].title)
         .attr('dominant-baseline', 'hanging')
         .attr('transform', translate(35)),
     [tasks]
@@ -103,7 +145,7 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
     (tsk) =>
       tsk
         .append('text')
-        .text((d: taskHistory) =>
+        .text((d: chartHistory) =>
           t('daily-task-time-format', { time: d.timeStart })
         )
         .attr('dominant-baseline', 'hanging')
@@ -113,13 +155,13 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
 
   const enterTask = useCallback(
     (
-      tsk: d3.Selection<d3.EnterElement, taskHistory, SVGSVGElement, unknown>
+      tsk: d3.Selection<d3.EnterElement, chartHistory, SVGSVGElement, unknown>
     ) => {
       return tsk
         .append('g')
         .attr('class', 'task')
-        .attr('transform', (d: taskHistory) =>
-          translate(chartXstart + 15, scaleY(d.timeStart))
+        .attr('transform', (d: chartHistory) =>
+          translate(chartXstart + 15, d.yFiltered)
         )
         .call(drawTaskDot)
         .call(drawTaskTitle)
@@ -134,8 +176,8 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
     nodes.svg.attr('width', width).attr('height', height);
     logger(times);
     nodes.svg
-      .selectAll<SVGSVGElement, taskHistory>('.task')
-      .data(history, ({ taskId }: taskHistory) => taskId)
+      .selectAll<SVGSVGElement, chartHistory>('.task')
+      .data(historyWithCoords, ({ taskId }: chartHistory) => taskId)
       .join(enterTask);
   }, [nodes, history, tasks]);
 
