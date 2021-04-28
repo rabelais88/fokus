@@ -5,7 +5,16 @@ import makeLogger from '@/lib/makeLogger';
 import openSettings from '@/lib/openSettings';
 import Document from '@/containers/Document';
 import { PopupLayout } from '@/containers/layout';
-import { Box, Button, Heading, Stack, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Center,
+  Heading,
+  HStack,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import useTaskNow from '@/lib/swr/useTaskNow';
 import storage from '@/lib/storage';
 import startTask from '@/lib/swr/startTask';
@@ -14,6 +23,8 @@ import { makeResult } from '@/lib';
 import endTask from '@/lib/swr/endTask';
 import { Trans } from 'react-i18next';
 import AutoComplete from '@/components/AutoComplete';
+import { CheckIcon, SettingsIcon, SmallCloseIcon } from '@chakra-ui/icons';
+import Emote from '@/components/Emote';
 
 const logger = makeLogger('Popup.jsx');
 
@@ -53,32 +64,65 @@ const Popup = () => {
   return (
     <Document>
       <PopupLayout>
-        {taskNowLoadState === LOAD_LOADING && <Text>loading current task</Text>}
-        {taskNowLoadState === LOAD_SUCCESS && hasTask && (
-          <Stack spacing={4}>
-            <Text>{taskNow.title}</Text>
-            <Button onClick={() => onFinishTask()}>
-              <Trans>finish-task</Trans>
-            </Button>
-            <Button onClick={() => onCancelTask()}>
-              <Trans>cancel-task</Trans>
-            </Button>
-          </Stack>
-        )}
-        {taskNowLoadState === LOAD_SUCCESS && !hasTask && (
-          <Stack>
-            <Heading textAlign="center">
-              <Trans>no-task-heading</Trans>
-            </Heading>
-            <Text>
-              <Trans>no-task-text</Trans>
-            </Text>
-            <AutoComplete onSuggest={onSuggestTasks} onChange={onTaskChange} />
-          </Stack>
-        )}
-        <Button onClick={() => openSettings()}>
-          <Trans>open-settings</Trans>
-        </Button>
+        <VStack spacing={6}>
+          {taskNowLoadState === LOAD_LOADING && (
+            <Text>loading current task</Text>
+          )}
+          {taskNowLoadState === LOAD_SUCCESS && hasTask && (
+            <>
+              <VStack
+                backgroundColor="teal"
+                color="white"
+                mb={5}
+                w="100%"
+                boxSizing="border-box"
+                pt={3}
+                pb={3}
+                borderRadius={3}
+              >
+                <Heading size="sm">Current Task</Heading>
+                <HStack>
+                  {taskNow.emojiId !== '' && (
+                    <Emote emoji={taskNow.emojiId} size={32} />
+                  )}
+                  <Heading size="md">{taskNow.title}</Heading>
+                </HStack>
+              </VStack>
+              <ButtonGroup isAttached variant="outline" size="sm">
+                <Button
+                  colorScheme="teal"
+                  onClick={() => onFinishTask()}
+                  leftIcon={<CheckIcon />}
+                >
+                  <Trans>finish-task</Trans>
+                </Button>
+                <Button
+                  onClick={() => onCancelTask()}
+                  leftIcon={<SmallCloseIcon />}
+                >
+                  <Trans>cancel-task</Trans>
+                </Button>
+              </ButtonGroup>
+            </>
+          )}
+          {taskNowLoadState === LOAD_SUCCESS && !hasTask && (
+            <>
+              <Heading textAlign="center">
+                <Trans>no-task-heading</Trans>
+              </Heading>
+              <Text>
+                <Trans>no-task-text</Trans>
+              </Text>
+              <AutoComplete
+                onSuggest={onSuggestTasks}
+                onChange={onTaskChange}
+              />
+            </>
+          )}
+          <Button onClick={() => openSettings()} leftIcon={<SettingsIcon />}>
+            <Trans>open-settings</Trans>
+          </Button>
+        </VStack>
       </PopupLayout>
     </Document>
   );

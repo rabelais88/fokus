@@ -19,9 +19,12 @@ import {
   HStack,
   IconButton,
   Link,
+  List,
+  ListItem,
   Tab,
   TabList,
   Tabs,
+  Text,
   Tooltip,
   useToast,
 } from '@chakra-ui/react';
@@ -40,6 +43,7 @@ import { AttachmentIcon, DownloadIcon } from '@chakra-ui/icons';
 import send from '@/lib/senders/fromOptions';
 import { EXPORT_SETTINGS } from '@/constants/messages';
 import importSettings from '@/lib/importSettings';
+import Donate from './Donate';
 
 const logger = makeLogger('pages/Options/index.tsx');
 logger({ env });
@@ -170,11 +174,7 @@ const OptionsInner = () => {
         <Stats />
       </Route>
       <Route path="/donate">
-        <Box mt={5}>
-          <Link href="https://patreon.com/fokus_extension">
-            🙇‍♂️<Trans>patreon-link</Trans>🥳
-          </Link>
-        </Box>
+        <Donate />
       </Route>
       <Redirect to={`/tasks${window.location.search}`} />
     </Switch>

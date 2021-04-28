@@ -21,6 +21,8 @@ import {
   RadioGroup,
   Radio,
   useToast,
+  ButtonGroup,
+  Box,
 } from '@chakra-ui/react';
 import useTask from '@/lib/useTask';
 import storage from '@/lib/storage';
@@ -38,6 +40,9 @@ import useTaskNow from '@/lib/swr/useTaskNow';
 import startTask from '@/lib/swr/startTask';
 import endTask from '@/lib/swr/endTask';
 import AutoComplete from '@/components/AutoComplete';
+import Emote from '@/components/Emote';
+import EmotePicker from '@/components/EmotePicker';
+import { EmojiData } from 'emoji-mart';
 
 const logger = makeLogger('pages/Options/Task');
 
@@ -70,6 +75,7 @@ const Task: React.FC = (props) => {
   const [loading, setLoading] = useState(false);
   const history = useHistory();
   const toast = useToast();
+  const [openEmotePicker, setOpenEmotePicker] = useState(false);
 
   const suggestSites = async (keyword: string) => {
     const reqSites = await storage.get<websitesData>(STORE_WEBSITES);
@@ -88,6 +94,7 @@ const Task: React.FC = (props) => {
     task = {
       title: '',
       description: '',
+      emojiId: '',
       blockedSiteIds: [],
       allowedSiteIds: [],
       maxDuration: -1,
@@ -157,6 +164,47 @@ const Task: React.FC = (props) => {
             {errors.title && 'task name is required'}
           </FormErrorMessage>
         </FormControl>
+        <FormControl id="emoji-id">
+          <FormLabel htmlFor="emoji-id">Icon</FormLabel>
+          <Controller
+            name="emojiId"
+            control={control}
+            defaultValue={task.emojiId || ''}
+            render={({ onChange: _onChange, value: _value }) => {
+              const onAddIcon = () => {
+                _onChange('thumbsup');
+                setOpenEmotePicker(true);
+              };
+
+              if (_value === '')
+                return (
+                  <Button size="sm" onClick={onAddIcon}>
+                    Add Icon
+                  </Button>
+                );
+
+              const onEmoteSelect = (emoji: EmojiData) => {
+                _onChange(emoji.id || '');
+                setOpenEmotePicker(false);
+              };
+
+              return (
+                <HStack>
+                  <Emote emoji={_value} size={16} />
+                  {openEmotePicker && (
+                    <EmotePicker onSelect={onEmoteSelect} emoji={_value} />
+                  )}
+                  <ButtonGroup isAttached size="sm">
+                    <Button onClick={() => setOpenEmotePicker(true)}>
+                      Edit Icon
+                    </Button>
+                    <Button onClick={() => _onChange('')}>Delete Icon</Button>
+                  </ButtonGroup>
+                </HStack>
+              );
+            }}
+          ></Controller>
+        </FormControl>
         <FormControl id="task-description">
           <FormLabel htmlFor="description">description</FormLabel>
           <Input
@@ -196,6 +244,7 @@ const Task: React.FC = (props) => {
               };
               const addSite = (siteId: string) => {
                 if (!siteId || siteId === '') return;
+                if (_value.includes(siteId)) return;
                 _onChange([..._value, siteId]);
               };
               return (
@@ -239,6 +288,7 @@ const Task: React.FC = (props) => {
               };
               const addSite = (siteId: string) => {
                 if (!siteId || siteId === '') return;
+                if (_value.includes(siteId)) return;
                 _onChange([..._value, siteId]);
               };
               return (

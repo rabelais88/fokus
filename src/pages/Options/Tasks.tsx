@@ -32,6 +32,7 @@ import { NavLink } from '@/components';
 import { LOAD_SUCCESS } from '@/constants';
 import removeTask from '@/lib/removeTask';
 import useTaskNow from '@/lib/swr/useTaskNow';
+import Emote from '@/components/Emote';
 
 const Tasks: React.FC = (props) => {
   const [keyword, setKeyword] = useState('');
@@ -140,19 +141,24 @@ const Tasks: React.FC = (props) => {
                 justifyContent="space-between"
               >
                 <NavLink to={`/task/${task.id}`}>
-                  <Text>
-                    {task.title}
-                    {taskIdNow === task.id && (
-                      <Badge
-                        size="sm"
-                        variant="solid"
-                        colorScheme="teal"
-                        ml={5}
-                      >
-                        NOW
-                      </Badge>
+                  <HStack>
+                    {task.emojiId !== '' && (
+                      <Emote emoji={task.emojiId} size={24} />
                     )}
-                  </Text>
+                    <Text>
+                      {task.title}
+                      {taskIdNow === task.id && (
+                        <Badge
+                          size="sm"
+                          variant="solid"
+                          colorScheme="teal"
+                          ml={5}
+                        >
+                          NOW
+                        </Badge>
+                      )}
+                    </Text>
+                  </HStack>
                 </NavLink>
                 <CloseButton
                   onClick={() => onRemoveTask(task.id, task.title)}

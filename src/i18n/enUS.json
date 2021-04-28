@@ -6,7 +6,7 @@
   "patreon-link": "please support this extension on patreon!",
   "no-task-heading": "hey!",
   "no-task-text": "choose a task before browsing",
-  "open-settings": "open settings",
+  "open-settings": "settings",
   "finish-task": "finish",
   "cancel-task": "cancel",
   "site-blocked-description": "sorry, <0>{{blockedUrl}}</0> is blocked",

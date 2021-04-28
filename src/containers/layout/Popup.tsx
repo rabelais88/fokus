@@ -1,11 +1,14 @@
-import { Container } from '@chakra-ui/react';
+import { Center } from '@chakra-ui/react';
 import React from 'react';
 
+const POPUP_WIDTH = 420;
+const POPUP_HEIGHT = (POPUP_WIDTH * 3) / 2;
+const px = (val: number) => `${val}px`;
 const LayoutPopup: React.FC = (props) => {
   return (
-    <Container w="640px" h="480px" centerContent={true} p="6">
+    <Center w={px(POPUP_WIDTH)} h={px(POPUP_HEIGHT)} p="6">
       {props.children}
-    </Container>
+    </Center>
   );
 };
 
