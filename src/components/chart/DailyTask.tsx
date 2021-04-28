@@ -109,7 +109,7 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
 
   const historyCoordsY = useMemo(
     () => dodge(history.map((hist) => scaleY(hist.timeStart))),
-    [history]
+    [history, scaleY]
   );
   const historyWithCoords = useMemo(
     () =>

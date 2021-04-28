@@ -7,7 +7,7 @@ const DailyTaskWrapper = () => {
     <DailyTask
       width={500}
       height={500}
-      padding={20}
+      padding={50}
       history={[
         {
           timeStart: new Date('2020-01-01 08:00').getTime(),
