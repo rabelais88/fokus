@@ -32,7 +32,7 @@ function useTasks({
   );
 
   const noTask = filteredTasks.length === 0;
-  return { tasks: filteredTasks, noTask, loadState };
+  return { tasks: filteredTasks, tasksById: _tasks, noTask, loadState };
 }
 
 export default useTasks;
