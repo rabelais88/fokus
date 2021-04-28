@@ -4,6 +4,7 @@ import { Heading, Center, Text, Button } from '@chakra-ui/react';
 import { NewtabLayout } from '@/containers/layout';
 import openSettings from '@/lib/openSettings';
 import { Trans } from 'react-i18next';
+import Emote from '@/components/Emote';
 
 const Newtab = () => {
   return (
@@ -11,7 +12,8 @@ const Newtab = () => {
       <NewtabLayout>
         <Center>
           <Heading>
-            <Trans>newtab-heading</Trans>🤚
+            <Trans>newtab-heading</Trans>
+            <Emote emoji="hand" size={40} />
           </Heading>
         </Center>
         <Center>

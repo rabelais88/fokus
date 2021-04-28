@@ -6,7 +6,7 @@ const Donate = () => {
   return (
     <Box mt={5}>
       <Link href="https://patreon.com/fokus_extension">
-        <Emote emoji="man bowing" size={24} />
+        <Emote emoji="man-bowing" size={24} />
         <Trans>patreon-link</Trans>
       </Link>
       <Text>I made this chrome extension because,</Text>
@@ -22,7 +22,9 @@ const Donate = () => {
       </List>
       <Text>
         If you're pleased with this app, <br />
-        please buy me a coffee☕ <br />
+        please buy me a coffee
+        <Emote emoji="coffee" size={24} />
+        <br />
         or share your thoughts on
         <Link href="https://github.com/rabelais88/fokus" color="teal">
           This Github

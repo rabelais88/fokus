@@ -1,7 +1,8 @@
+import Emote from '@/components/Emote';
 import { QUERY_BLOCKED_URL } from '@/constants';
 import useTaskNow from '@/lib/swr/useTaskNow';
 import useQuery from '@/lib/useQuery';
-import { Center, Heading, Text, VStack } from '@chakra-ui/layout';
+import { Center, Heading, HStack, Text, VStack } from '@chakra-ui/layout';
 import React from 'react';
 import { Trans } from 'react-i18next';
 const Blocked = () => {
@@ -12,7 +13,10 @@ const Blocked = () => {
     <Center height="50vh">
       <VStack>
         <Heading size="sm">you're now focusing for</Heading>
-        <Heading size="lg">{taskNow.title}</Heading>
+        <HStack>
+          <Emote emoji={taskNow.emojiId} size={32} />
+          <Heading size="lg">{taskNow.title}</Heading>
+        </HStack>
         <Text fontSize="lg">
           <Trans
             i18nKey="site-blocked-description"
