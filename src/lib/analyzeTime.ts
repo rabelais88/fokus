@@ -11,6 +11,7 @@ const analyzeTime = (timestamp: number) => {
     minute: timeInfo.minute(),
     hour: hour24 > 12 ? hour24 - 12 : hour24,
     noon: hour24 > 12,
+    dayjs: timeInfo,
   };
 
   return result;

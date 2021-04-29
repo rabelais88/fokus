@@ -5,7 +5,7 @@ import DailyTask from '@/components/chart/DailyTask';
 import useTaskNow from '@/lib/swr/useTaskNow';
 import { LOAD_SUCCESS, STORE_TASKS } from '@/constants';
 import useTasks from '@/lib/useTasks';
-import storage from '@/lib/storage';
+import analyzeTime from '@/lib/analyzeTime';
 
 type CurrentTaskDisplayArg = {
   taskNow: taskNowType;
@@ -37,7 +37,21 @@ const Stats: React.FC = () => {
   } = useTaskHistory();
   const { hasTask, taskNow, loadState: taskNowLoadState } = useTaskNow();
   const { tasksById, loadState: tasksLoadState } = useTasks();
-  const hasEnoughTask = useMemo(() => taskHistory.length >= 2, [taskHistory]);
+
+  const today = useMemo(() => {
+    const { dayjs } = analyzeTime(new Date().getTime());
+    return dayjs;
+  }, []);
+
+  const todayHistory = useMemo(() => {
+    const timeStart = today.clone().hour(0).minute(0).second(0).unix();
+    const timeEnd = today.clone().hour(23).minute(59).second(59).unix();
+    return taskHistory.filter(
+      (hist) => hist.timeStart >= timeStart && hist.timeStart <= timeEnd
+    );
+  }, [today, taskHistory]);
+
+  const hasEnoughTask = useMemo(() => todayHistory.length >= 2, [todayHistory]);
 
   return (
     <Box>
