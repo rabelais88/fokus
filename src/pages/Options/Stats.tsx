@@ -44,8 +44,8 @@ const Stats: React.FC = () => {
   }, []);
 
   const todayHistory = useMemo(() => {
-    const timeStart = today.clone().hour(0).minute(0).second(0).unix();
-    const timeEnd = today.clone().hour(23).minute(59).second(59).unix();
+    const timeStart = today.clone().hour(0).minute(0).second(0).valueOf();
+    const timeEnd = today.clone().hour(23).minute(59).second(59).valueOf();
     return taskHistory.filter(
       (hist) => hist.timeStart >= timeStart && hist.timeStart <= timeEnd
     );
@@ -71,7 +71,7 @@ const Stats: React.FC = () => {
         )}
         {hasEnoughTask && (
           <DailyTask
-            history={taskHistory}
+            history={todayHistory}
             tasks={tasksById}
             width={500}
             height={500}

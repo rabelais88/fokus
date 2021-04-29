@@ -10,7 +10,6 @@ import React, {
 import * as d3 from 'd3';
 import strToHexColor from '@/lib/_strToHexColor';
 import { useTranslation } from 'react-i18next';
-import analyzeTime from '@/lib/analyzeTime';
 
 interface TaskHistoryChartProps {
   history: taskHistory[];
@@ -22,6 +21,7 @@ interface TaskHistoryChartProps {
 
 interface chartHistory extends taskHistory {
   yFiltered: number;
+  y: number;
 }
 
 interface d3states {
@@ -117,6 +117,7 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
       history.map((hist, i) => ({
         ...hist,
         yFiltered: historyCoordsY[i],
+        y: scaleY(hist.timeStart),
       })),
     [historyCoordsY]
   );
@@ -156,20 +157,31 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
     [history]
   );
 
-  const enterTask = useCallback(
+  const enterTaskDot = useCallback(
     (
       tsk: d3.Selection<d3.EnterElement, chartHistory, SVGSVGElement, unknown>
     ) => {
       return tsk
         .append('g')
-        .attr('class', 'task')
+        .attr('class', 'task-dot')
+        .attr('transform', (d: chartHistory) => translate(chartXstart, d.y))
+        .call(drawTaskDot);
+    },
+    [history, tasks]
+  );
+
+  const enterTaskInfo = useCallback(
+    (
+      tsk: d3.Selection<d3.EnterElement, chartHistory, SVGSVGElement, unknown>
+    ) =>
+      tsk
+        .append('g')
+        .attr('class', 'task-info')
         .attr('transform', (d: chartHistory) =>
           translate(chartXstart, d.yFiltered)
         )
-        .call(drawTaskDot)
         .call(drawTaskTitle)
-        .call(drawTaskDate);
-    },
+        .call(drawTaskDate),
     [history, tasks]
   );
 
@@ -186,9 +198,14 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
     nodes.svg.attr('width', width).attr('height', height);
 
     nodes.svg
-      .selectAll<SVGSVGElement, chartHistory>('.task')
+      .selectAll<SVGSVGElement, chartHistory>('.task-dot')
       .data(historyWithCoords, ({ taskId }: chartHistory) => taskId)
-      .join(enterTask);
+      .join(enterTaskDot);
+
+    nodes.svg
+      .selectAll<SVGSVGElement, chartHistory>('.task-info')
+      .data(historyWithCoords, ({ taskId }: chartHistory) => taskId)
+      .join(enterTaskInfo);
 
     if (nodes.svg.select('.axis-time-y').empty()) {
       nodes.svg
