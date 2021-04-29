@@ -34,8 +34,8 @@ import {
   BLOCK_MODE_BLOCK_ALL,
   LOAD_SUCCESS,
 } from '@/constants';
-import addTask from '@/lib/addTask';
-import editTask from '@/lib/editTask';
+import addTask from '@/lib/swr/addTask';
+import editTask from '@/lib/swr/editTask';
 import { makeResult } from '@/lib';
 import useTaskNow from '@/lib/swr/useTaskNow';
 import startTask from '@/lib/swr/startTask';

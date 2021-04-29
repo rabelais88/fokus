@@ -1,4 +1,5 @@
 import analyzeTime from './analyzeTime';
+import Dayjs from 'dayjs';
 
 describe('analyzeTime', () => {
   it('2000-01-01 01:02', () => {
@@ -11,6 +12,7 @@ describe('analyzeTime', () => {
       hour: 1,
       minute: 2,
       noon: false,
+      dayjs: new Dayjs('2000-01-01 01:02'),
     });
   });
 });

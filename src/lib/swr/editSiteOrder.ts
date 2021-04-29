@@ -1,6 +1,6 @@
 import { mutate } from 'swr';
 import storage from '@/lib/storage';
-import makeLogger from './makeLogger';
+import makeLogger from '@/lib/makeLogger';
 import { STORE_WEBSITES, STORE_WEBSITES_INDEX } from '@/constants/storeKey';
 
 const logger = makeLogger('lib/addSite');

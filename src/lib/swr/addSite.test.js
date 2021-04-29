@@ -2,10 +2,10 @@ import addSite from './addSite';
 import storage from '@/lib/storage';
 import { STORE_WEBSITES, STORE_WEBSITES_INDEX } from '@/constants/storeKey';
 import * as swr from 'swr';
-import makeId from './makeId';
+import makeId from '@/lib/makeId';
 
 jest.mock('@/lib/storage');
-jest.mock('./makeId');
+jest.mock('@/lib/makeId');
 jest.mock('swr');
 
 storage.get = jest.fn().mockImplementation((key) => {
