@@ -10,6 +10,7 @@ import React, {
 import * as d3 from 'd3';
 import strToHexColor from '@/lib/_strToHexColor';
 import { useTranslation } from 'react-i18next';
+import analyzeTime from '@/lib/analyzeTime';
 
 interface TaskHistoryChartProps {
   history: taskHistory[];
@@ -35,7 +36,7 @@ const translate = (x: number = 0, y: number = 0, k: number = 0) => {
 
 function dodge(
   positions: number[],
-  separation = 30,
+  separation = 15,
   maxiter = 10,
   maxerror = 1e-1
 ) {
@@ -124,9 +125,7 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
     (tsk) =>
       tsk
         .append('circle')
-        .attr('r', 14)
-        .attr('cx', 14)
-        .attr('cy', 7)
+        .attr('r', 3)
         .attr('fill', (d: chartHistory) => strToHexColor(d.taskId)),
     [tasks]
   );
@@ -136,8 +135,10 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
       tsk
         .append('text')
         .text((d: chartHistory) => tasks[d.taskId].title)
-        .attr('dominant-baseline', 'hanging')
-        .attr('transform', translate(35)),
+        .attr('dominant-baseline', 'middle')
+        .attr('transform', translate(55))
+        .attr('font-family', 'sans-serif')
+        .attr('font-size', '12px'),
     [tasks]
   );
 
@@ -148,8 +149,10 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
         .text((d: chartHistory) =>
           t('daily-task-time-format', { time: d.timeStart })
         )
-        .attr('dominant-baseline', 'hanging')
-        .attr('transform', translate(200)),
+        .attr('dominant-baseline', 'middle')
+        .attr('transform', translate(15))
+        .attr('font-family', 'sans-serif')
+        .attr('font-size', '12px'),
     [history]
   );
 
@@ -161,7 +164,7 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
         .append('g')
         .attr('class', 'task')
         .attr('transform', (d: chartHistory) =>
-          translate(chartXstart + 15, d.yFiltered)
+          translate(chartXstart, d.yFiltered)
         )
         .call(drawTaskDot)
         .call(drawTaskTitle)
@@ -170,15 +173,30 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
     [history, tasks]
   );
 
+  const axisY = useCallback(
+    d3.axisLeft(scaleY).tickFormat((time) => {
+      if (typeof time !== 'number') return '...';
+      return t('daily-task-time-format', { time });
+    }),
+    [scaleY]
+  );
+
   const d3render = useCallback(() => {
     if (!nodes.svg) return null;
-    logger('render d3');
     nodes.svg.attr('width', width).attr('height', height);
-    logger(times);
+
     nodes.svg
       .selectAll<SVGSVGElement, chartHistory>('.task')
       .data(historyWithCoords, ({ taskId }: chartHistory) => taskId)
       .join(enterTask);
+
+    if (nodes.svg.select('.axis-time-y').empty()) {
+      nodes.svg
+        .append('g')
+        .attr('class', 'axis-time-y')
+        .attr('transform', translate(padding, 0))
+        .call(axisY);
+    }
   }, [nodes, history, tasks]);
 
   d3render();

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Box, Heading, Table, Tbody, Td, Text, Tr } from '@chakra-ui/react';
 import useTaskHistory from '@/lib/swr/useTaskHistory';
 import DailyTask from '@/components/chart/DailyTask';
@@ -37,6 +37,7 @@ const Stats: React.FC = () => {
   } = useTaskHistory();
   const { hasTask, taskNow, loadState: taskNowLoadState } = useTaskNow();
   const { tasksById, loadState: tasksLoadState } = useTasks();
+  const hasEnoughTask = useMemo(() => taskHistory.length >= 2, [taskHistory]);
 
   return (
     <Box>
@@ -47,13 +48,22 @@ const Stats: React.FC = () => {
         {taskNowLoadState === LOAD_SUCCESS && (
           <CurrentTaskDisplay taskNow={taskNow} hasTask={hasTask} />
         )}
-        <DailyTask
-          history={taskHistory}
-          tasks={tasksById}
-          width={500}
-          height={500}
-          padding={50}
-        />
+        {!hasEnoughTask && (
+          <Text>
+            not enough history!
+            <br />
+            run more task to accumulate history
+          </Text>
+        )}
+        {hasEnoughTask && (
+          <DailyTask
+            history={taskHistory}
+            tasks={tasksById}
+            width={500}
+            height={500}
+            padding={50}
+          />
+        )}
       </Box>
     </Box>
   );
