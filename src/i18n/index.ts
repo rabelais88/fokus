@@ -11,12 +11,24 @@ const resources = {
   ko: { translation: ko },
 };
 
+const paddit = (num: number, digit: number = 2) => {
+  return _padStart(num.toString(), digit, '0');
+};
+
 const formatters: { [key: string]: FormatFunction } = {
   hourMinute(_value, _, lng) {
     const { hour24, minute } = analyzeTime(_value);
-    const _hour = _padStart(hour24.toString(), 2, '0');
-    const _minute = _padStart(minute.toString(), 2, '0');
+    const _hour = paddit(hour24);
+    const _minute = paddit(minute);
     return `${_hour}:${_minute}`;
+  },
+  fullDate(_value, _, lng) {
+    const { year, month, day, hour24, minute } = analyzeTime(_value);
+    const _month = paddit(month);
+    const _day = paddit(day);
+    const _hour = paddit(hour24);
+    const _minute = paddit(minute);
+    return `${year}/${_month}/${_day} ${_hour}:${_minute}`;
   },
 };
 

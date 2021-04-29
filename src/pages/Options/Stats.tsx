@@ -18,6 +18,7 @@ import useTaskNow from '@/lib/swr/useTaskNow';
 import { LOAD_SUCCESS, STORE_TASKS } from '@/constants';
 import useTasks from '@/lib/useTasks';
 import analyzeTime from '@/lib/analyzeTime';
+import { useTranslation } from 'react-i18next';
 
 type CurrentTaskDisplayArg = {
   taskNow: taskNowType;
@@ -71,11 +72,12 @@ interface TaskRowProps extends TableRowProps, taskHistory {
 }
 
 const TaskRow: React.FC<TaskRowProps> = (props) => {
+  const { t } = useTranslation();
   return (
     <Tr>
       <Td>{props.taskName}</Td>
-      <Td>{props.timeStart}</Td>
-      <Td>{props.timeEnd}</Td>
+      <Td>{t('stats-table-time-format', { time: props.timeStart })}</Td>
+      <Td>{t('stats-table-time-format', { time: props.timeEnd })}</Td>
     </Tr>
   );
 };
