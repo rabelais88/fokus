@@ -10,6 +10,7 @@ import React, {
 import * as d3 from 'd3';
 import strToHexColor from '@/lib/_strToHexColor';
 import { useTranslation } from 'react-i18next';
+import { analyzeTime } from '@/lib';
 
 interface TaskHistoryChartProps {
   history: taskHistory[];
@@ -147,9 +148,7 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
     (tsk) =>
       tsk
         .append('text')
-        .text((d: chartHistory) =>
-          t('daily-task-time-format', { time: d.timeStart })
-        )
+        .text((d: chartHistory) => t('full-time', analyzeTime(d.timeStart)))
         .attr('dominant-baseline', 'middle')
         .attr('transform', translate(15))
         .attr('font-family', 'sans-serif')

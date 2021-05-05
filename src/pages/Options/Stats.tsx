@@ -76,8 +76,8 @@ const TaskRow: React.FC<TaskRowProps> = (props) => {
   return (
     <Tr>
       <Td>{props.taskName}</Td>
-      <Td>{t('stats-table-time-format', { time: props.timeStart })}</Td>
-      <Td>{t('stats-table-time-format', { time: props.timeEnd })}</Td>
+      <Td>{t('full-time', analyzeTime(props.timeStart))}</Td>
+      <Td>{t('full-time', analyzeTime(props.timeEnd))}</Td>
     </Tr>
   );
 };

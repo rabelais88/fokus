@@ -1,8 +1,6 @@
 {
   "cancel-task": "취소",
   "finish-task": "완료",
-  "full-date": "{{year}}/{{month}}/{{day}}",
-  "hour-minute": "{{hour}}:{{minute}}",
   "newtab-description": "작업에 집중할 수 있도록 브라우징 하기 전에 작업을 우선 설정하세요",
   "newtab-heading": "환영합니다!",
   "newtab-open-settings": "open settings",
@@ -14,5 +12,8 @@
   "tab-donate": "donate",
   "tab-stats": "stats",
   "tab-tasks": "tasks",
-  "tab-websites": "websites"
+  "tab-websites": "websites",
+  "full-date": "{{year}}/{{month, pad2digit}}/{{day, pad2digit}}",
+  "full-time": "{{year}}/{{month, pad2digit}}/{{day, pad2digit}} {{hour, pad2digit}}:{{minute, pad2digit}}",
+  "hour-minute": "{{hour, pad2digit}}:{{minute, pad2digit}}"
 }

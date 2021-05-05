@@ -3,7 +3,6 @@ import detector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 import enUS from './enUS.json';
 import ko from './ko.json';
-import analyzeTime from '@/lib/analyzeTime';
 import _padStart from 'lodash/padStart';
 
 const resources = {
@@ -16,19 +15,8 @@ const paddit = (num: number, digit: number = 2) => {
 };
 
 const formatters: { [key: string]: FormatFunction } = {
-  hourMinute(_value, _, lng) {
-    const { hour24, minute } = analyzeTime(_value);
-    const _hour = paddit(hour24);
-    const _minute = paddit(minute);
-    return `${_hour}:${_minute}`;
-  },
-  fullDate(_value, _, lng) {
-    const { year, month, day, hour24, minute } = analyzeTime(_value);
-    const _month = paddit(month);
-    const _day = paddit(day);
-    const _hour = paddit(hour24);
-    const _minute = paddit(minute);
-    return `${year}/${_month}/${_day} ${_hour}:${_minute}`;
+  pad2digit(_value, _, lng) {
+    return paddit(_value);
   },
 };
 

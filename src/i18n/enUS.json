@@ -13,6 +13,7 @@
   "newtab-heading": "Welcome",
   "newtab-description": "before proceeding to web pages,<br />please set task to get focused on your work",
   "newtab-open-settings": "open settings",
-  "hour-minute": "{{hour}}:{{minute}}",
-  "full-date": "{{year}}/{{month}}/{{day}}"
+  "full-date": "{{year}}/{{month, pad2digit}}/{{day, pad2digit}}",
+  "full-time": "{{year}}/{{month, pad2digit}}/{{day, pad2digit}} {{hour, pad2digit}}:{{minute, pad2digit}}",
+  "hour-minute": "{{hour, pad2digit}}:{{minute, pad2digit}}"
 }
