@@ -6,3 +6,4 @@ export * from './storeKey';
 
 export const QUERY_BLOCKED_URL = 'blocked-url';
 export const DEFAULT_EMOJI_SET = 'google'; // 'apple' | 'google' | 'twitter'
+export const TIME_MINUTE = 6e4;

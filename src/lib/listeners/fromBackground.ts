@@ -5,6 +5,7 @@ import {
   BLOCK_MODE_BLOCK_ALL,
   EXPORT_SETTINGS,
   QUERY_BLOCKED_URL,
+  TIME_MINUTE,
 } from '../../constants';
 import getTaskInfo from '@/lib/getTaskInfo';
 import storage from '@/lib/storage';
@@ -65,22 +66,25 @@ const onTabUpdate = async (_tab: chrome.tabs.Tab) => {
     return;
   }
   const isValid = await validateUrl(_tab.url || '');
-  logger('tab update', { tab: _tab, isValid, url: _tab.url });
   const tasks = await storage.get<tasksData>(STORE_TASKS);
   const currentTaskDetail = tasks[currentTask.taskId];
-  const targetTime = currentTask.timeStart + currentTaskDetail.maxDuration;
+  const targetTime =
+    currentTask.timeStart + currentTaskDetail.maxDuration * TIME_MINUTE;
   let isTimeout = false;
-  if (currentTaskDetail.maxDuration > 0) isTimeout = getTime() < targetTime;
+  if (currentTaskDetail.maxDuration > 0) isTimeout = getTime() > targetTime;
+  logger('checking', { timeNow: getTime(), targetTime, isTimeout });
   if (isValid && !isTimeout) return;
   if (typeof _tab.id === 'number') {
     if (isTimeout) endTask();
-    const url = getSettingsUrl({ [QUERY_BLOCKED_URL]: _tab.url || 'unknown' });
+    const url = getSettingsUrl({
+      [QUERY_BLOCKED_URL]: _tab.url || 'unknown',
+    });
     chrome.tabs.update(_tab.id, { url });
   }
 };
 
 const onTick = async () => {
-  logger('ticking...');
+  logger('ticking...', getTime());
   chrome.tabs.query({}, (tabs) => {
     tabs.forEach(onTabUpdate);
   });

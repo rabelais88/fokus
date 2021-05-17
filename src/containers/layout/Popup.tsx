@@ -6,7 +6,7 @@ const POPUP_HEIGHT = (POPUP_WIDTH * 3) / 2;
 const px = (val: number) => `${val}px`;
 const LayoutPopup: React.FC = (props) => {
   return (
-    <Center w={px(POPUP_WIDTH)} h={px(POPUP_HEIGHT)} p="6">
+    <Center w={px(POPUP_WIDTH)} h={px(POPUP_HEIGHT)} p="3">
       {props.children}
     </Center>
   );

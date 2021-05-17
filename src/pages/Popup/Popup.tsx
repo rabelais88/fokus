@@ -27,6 +27,7 @@ import { CheckIcon, SettingsIcon, SmallCloseIcon } from '@chakra-ui/icons';
 import Emote from '@/components/Emote';
 import useNow from '@/lib/useNow';
 import getTimeDiff from '@/lib/getTimeDiff';
+import { TIME_MINUTE } from '@/constants';
 
 const logger = makeLogger('Popup.jsx');
 
@@ -36,6 +37,15 @@ const Popup = () => {
   const { t } = useTranslation();
   const startDiff = useMemo(
     () => getTimeDiff(timestampNow, taskNow.timeStart),
+    [taskNow, timestampNow]
+  );
+  1e3;
+  const remainingTime = useMemo(
+    () =>
+      getTimeDiff(
+        timestampNow,
+        taskNow.timeStart + taskNow.maxDuration * TIME_MINUTE
+      ),
     [taskNow, timestampNow]
   );
 
@@ -97,6 +107,11 @@ const Popup = () => {
                 <Heading size="sm">
                   {t('hour-minute', startDiff)} since start
                 </Heading>
+                {hasTimeLimit && (
+                  <Heading size="sm">
+                    {t('hour-minute', remainingTime)} remaining
+                  </Heading>
+                )}
               </VStack>
               <ButtonGroup isAttached variant="outline" size="sm">
                 <Button
