@@ -1,17 +1,19 @@
 {
+  "full-time" : "",
   "no-task-text" : "검색하기 전에 작업을 선택",
   "tab-tasks" : "작업",
-  "finish-task" : "작업 종료",
   "newtab-open-settings" : "공개 설정",
+  "finish-task" : "작업 종료",
   "cancel-task" : "취소",
   "newtab-description" : "브라우징 하기 전,<br />작업을 설정하여 집중하세요!",
   "tab-stats" : "통계",
   "site-blocked-description" : "죄송합니다, <0>{{blockedUrl}}</0> 는 차단 되었습니다",
-  "daily-task-time-format" : "{{time, hourMinute}}",
+  "full-date" : "",
   "tab-donate" : "기부",
+  "daily-task-time-format" : "{{time, hourMinute}}",
   "no-task-heading" : "잠깐만!",
-  "open-settings" : "설정",
   "tab-websites" : "웹 사이트",
-  "newtab-heading" : "안녕하세요",
-  "patreon-link" : "patreon에서 이 확장도구를 지원해 주세요!"
+  "open-settings" : "설정",
+  "patreon-link" : "patreon에서 이 확장도구를 지원해 주세요!",
+  "newtab-heading" : "안녕하세요"
 }

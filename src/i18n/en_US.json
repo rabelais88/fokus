@@ -1,17 +1,19 @@
 {
+  "full-time" : "",
   "no-task-text" : "choose a task before browsing",
   "tab-tasks" : "tasks",
-  "finish-task" : "finish",
   "newtab-open-settings" : "open settings",
+  "finish-task" : "finish",
   "cancel-task" : "cancel",
   "newtab-description" : "before proceeding to web pages,<br />please set task to get focused on your work",
   "tab-stats" : "stats",
   "site-blocked-description" : "sorry, <0>{{blockedUrl}}</0> is blocked",
-  "daily-task-time-format" : "{{time, hourMinute}}",
+  "full-date" : "",
   "tab-donate" : "donate",
+  "daily-task-time-format" : "{{time, hourMinute}}",
   "no-task-heading" : "hey!",
-  "open-settings" : "settings",
   "tab-websites" : "websites",
-  "newtab-heading" : "Welcome",
-  "patreon-link" : "please support this extension on patreon!"
+  "open-settings" : "settings",
+  "patreon-link" : "please support this extension on patreon!",
+  "newtab-heading" : "Welcome"
 }
