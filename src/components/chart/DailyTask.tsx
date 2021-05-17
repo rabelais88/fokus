@@ -148,7 +148,10 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
     (tsk) =>
       tsk
         .append('text')
-        .text((d: chartHistory) => t('hour-minute', analyzeTime(d.timeStart)))
+        .text((d: chartHistory) => {
+          const _time = analyzeTime(d.timeStart);
+          return t('hour-minute', { hour: _time.hour24, minute: _time.minute });
+        })
         .attr('dominant-baseline', 'middle')
         .attr('transform', translate(20))
         .attr('font-family', 'sans-serif')
