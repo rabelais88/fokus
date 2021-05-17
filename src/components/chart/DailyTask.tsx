@@ -138,7 +138,7 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
         .append('text')
         .text((d: chartHistory) => tasks[d.taskId].title)
         .attr('dominant-baseline', 'middle')
-        .attr('transform', translate(55))
+        .attr('transform', translate(60))
         .attr('font-family', 'sans-serif')
         .attr('font-size', '12px'),
     [tasks]
@@ -148,9 +148,9 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
     (tsk) =>
       tsk
         .append('text')
-        .text((d: chartHistory) => t('full-time', analyzeTime(d.timeStart)))
+        .text((d: chartHistory) => t('hour-minute', analyzeTime(d.timeStart)))
         .attr('dominant-baseline', 'middle')
-        .attr('transform', translate(15))
+        .attr('transform', translate(20))
         .attr('font-family', 'sans-serif')
         .attr('font-size', '12px'),
     [history]
