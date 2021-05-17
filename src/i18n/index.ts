@@ -1,12 +1,14 @@
 import i18n from 'i18next';
 import detector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
-import enUS from './enUS.json';
-import ko from './ko.json';
+import en from './en.json';
+import enUS from './en_US.json';
+import koKR from './ko_KR.json';
 
 const resources = {
+  en: { translation: en },
   'en-US': { translation: enUS },
-  ko: { translation: ko },
+  'ko-KR': { translation: koKR },
 };
 
 i18n
@@ -15,7 +17,7 @@ i18n
   .init({
     resources,
     // lng: 'en-US',
-    fallbackLng: 'en-US',
+    fallbackLng: 'en',
     saveMissing: true,
     keySeparator: false, // we do not use keys in form messages.welcome
     interpolation: {
