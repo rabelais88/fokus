@@ -11,12 +11,15 @@ import storage from '@/lib/storage';
 import getSettingsUrl from '../getSettingsUrl';
 import {
   STORE_PRESERVED_KEYS,
+  STORE_TASKS,
   STORE_TASK_HISTORY_NOW,
 } from '@/constants/storeKey';
 import checkChromeUrl from '../checkChromeUrl';
 import getNewTabUrl from '../getNewTabUrl';
 import saveJson from '@/lib/file/saveJson';
 import matchUrlRegex from '@/lib/matchUrlRegex';
+import getTime from '../getTime';
+import { endTask } from '../controller/task';
 
 const logger = makeLogger('listenFromBackground');
 
@@ -63,8 +66,14 @@ const onTabUpdate = async (_tab: chrome.tabs.Tab) => {
   }
   const isValid = await validateUrl(_tab.url || '');
   logger('tab update', { tab: _tab, isValid, url: _tab.url });
-  if (isValid) return;
+  const tasks = await storage.get<tasksData>(STORE_TASKS);
+  const currentTaskDetail = tasks[currentTask.taskId];
+  const targetTime = currentTask.timeStart + currentTaskDetail.maxDuration;
+  let isTimeout = false;
+  if (currentTaskDetail.maxDuration > 0) isTimeout = getTime() < targetTime;
+  if (isValid && !isTimeout) return;
   if (typeof _tab.id === 'number') {
+    if (isTimeout) endTask();
     const url = getSettingsUrl({ [QUERY_BLOCKED_URL]: _tab.url || 'unknown' });
     chrome.tabs.update(_tab.id, { url });
   }
@@ -106,7 +115,7 @@ const listenFromBackground = () => {
   });
   chrome.tabs.onCreated.addListener(onTabUpdate);
   storage.onChange(onStorageChange);
-  // setInterval(onTick, 5000);
+  setInterval(onTick, 3000);
 };
 
 export default listenFromBackground;

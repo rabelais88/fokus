@@ -187,7 +187,7 @@ const TaskHistoryChart: React.FC<TaskHistoryChartProps> = (props) => {
   const axisY = useCallback(
     d3.axisLeft(scaleY).tickFormat((time) => {
       if (typeof time !== 'number') return '...';
-      return t('daily-task-time-format', { time });
+      return t('full-date', analyzeTime(time));
     }),
     [scaleY]
   );
