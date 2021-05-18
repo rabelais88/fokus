@@ -2,6 +2,7 @@ import React, { Reducer, useMemo, useReducer, forwardRef } from 'react';
 import {
   Box,
   Heading,
+  HStack,
   StatNumber,
   Table,
   TableRowProps,
@@ -19,6 +20,8 @@ import { LOAD_SUCCESS, STORE_TASKS } from '@/constants';
 import useTasks from '@/lib/useTasks';
 import analyzeTime from '@/lib/analyzeTime';
 import { useTranslation } from 'react-i18next';
+import dayjs from 'dayjs';
+import DatePicker from '@/components/DatePicker';
 
 type CurrentTaskDisplayArg = {
   taskNow: taskNowType;
@@ -44,16 +47,31 @@ const CurrentTaskDisplay: React.FC<CurrentTaskDisplayArg> = ({
 
 type Action =
   | { type: 'setPage'; page: number }
-  | { type: 'setSize'; size: number };
+  | { type: 'setSize'; size: number }
+  | { type: 'setTimeStart'; timeStart: number }
+  | { type: 'setTimeEnd'; timeEnd: number };
 
 interface State {
   size: number;
   page: number;
+  timeStart: number;
+  timeEnd: number;
 }
+
+const get24hPast = (timestamp: number) =>
+  dayjs(timestamp).add(1, 'day').valueOf();
+
+const today = dayjs(new Date())
+  .set('hour', 0)
+  .set('minute', 0)
+  .set('second', 0)
+  .valueOf();
 
 const initialState: State = {
   size: 20,
   page: 0,
+  timeStart: today,
+  timeEnd: get24hPast(today),
 };
 
 const reducer: Reducer<State, Action> = (state, action) => {
@@ -62,6 +80,10 @@ const reducer: Reducer<State, Action> = (state, action) => {
       return { ...state, cursor: action.page };
     case 'setSize':
       return { ...state, size: action.size };
+    case 'setTimeStart':
+      return { ...state, timeStart: action.timeStart };
+    case 'setTimeEnd':
+      return { ...state, timeEnd: action.timeEnd };
     default:
       throw new Error();
   }
@@ -91,25 +113,19 @@ const Stats: React.FC = () => {
   const { hasTask, taskNow, loadState: taskNowLoadState } = useTaskNow();
   const { tasksById, loadState: tasksLoadState } = useTasks();
   const [state, dispatch] = useReducer(reducer, initialState);
-
-  const today = useMemo(() => {
-    const { dayjs } = analyzeTime(new Date().getTime());
-    return dayjs;
-  }, []);
+  const { timeStart, timeEnd } = state;
 
   const todayHistory = useMemo(() => {
-    const timeStart = today.clone().hour(0).minute(0).second(0).valueOf();
-    const timeEnd = today.clone().hour(23).minute(59).second(59).valueOf();
     return taskHistory.filter(
       (hist) => hist.timeStart >= timeStart && hist.timeStart <= timeEnd
     );
-  }, [today, taskHistory]);
+  }, [timeStart, timeEnd]);
 
   const hasEnoughTask = useMemo(() => todayHistory.length >= 2, [todayHistory]);
-  const hasNext = useMemo(() => taskHistory.length < state.page * state.size, [
-    taskHistory,
-    state,
-  ]);
+  const hasNext = useMemo(
+    () => taskHistory.length < state.page * state.size,
+    [taskHistory, state]
+  );
   const filteredHistory = useMemo(() => {
     const startIndex = state.page * state.size;
     const endIndex = startIndex + state.size;
@@ -135,6 +151,30 @@ const Stats: React.FC = () => {
             run more task to accumulate history
           </Text>
         )}
+        <HStack>
+          <DatePicker
+            selected={new Date(timeStart)}
+            onChange={(v) => {
+              if (!v) return;
+              if (Array.isArray(v)) {
+                dispatch({ type: 'setTimeStart', timeStart: v[0].getTime() });
+                return;
+              }
+              dispatch({ type: 'setTimeStart', timeStart: v.getTime() });
+            }}
+          />
+          <DatePicker
+            selected={new Date(timeEnd)}
+            onChange={(v) => {
+              if (!v) return;
+              if (Array.isArray(v)) {
+                dispatch({ type: 'setTimeEnd', timeEnd: v[0].getTime() });
+                return;
+              }
+              dispatch({ type: 'setTimeEnd', timeEnd: v.getTime() });
+            }}
+          />
+        </HStack>
         {hasEnoughTask && (
           <DailyTask
             history={todayHistory}

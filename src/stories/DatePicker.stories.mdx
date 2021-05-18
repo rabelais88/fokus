@@ -1,0 +1,12 @@
+import { Meta, Canvas, Story } from '@storybook/addon-docs/blocks';
+import DatePicker from '@/components/DatePicker';
+
+<Meta title="DatePicker" component={DatePicker} />
+
+# DatePicker
+
+<Canvas>
+  <Story name="Default">
+    <DatePicker selected={new Date()} onChange={console.log} />
+  </Story>
+</Canvas>
