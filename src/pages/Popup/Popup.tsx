@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import popupSend from '@/lib/senders/fromPopup';
 import { LOAD_LOADING, LOAD_SUCCESS, MSG_CHANGE_COLOR } from '@/constants';
 import makeLogger from '@/lib/makeLogger';
@@ -19,22 +19,35 @@ import useTaskNow from '@/lib/swr/useTaskNow';
 import storage from '@/lib/storage';
 import startTask from '@/lib/swr/startTask';
 import { STORE_TASKS } from '@/constants/storeKey';
-import { makeResult } from '@/lib';
+import { analyzeTime, makeResult } from '@/lib';
 import endTask from '@/lib/swr/endTask';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import AutoComplete from '@/components/AutoComplete';
 import { CheckIcon, SettingsIcon, SmallCloseIcon } from '@chakra-ui/icons';
 import Emote from '@/components/Emote';
+import useNow from '@/lib/useNow';
+import getTimeDiff from '@/lib/getTimeDiff';
+import { TIME_MINUTE } from '@/constants';
 
 const logger = makeLogger('Popup.jsx');
 
 const Popup = () => {
-  const sendMessage = () => {
-    popupSend('TEST_MESSAGE');
-    popupSend(MSG_CHANGE_COLOR, 'black');
-  };
-
   const { taskNow, hasTask, loadState: taskNowLoadState } = useTaskNow();
+  const { timestampNow } = useNow();
+  const { t } = useTranslation();
+  const startDiff = useMemo(
+    () => getTimeDiff(timestampNow, taskNow.timeStart),
+    [taskNow, timestampNow]
+  );
+  1e3;
+  const remainingTime = useMemo(
+    () =>
+      getTimeDiff(
+        timestampNow,
+        taskNow.timeStart + taskNow.maxDuration * TIME_MINUTE
+      ),
+    [taskNow, timestampNow]
+  );
 
   const onTaskChange = (taskId: string) => {
     startTask(taskId);
@@ -61,6 +74,8 @@ const Popup = () => {
 
   const onCancelTask = () => {};
 
+  const hasTimeLimit = useMemo(() => taskNow.maxDuration > 0, [taskNow]);
+
   return (
     <Document>
       <PopupLayout>
@@ -85,8 +100,18 @@ const Popup = () => {
                   {taskNow.emojiId !== '' && (
                     <Emote emoji={taskNow.emojiId} size={32} />
                   )}
-                  <Heading size="md">{taskNow.title}</Heading>
+                  <Heading size="md" isTruncated>
+                    {taskNow.title}
+                  </Heading>
                 </HStack>
+                <Heading size="sm">
+                  {t('hour-minute', startDiff)} since start
+                </Heading>
+                {hasTimeLimit && (
+                  <Heading size="sm">
+                    {t('hour-minute', remainingTime)} remaining
+                  </Heading>
+                )}
               </VStack>
               <ButtonGroup isAttached variant="outline" size="sm">
                 <Button

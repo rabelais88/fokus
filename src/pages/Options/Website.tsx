@@ -22,9 +22,9 @@ import {
 } from '@/constants';
 import useQuery from '@/lib/useQuery';
 import makeLogger from '@/lib/makeLogger';
-import addSite from '@/lib/addSite';
+import addSite from '@/lib/swr/addSite';
 import useSite from '@/lib/useSite';
-import editSite from '@/lib/editSite';
+import editSite from '@/lib/swr/editSite';
 import matchUrlRegex from '@/lib/matchUrlRegex';
 
 const logger = makeLogger('pages/Options/Website');

@@ -5,18 +5,22 @@ import {
   BLOCK_MODE_BLOCK_ALL,
   EXPORT_SETTINGS,
   QUERY_BLOCKED_URL,
+  TIME_MINUTE,
 } from '../../constants';
 import getTaskInfo from '@/lib/getTaskInfo';
 import storage from '@/lib/storage';
 import getSettingsUrl from '../getSettingsUrl';
 import {
   STORE_PRESERVED_KEYS,
+  STORE_TASKS,
   STORE_TASK_HISTORY_NOW,
 } from '@/constants/storeKey';
 import checkChromeUrl from '../checkChromeUrl';
 import getNewTabUrl from '../getNewTabUrl';
 import saveJson from '@/lib/file/saveJson';
 import matchUrlRegex from '@/lib/matchUrlRegex';
+import getTime from '../getTime';
+import { endTask } from '../controller/task';
 
 const logger = makeLogger('listenFromBackground');
 
@@ -62,16 +66,25 @@ const onTabUpdate = async (_tab: chrome.tabs.Tab) => {
     return;
   }
   const isValid = await validateUrl(_tab.url || '');
-  logger('tab update', { tab: _tab, isValid, url: _tab.url });
-  if (isValid) return;
+  const tasks = await storage.get<tasksData>(STORE_TASKS);
+  const currentTaskDetail = tasks[currentTask.taskId];
+  const targetTime =
+    currentTask.timeStart + currentTaskDetail.maxDuration * TIME_MINUTE;
+  let isTimeout = false;
+  if (currentTaskDetail.maxDuration > 0) isTimeout = getTime() > targetTime;
+  logger('checking', { timeNow: getTime(), targetTime, isTimeout });
+  if (isValid && !isTimeout) return;
   if (typeof _tab.id === 'number') {
-    const url = getSettingsUrl({ [QUERY_BLOCKED_URL]: _tab.url || 'unknown' });
+    if (isTimeout) endTask();
+    const url = getSettingsUrl({
+      [QUERY_BLOCKED_URL]: _tab.url || 'unknown',
+    });
     chrome.tabs.update(_tab.id, { url });
   }
 };
 
 const onTick = async () => {
-  logger('ticking...');
+  logger('ticking...', getTime());
   chrome.tabs.query({}, (tabs) => {
     tabs.forEach(onTabUpdate);
   });
@@ -106,7 +119,7 @@ const listenFromBackground = () => {
   });
   chrome.tabs.onCreated.addListener(onTabUpdate);
   storage.onChange(onStorageChange);
-  // setInterval(onTick, 5000);
+  setInterval(onTick, 3000);
 };
 
 export default listenFromBackground;

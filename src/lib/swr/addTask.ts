@@ -1,7 +1,7 @@
 import { mutate } from 'swr';
 import storage from '@/lib/storage';
-import makeId from './makeId';
-import makeLogger from './makeLogger';
+import makeId from '@/lib/makeId';
+import makeLogger from '@/lib/makeLogger';
 import { STORE_TASKS, STORE_TASKS_INDEX } from '@/constants/storeKey';
 
 const logger = makeLogger('lib/addTask');

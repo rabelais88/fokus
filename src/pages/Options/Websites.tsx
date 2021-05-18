@@ -130,7 +130,7 @@ const Websites: React.FC = (props) => {
         {loadState === LOAD_SUCCESS && !noSite && (
           <Stack divider={<StackDivider borderColor="gray.200" />} spacing={2}>
             {sites.map((site) => (
-              <Flex
+              <HStack
                 key={site.id}
                 data-site-id={site.id}
                 aria-label="website-item"
@@ -142,7 +142,7 @@ const Websites: React.FC = (props) => {
                 <CloseButton
                   onClick={() => onRemoveSite(site.id, site.title)}
                 />
-              </Flex>
+              </HStack>
             ))}
           </Stack>
         )}
