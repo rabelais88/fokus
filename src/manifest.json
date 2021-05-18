@@ -1,5 +1,9 @@
 {
   "name": "Fokus",
+  "description": "extension for managing web browsing time",
+  "app": {
+    "urls": ["https://github.com/rabelais88/fokus"]
+  },
   "version": "0.2",
   "options_page": "options.html",
   "background": {
