@@ -1,7 +1,7 @@
 {
   "name": "Fokus",
   "description": "extension for managing web browsing time",
-  "version": "0.2",
+  "version": "0.21",
   "options_page": "options.html",
   "background": {
     "page": "background.html"
