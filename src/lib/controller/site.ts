@@ -10,7 +10,7 @@ interface getSiteArg {
 }
 export const getSite: getSiteArg = async (siteId: string) => {
   try {
-    const websites = await storage.get<websitesData>(STORE_WEBSITES);
+    const websites = await storage.get(STORE_WEBSITES);
     return makeResult(websites[siteId] || {});
   } catch (error) {
     return makeError(undefined, error);
@@ -22,8 +22,8 @@ interface getSitesArg {
 }
 export const getSites: getSitesArg = async ({ keyword = '' }) => {
   try {
-    const websites = await storage.get<websitesData>(STORE_WEBSITES);
-    const websitesId = await storage.get<websitesIndex>(STORE_WEBSITES_INDEX);
+    const websites = await storage.get(STORE_WEBSITES);
+    const websitesId = await storage.get(STORE_WEBSITES_INDEX);
     const sites = websitesId.map((siteId) => websites[siteId]);
     const re = new RegExp(keyword, 'i');
     const filteredSites = sites.filter(
@@ -40,7 +40,7 @@ interface editSiteArg {
 }
 export const editSite: editSiteArg = async (site: websiteData) => {
   try {
-    const sites = await storage.get<websitesData>(STORE_WEBSITES);
+    const sites = await storage.get(STORE_WEBSITES);
     const siteExists = !!sites[site.id];
     if (!siteExists) return makeError('SITE_NOT_EXIST');
     const newSites = {

@@ -15,7 +15,7 @@ interface startTaskArg {
 }
 export const startTask: startTaskArg = async (taskId: string) => {
   try {
-    const history = await storage.get<taskHistory[]>(STORE_TASK_HISTORY);
+    const history = await storage.get(STORE_TASK_HISTORY);
     const timeNow = getTime();
 
     const currentTask = { taskId, timeStart: timeNow, timeEnd: -1 };
@@ -34,7 +34,7 @@ interface endTaskArg {
 }
 export const endTask: endTaskArg = async () => {
   try {
-    const history = await storage.get<taskHistory[]>(STORE_TASK_HISTORY);
+    const history = await storage.get(STORE_TASK_HISTORY);
     const lastHistory = history[history.length - 1];
     if (!lastHistory) return makeError('NO_CURRENT_TASK');
     if (lastHistory.timeStart === -1) return makeError('NO_START_TIME');

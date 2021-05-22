@@ -8,8 +8,8 @@ import _pull from 'lodash/pull';
 const logger = makeLogger('lib/removeSite');
 
 async function removeSite(siteId: string): Promise<resolvable> {
-  const sites = await storage.get<websitesData>(STORE_WEBSITES);
-  const sitesId = await storage.get<websitesIndex>(STORE_WEBSITES_INDEX);
+  const sites = await storage.get(STORE_WEBSITES);
+  const sitesId = await storage.get(STORE_WEBSITES_INDEX);
 
   const siteExists = !!sites[siteId];
   if (!siteExists) throw new Error('no correspond site with given site id');

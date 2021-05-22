@@ -8,8 +8,8 @@ import _pull from 'lodash/pull';
 const logger = makeLogger('lib/removeTask');
 
 async function removeTask(taskId: string): Promise<resolvable> {
-  const tasks = await storage.get<tasksData>(STORE_TASKS);
-  const tasksId = await storage.get<tasksIndex>(STORE_TASKS_INDEX);
+  const tasks = await storage.get(STORE_TASKS);
+  const tasksId = await storage.get(STORE_TASKS_INDEX);
 
   const taskExists = !!tasks[taskId];
   if (!taskExists) throw new Error('no correspond task with given task id');

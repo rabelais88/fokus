@@ -6,7 +6,7 @@ import { STORE_WEBSITES } from '@/constants/storeKey';
 const logger = makeLogger('lib/editSite');
 
 async function editSite(site: websiteData): Promise<resolvable> {
-  const sites = await storage.get<websitesData>(STORE_WEBSITES);
+  const sites = await storage.get(STORE_WEBSITES);
   const siteExists = !!sites[site.id];
   if (!siteExists) throw new Error('no correspond site with given site id');
   const newSites = {

@@ -80,7 +80,7 @@ const Task: React.FC = (props) => {
   const [openEmotePicker, setOpenEmotePicker] = useState(false);
 
   const suggestSites = async (keyword: string) => {
-    const reqSites = await storage.get<websitesData>(STORE_WEBSITES);
+    const reqSites = await storage.get(STORE_WEBSITES);
     const reKeyword = new RegExp(keyword, 'i');
     const matchSites = Object.values(reqSites).filter(
       (site) => reKeyword.test(site.title) || reKeyword.test(site.description)

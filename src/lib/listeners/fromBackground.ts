@@ -1,26 +1,23 @@
 import makeLogger from '../makeLogger';
-import sendFromBackground from '../senders/fromBackground';
+// import sendFromBackground from '../senders/fromBackground';
 import {
   BLOCK_MODE_ALLOW_ALL,
   BLOCK_MODE_BLOCK_ALL,
   EXPORT_SETTINGS,
   QUERY_BLOCKED_URL,
   TIME_MINUTE,
-} from '../../constants';
+} from '@/constants';
 import getTaskInfo from '@/lib/getTaskInfo';
 import storage from '@/lib/storage';
-import getSettingsUrl from '../getSettingsUrl';
-import {
-  STORE_PRESERVED_KEYS,
-  STORE_TASKS,
-  STORE_TASK_HISTORY_NOW,
-} from '@/constants/storeKey';
-import checkChromeUrl from '../checkChromeUrl';
-import getNewTabUrl from '../getNewTabUrl';
+import getSettingsUrl from '@/lib/getSettingsUrl';
+import { STORE_TASKS, STORE_TASK_HISTORY_NOW } from '@/constants/storeKey';
+import STORE_PRESERVED_KEYS from '@/constants/STORE_PRESERVED_KEYS';
+import checkChromeUrl from '@/lib/checkChromeUrl';
+import getNewTabUrl from '@/lib/getNewTabUrl';
 import saveJson from '@/lib/file/saveJson';
 import matchUrlRegex from '@/lib/matchUrlRegex';
-import getTime from '../getTime';
-import { endTask } from '../controller/task';
+import getTime from '@/lib/getTime';
+import { endTask } from '@/lib/controller/task';
 
 const logger = makeLogger('listenFromBackground');
 
@@ -56,7 +53,7 @@ export const validateUrl = async (url: string) => {
 
 const onTabUpdate = async (_tab: chrome.tabs.Tab) => {
   logger('onTabUpdate', { tab: _tab, url: _tab.url });
-  const currentTask = await storage.get<taskHistory>(STORE_TASK_HISTORY_NOW);
+  const currentTask = await storage.get(STORE_TASK_HISTORY_NOW);
   // if it's not a site with proper url(i.g. new tab), just show.
   if (!_tab.url || !_tab.id) return;
   // eslint-disable-next-line
@@ -66,7 +63,7 @@ const onTabUpdate = async (_tab: chrome.tabs.Tab) => {
     return;
   }
   const isValid = await validateUrl(_tab.url || '');
-  const tasks = await storage.get<tasksData>(STORE_TASKS);
+  const tasks = await storage.get(STORE_TASKS);
   const currentTaskDetail = tasks[currentTask.taskId];
   const targetTime =
     currentTask.timeStart + currentTaskDetail.maxDuration * TIME_MINUTE;

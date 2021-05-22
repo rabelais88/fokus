@@ -12,7 +12,7 @@ async function editSiteOrder(sitesId: websitesIndex): Promise<resolvable> {
 
   logger({ sitesId });
 
-  await storage.set(STORE_WEBSITES, sitesId);
+  await storage.set(STORE_WEBSITES_INDEX, sitesId);
   mutate(STORE_WEBSITES_INDEX, sitesId);
   return { result: true, error: null, errorCode: '' };
 }

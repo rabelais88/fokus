@@ -54,7 +54,7 @@ const Popup = () => {
   };
 
   const onSuggestTasks = async (keyword: string) => {
-    const reqTasks = await storage.get<tasksData>(STORE_TASKS);
+    const reqTasks = await storage.get(STORE_TASKS);
     const reKeyword = new RegExp(keyword, 'i');
     const matchKeywords = Object.values<taskData>(reqTasks).filter(
       (task) => reKeyword.test(task.title) || reKeyword.test(task.description)

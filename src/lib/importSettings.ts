@@ -1,4 +1,4 @@
-import { STORE_PRESERVED_KEYS } from '@/constants';
+import STORE_PRESERVED_KEYS from '@/constants/STORE_PRESERVED_KEYS';
 import openFile from '@/lib/file/openFile';
 import { mutate } from 'swr';
 import makeError from './makeError';

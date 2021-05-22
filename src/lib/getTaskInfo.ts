@@ -7,9 +7,9 @@ import {
 
 const getTaskInfo = async () => {
   const [taskHistoryNow, tasksById, sitesById] = await Promise.all([
-    storage.get<taskHistory>(STORE_TASK_HISTORY_NOW),
-    storage.get<tasksData>(STORE_TASKS),
-    storage.get<websitesData>(STORE_WEBSITES),
+    storage.get(STORE_TASK_HISTORY_NOW),
+    storage.get(STORE_TASKS),
+    storage.get(STORE_WEBSITES),
   ]);
   if (taskHistoryNow.taskId === '') {
     return { allowedSites: [], blockedSites: [] };
