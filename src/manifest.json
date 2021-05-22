@@ -1,7 +1,7 @@
 {
   "name": "Fokus",
   "description": "extension for managing web browsing time",
-  "version": "0.21",
+  "version": "0.22",
   "options_page": "options.html",
   "background": {
     "page": "background.html"
@@ -19,11 +19,5 @@
   "web_accessible_resources": ["icon-128.png", "icon-34.png"],
   "manifest_version": 2,
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  "permissions": [
-    "declarativeContent",
-    "storage",
-    "activeTab",
-    "tabs",
-    "downloads"
-  ]
+  "permissions": ["storage", "tabs", "downloads"]
 }
