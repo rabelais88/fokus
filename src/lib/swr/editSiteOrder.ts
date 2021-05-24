@@ -3,7 +3,7 @@ import storage from '@/lib/storage';
 import makeLogger from '@/lib/makeLogger';
 import { STORE_WEBSITES, STORE_WEBSITES_INDEX } from '@/constants/storeKey';
 
-const logger = makeLogger('lib/addSite');
+const logger = makeLogger('lib/swr/addSite');
 
 async function editSiteOrder(sitesId: websitesIndex): Promise<resolvable> {
   if (!Array.isArray(sitesId)) throw new Error('sites id should be array!');

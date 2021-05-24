@@ -4,7 +4,7 @@ import makeId from '@/lib/makeId';
 import makeLogger from '@/lib/makeLogger';
 import { STORE_TASKS, STORE_TASKS_INDEX } from '@/constants/storeKey';
 
-const logger = makeLogger('lib/addTask');
+const logger = makeLogger('lib/swr/addTask');
 
 async function addTask(_task: taskData): Promise<resolvable> {
   const id = makeId();

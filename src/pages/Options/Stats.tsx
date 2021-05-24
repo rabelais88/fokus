@@ -1,9 +1,13 @@
 import React, { Reducer, useMemo, useReducer, forwardRef } from 'react';
 import {
   Box,
+  FormControl,
+  FormHelperText,
+  FormLabel,
   Heading,
   HStack,
   StatNumber,
+  Switch,
   Table,
   TableRowProps,
   Tbody,
@@ -22,6 +26,7 @@ import analyzeTime from '@/lib/analyzeTime';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import DatePicker from '@/components/DatePicker';
+import useDebugMode from '@/lib/swr/useDebugMode';
 
 type CurrentTaskDisplayArg = {
   taskNow: taskNowType;
@@ -132,79 +137,93 @@ const Stats: React.FC = () => {
     return taskHistory.slice(startIndex, endIndex);
   }, [taskHistory, state]);
 
+  const { debugMode, setDebugMode } = useDebugMode();
+
   const tableLoaded =
     tasksLoadState === LOAD_SUCCESS && taskHistoryLoadState === LOAD_SUCCESS;
 
   return (
-    <Box>
-      <Box mt={5}>
-        <Heading as="h2" size="md">
-          Statistics
-        </Heading>
-        {taskNowLoadState === LOAD_SUCCESS && (
-          <CurrentTaskDisplay taskNow={taskNow} hasTask={hasTask} />
-        )}
-        {!hasEnoughTask && (
-          <Text>
-            not enough history!
-            <br />
-            run more task to accumulate history
-          </Text>
-        )}
-        <HStack>
-          <DatePicker
-            selected={new Date(timeStart)}
-            onChange={(v) => {
-              if (!v) return;
-              if (Array.isArray(v)) {
-                dispatch({ type: 'setTimeStart', timeStart: v[0].getTime() });
-                return;
-              }
-              dispatch({ type: 'setTimeStart', timeStart: v.getTime() });
-            }}
-          />
-          <DatePicker
-            selected={new Date(timeEnd)}
-            onChange={(v) => {
-              if (!v) return;
-              if (Array.isArray(v)) {
-                dispatch({ type: 'setTimeEnd', timeEnd: v[0].getTime() });
-                return;
-              }
-              dispatch({ type: 'setTimeEnd', timeEnd: v.getTime() });
-            }}
-          />
-        </HStack>
-        {hasEnoughTask && (
-          <DailyTask
-            history={todayHistory}
-            tasks={tasksById}
-            width={500}
-            height={500}
-            padding={50}
-          />
-        )}
-        {tableLoaded && (
-          <Table>
-            <Thead>
-              <Tr>
-                <Th>task name</Th>
-                <Th>start time</Th>
-                <Th>end time</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {filteredHistory.map((hist, i) => (
-                <TaskRow
-                  key={i}
-                  taskName={(tasksById[hist.taskId] || {}).title || ''}
-                  {...hist}
-                />
-              ))}
-            </Tbody>
-          </Table>
-        )}
-      </Box>
+    <Box mt={5} pb={5}>
+      <Heading as="h2" size="md">
+        Statistics
+      </Heading>
+      {taskNowLoadState === LOAD_SUCCESS && (
+        <CurrentTaskDisplay taskNow={taskNow} hasTask={hasTask} />
+      )}
+      {!hasEnoughTask && (
+        <Text>
+          not enough history!
+          <br />
+          run more task to accumulate history
+        </Text>
+      )}
+      <HStack>
+        <DatePicker
+          selected={new Date(timeStart)}
+          onChange={(v) => {
+            if (!v) return;
+            if (Array.isArray(v)) {
+              dispatch({ type: 'setTimeStart', timeStart: v[0].getTime() });
+              return;
+            }
+            dispatch({ type: 'setTimeStart', timeStart: v.getTime() });
+          }}
+        />
+        <DatePicker
+          selected={new Date(timeEnd)}
+          onChange={(v) => {
+            if (!v) return;
+            if (Array.isArray(v)) {
+              dispatch({ type: 'setTimeEnd', timeEnd: v[0].getTime() });
+              return;
+            }
+            dispatch({ type: 'setTimeEnd', timeEnd: v.getTime() });
+          }}
+        />
+      </HStack>
+      {hasEnoughTask && (
+        <DailyTask
+          history={todayHistory}
+          tasks={tasksById}
+          width={500}
+          height={500}
+          padding={50}
+        />
+      )}
+      {tableLoaded && (
+        <Table>
+          <Thead>
+            <Tr>
+              <Th>task name</Th>
+              <Th>start time</Th>
+              <Th>end time</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {filteredHistory.map((hist, i) => (
+              <TaskRow
+                key={i}
+                taskName={(tasksById[hist.taskId] || {}).title || ''}
+                {...hist}
+              />
+            ))}
+          </Tbody>
+        </Table>
+      )}
+      <FormControl mt={5}>
+        <FormLabel htmlFor="debug-mode">debug mode</FormLabel>
+        <Switch
+          id="debug-mode"
+          onChange={(ev) => {
+            if (!ev.target) return;
+            setDebugMode(ev.target.checked);
+          }}
+          isChecked={debugMode}
+        />
+        <FormHelperText>
+          enables the extension's console message for chrome devtool
+        </FormHelperText>
+      </FormControl>
     </Box>
   );
 };

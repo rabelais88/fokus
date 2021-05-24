@@ -3,7 +3,7 @@ import storage from '@/lib/storage';
 import makeLogger from '@/lib/makeLogger';
 import { STORE_WEBSITES } from '@/constants/storeKey';
 
-const logger = makeLogger('lib/editSite');
+const logger = makeLogger('lib/swr/editSite');
 
 async function editSite(site: websiteData): Promise<resolvable> {
   const sites = await storage.get(STORE_WEBSITES);
