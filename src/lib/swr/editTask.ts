@@ -3,7 +3,7 @@ import storage from '@/lib/storage';
 import makeLogger from '@/lib/makeLogger';
 import { STORE_TASKS } from '@/constants/storeKey';
 
-const logger = makeLogger('lib/editTask');
+const logger = makeLogger('lib/swr/editTask');
 
 async function editTask(task: taskData): Promise<resolvable> {
   logger({ task });
