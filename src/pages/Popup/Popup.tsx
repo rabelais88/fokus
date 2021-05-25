@@ -16,6 +16,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import useTaskNow from '@/lib/swr/useTaskNow';
+import useTasks from '@/lib/useTasks';
 import storage from '@/lib/storage';
 import startTask from '@/lib/swr/startTask';
 import { STORE_TASKS } from '@/constants/storeKey';
@@ -33,6 +34,7 @@ const logger = makeLogger('Popup.jsx');
 
 const Popup = () => {
   const { taskNow, hasTask, loadState: taskNowLoadState } = useTaskNow();
+  const { tasksCount, loadState: tasksLoadState } = useTasks();
   const { timestampNow } = useNow();
   const { t } = useTranslation();
   const startDiff = useMemo(
@@ -130,19 +132,31 @@ const Popup = () => {
               </ButtonGroup>
             </>
           )}
-          {taskNowLoadState === LOAD_SUCCESS && !hasTask && (
-            <>
-              <Heading textAlign="center">
-                <Trans>no-task-heading</Trans>
-              </Heading>
+          {taskNowLoadState === LOAD_SUCCESS &&
+            tasksLoadState === LOAD_SUCCESS &&
+            !hasTask &&
+            tasksCount >= 1 && (
+              <>
+                <Heading textAlign="center">
+                  <Trans>no-task-heading</Trans>
+                </Heading>
+                <Text>
+                  <Trans>no-task-text</Trans>
+                </Text>
+                <AutoComplete
+                  onSuggest={onSuggestTasks}
+                  onChange={onTaskChange}
+                />
+              </>
+            )}
+          {tasksCount === 0 && tasksLoadState === LOAD_SUCCESS && (
+            <Box>
               <Text>
-                <Trans>no-task-text</Trans>
+                no tasks detected!
+                <br />
+                add new task from settings page
               </Text>
-              <AutoComplete
-                onSuggest={onSuggestTasks}
-                onChange={onTaskChange}
-              />
-            </>
+            </Box>
           )}
           <Button onClick={() => openSettings()} leftIcon={<SettingsIcon />}>
             <Trans>open-settings</Trans>

@@ -32,7 +32,14 @@ function useTasks({
   );
 
   const noTask = filteredTasks.length === 0;
-  return { tasks: filteredTasks, tasksById: _tasks, noTask, loadState };
+  const tasksCount = (tasklist || []).length || 0;
+  return {
+    tasks: filteredTasks,
+    tasksById: _tasks,
+    noTask,
+    loadState,
+    tasksCount,
+  };
 }
 
 export default useTasks;
