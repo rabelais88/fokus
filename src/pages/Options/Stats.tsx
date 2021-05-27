@@ -119,6 +119,7 @@ const Stats: React.FC = () => {
   const { tasksById, loadState: tasksLoadState } = useTasks();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { timeStart, timeEnd } = state;
+  const { t } = useTranslation();
 
   const todayHistory = useMemo(() => {
     return taskHistory.filter(
@@ -145,18 +146,12 @@ const Stats: React.FC = () => {
   return (
     <Box mt={5} pb={5}>
       <Heading as="h2" size="md">
-        Statistics
+        {t('statistics-heading')}
       </Heading>
       {taskNowLoadState === LOAD_SUCCESS && (
         <CurrentTaskDisplay taskNow={taskNow} hasTask={hasTask} />
       )}
-      {!hasEnoughTask && (
-        <Text>
-          not enough history!
-          <br />
-          run more task to accumulate history
-        </Text>
-      )}
+      {!hasEnoughTask && <Text>{t('stats-not-sufficient-record')}</Text>}
       <HStack>
         <DatePicker
           selected={new Date(timeStart)}
@@ -211,7 +206,7 @@ const Stats: React.FC = () => {
         </Table>
       )}
       <FormControl mt={5}>
-        <FormLabel htmlFor="debug-mode">debug mode</FormLabel>
+        <FormLabel htmlFor="debug-mode">{t('debug-mode')}</FormLabel>
         <Switch
           id="debug-mode"
           onChange={(ev) => {
@@ -220,9 +215,7 @@ const Stats: React.FC = () => {
           }}
           isChecked={debugMode}
         />
-        <FormHelperText>
-          enables the extension's console message for chrome devtool
-        </FormHelperText>
+        <FormHelperText>{t('debug-mode-description')}</FormHelperText>
       </FormControl>
     </Box>
   );

@@ -45,6 +45,7 @@ import Emote from '@/components/Emote';
 import EmotePicker from '@/components/EmotePicker';
 import { EmojiData } from 'emoji-mart';
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import { useTranslation } from 'react-i18next';
 
 const logger = makeLogger('pages/Options/Task');
 
@@ -78,6 +79,7 @@ const Task: React.FC = (props) => {
   const history = useHistory();
   const toast = useToast();
   const [openEmotePicker, setOpenEmotePicker] = useState(false);
+  const { t } = useTranslation();
 
   const suggestSites = async (keyword: string) => {
     const reqSites = await storage.get(STORE_WEBSITES);
@@ -110,7 +112,7 @@ const Task: React.FC = (props) => {
     await addTask(taskData);
     setLoading(false);
     history.push('/tasks');
-    toast({ status: 'success', title: 'new task has been added' });
+    toast({ status: 'success', title: t('toast--new-task-added') });
   };
 
   const _editTask = async (taskData: taskData) => {
@@ -118,7 +120,7 @@ const Task: React.FC = (props) => {
     await editTask(taskData);
     setLoading(false);
     history.push('/tasks');
-    toast({ status: 'success', title: 'task has been edited' });
+    toast({ status: 'success', title: t('toast--task-edited') });
   };
 
   const onSubmit = (taskData: taskData) => {
@@ -155,7 +157,9 @@ const Task: React.FC = (props) => {
           id="task-name"
           mt="30px"
         >
-          <FormLabel htmlFor="task-title">Name of task</FormLabel>
+          <FormLabel htmlFor="task-title">
+            {t('edit-task--task-name')}
+          </FormLabel>
           <Input
             name="title"
             placeholder="name"
@@ -163,11 +167,11 @@ const Task: React.FC = (props) => {
             ref={register({ required: true })}
           />
           <FormErrorMessage>
-            {errors.title && 'task name is required'}
+            {errors.title && t('edit-task--task-name-required')}
           </FormErrorMessage>
         </FormControl>
         <FormControl id="emoji-id">
-          <FormLabel htmlFor="emoji-id">Icon</FormLabel>
+          <FormLabel htmlFor="emoji-id">{t('edit-task--task-icon')}</FormLabel>
           <Controller
             name="emojiId"
             control={control}
@@ -216,7 +220,9 @@ const Task: React.FC = (props) => {
           ></Controller>
         </FormControl>
         <FormControl id="task-description">
-          <FormLabel htmlFor="description">description</FormLabel>
+          <FormLabel htmlFor="description">
+            {t('edit-task--task-deescription')}
+          </FormLabel>
           <Input
             name="description"
             placeholder="description"
@@ -225,7 +231,9 @@ const Task: React.FC = (props) => {
           />
         </FormControl>
         <FormControl id="task-block-mode">
-          <FormLabel htmlFor="block-mode">block mode</FormLabel>
+          <FormLabel htmlFor="block-mode">
+            {t('edit-task--block-mode')}
+          </FormLabel>
           <Controller
             name="blockMode"
             control={control}
@@ -234,8 +242,12 @@ const Task: React.FC = (props) => {
               return (
                 <RadioGroup spacing="10px" onChange={_onChange} value={_value}>
                   <Stack direction="row">
-                    <Radio value={BLOCK_MODE_ALLOW_ALL}>allow all sites</Radio>
-                    <Radio value={BLOCK_MODE_BLOCK_ALL}>block all sites</Radio>
+                    <Radio value={BLOCK_MODE_ALLOW_ALL}>
+                      {t('edit-task--allow-all-sites')}
+                    </Radio>
+                    <Radio value={BLOCK_MODE_BLOCK_ALL}>
+                      {t('edit-task--block-all-sites')}
+                    </Radio>
                   </Stack>
                 </RadioGroup>
               );
@@ -243,7 +255,9 @@ const Task: React.FC = (props) => {
           />
         </FormControl>
         <FormControl id="task-allowed-sites">
-          <FormLabel htmlFor="allowed-sites">allowed sites</FormLabel>
+          <FormLabel htmlFor="allowed-sites">
+            {t('edit-task--allowed-sites')}
+          </FormLabel>
           <Controller
             name="allowedSiteIds"
             control={control}
@@ -276,7 +290,7 @@ const Task: React.FC = (props) => {
                     }
                     showSupplement
                     supplementItem={{
-                      text: 'add new site',
+                      text: t('edit-task--add-new-site'),
                       key: 'ADD_NEW_SITE',
                     }}
                     onSupplement={onAddNewSite}
@@ -287,7 +301,9 @@ const Task: React.FC = (props) => {
           ></Controller>
         </FormControl>
         <FormControl id="task-blocked-sites">
-          <FormLabel htmlFor="blocked-sites">blocked sites</FormLabel>
+          <FormLabel htmlFor="blocked-sites">
+            {t('edit-task--blocked-sites')}
+          </FormLabel>
           <Controller
             name="blockedSiteIds"
             control={control}
@@ -320,7 +336,7 @@ const Task: React.FC = (props) => {
                     }
                     showSupplement
                     supplementItem={{
-                      text: 'add new site',
+                      text: t('edit-task--add-new-site'),
                       key: 'ADD_NEW_SITE',
                     }}
                     onSupplement={onAddNewSite}
@@ -331,7 +347,9 @@ const Task: React.FC = (props) => {
           />
         </FormControl>
         <FormControl id="task-max-duration">
-          <FormLabel htmlFor="max-duration">maximum duration(minute)</FormLabel>
+          <FormLabel htmlFor="max-duration">
+            {t('edit-task--maximum-duration')}
+          </FormLabel>
           <Controller
             name="maxDuration"
             control={control}
@@ -357,7 +375,7 @@ const Task: React.FC = (props) => {
                     </NumberInput>
                   )}
                   {!isUsed && (
-                    <Text>duration is not limited for this task</Text>
+                    <Text>{t('edit-task--maximumduration-not-limited')}</Text>
                   )}
                 </Stack>
               );
@@ -366,21 +384,21 @@ const Task: React.FC = (props) => {
         </FormControl>
         {isNewTask && (
           <Button type="submit" isLoading={loading} variant="solid">
-            Add
+            {t('edit-task--submit-new')}
           </Button>
         )}
         {!isNewTask && (
           <Button type="submit" isLoading={loading} variant="solid">
-            Edit
+            {t('edit-task--submit-change')}
           </Button>
         )}
         {!isNewTask && !taskInProgress && (
           <Button variant="solid" colorScheme="teal" onClick={onTaskStart}>
-            Start this task
+            {t('edit-task--start-task')}
           </Button>
         )}
         {!isNewTask && taskInProgress && (
-          <Button onClick={onTaskStop}>Stop this task</Button>
+          <Button onClick={onTaskStop}>{t('edit-task--stop-task')}</Button>
         )}
       </Stack>
     </form>

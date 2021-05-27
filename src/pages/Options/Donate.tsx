@@ -1,13 +1,14 @@
 import Emote from '@/components/Emote';
 import { Box, Link, List, ListItem, Text } from '@chakra-ui/layout';
 import React from 'react';
-import { Trans } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 const Donate = () => {
+  const { t } = useTranslation();
   return (
     <Box mt={5}>
       <Link href="https://patreon.com/fokus_extension">
         <Emote emoji="man-bowing" size={24} />
-        <Trans>patreon-link</Trans>
+        <Text>{t('patreon-link')}</Text>
       </Link>
       <Text>I made this chrome extension because,</Text>
       <List>

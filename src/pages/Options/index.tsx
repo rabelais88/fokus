@@ -94,31 +94,32 @@ const exportSettings = () => {
 
 const ToolMenu = () => {
   const toast = useToast();
+  const { t } = useTranslation();
 
   const _importSettings = async () => {
     const req = await importSettings();
     if (req.error) {
-      toast({ status: 'error', title: 'failed while import settings' });
+      toast({ status: 'error', title: t('json-import-fail') });
       return;
     }
-    toast({ status: 'success', title: 'setting is now imported' });
+    toast({ status: 'success', title: t('json-import-success') });
     logger(req.result);
   };
   return (
     <HStack>
-      <Tooltip label="export settings as json">
+      <Tooltip label={t('export-json')}>
         <IconButton
           variant="ghost"
           icon={<DownloadIcon />}
-          aria-label="export settings as json"
+          aria-label={t('export-json-description')}
           onClick={exportSettings}
         />
       </Tooltip>
-      <Tooltip label="import json settings">
+      <Tooltip label={t('import-json')}>
         <IconButton
           variant="ghost"
           icon={<AttachmentIcon />}
-          aria-label="import json settings"
+          aria-label={t('import-json-description')}
           onClick={_importSettings}
         />
       </Tooltip>
