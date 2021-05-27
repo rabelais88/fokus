@@ -8,7 +8,7 @@ const Donate = () => {
     <Box mt={5}>
       <Link href="https://patreon.com/fokus_extension">
         <Emote emoji="man-bowing" size={24} />
-        <Text>{t('patreon-link')}</Text>
+        <Text display="inline">{t('patreon-link')}</Text>
       </Link>
       <Text>I made this chrome extension because,</Text>
       <List>
