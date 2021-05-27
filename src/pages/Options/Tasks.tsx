@@ -33,6 +33,7 @@ import { LOAD_SUCCESS } from '@/constants';
 import removeTask from '@/lib/removeTask';
 import useTaskNow from '@/lib/swr/useTaskNow';
 import Emote from '@/components/Emote';
+import { Trans, useTranslation } from 'react-i18next';
 
 const Tasks: React.FC = (props) => {
   const [keyword, setKeyword] = useState('');
@@ -58,6 +59,7 @@ const Tasks: React.FC = (props) => {
   };
 
   const taskAddable = noTask || keyword === '';
+  const { t } = useTranslation();
 
   return (
     <>
@@ -66,7 +68,11 @@ const Tasks: React.FC = (props) => {
         <ModalCloseButton />
         <ModalContent>
           <ModalBody>
-            would you like to remove <b>{removeTargetTaskName}</b> ?
+            <Trans
+              i18nKey="modal--remove-task-message"
+              components={[<b />]}
+              values={{ removeTargetTaskName }}
+            />
           </ModalBody>
           <ModalFooter>
             <HStack>
@@ -75,10 +81,10 @@ const Tasks: React.FC = (props) => {
                 colorScheme="red"
                 onClick={onRemoveTaskConfirm}
               >
-                Remove
+                {t('modal--remove-task-confirm')}
               </Button>
               <Button variant="outline" onClick={onClose}>
-                No
+                {t('modal--remove-task-cancel')}
               </Button>
             </HStack>
           </ModalFooter>
@@ -88,7 +94,7 @@ const Tasks: React.FC = (props) => {
         <InputGroup>
           <InputLeftElement children={<SearchIcon />} />
           <Input
-            placeholder="please put the task name here"
+            placeholder={t('tasks--task-find-placeholder')}
             variant="flushed"
             value={keyword}
             onChange={(ev) => setKeyword(ev.target.value)}
@@ -112,7 +118,7 @@ const Tasks: React.FC = (props) => {
                 onClick={() => setKeyword('')}
                 icon={<CloseIcon />}
                 size="sm"
-                aria-label="reset task search keyword"
+                aria-label={t('tasks--reset-task-search-keyword')}
                 variant="ghost"
               />
             )}
@@ -128,7 +134,7 @@ const Tasks: React.FC = (props) => {
         )}
         {loadState === LOAD_SUCCESS && noTask && (
           <Center mt="150">
-            <Text>no tasks found</Text>
+            <Text>{t('tasks--no-task')}</Text>
           </Center>
         )}
         {loadState === LOAD_SUCCESS && !noTask && (
@@ -154,7 +160,7 @@ const Tasks: React.FC = (props) => {
                           colorScheme="teal"
                           ml={5}
                         >
-                          NOW
+                          {t('tasks--active-task-badge')}
                         </Badge>
                       )}
                     </Text>

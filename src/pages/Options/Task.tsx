@@ -221,7 +221,7 @@ const Task: React.FC = (props) => {
         </FormControl>
         <FormControl id="task-description">
           <FormLabel htmlFor="description">
-            {t('edit-task--task-deescription')}
+            {t('edit-task--task-description')}
           </FormLabel>
           <Input
             name="description"
@@ -375,7 +375,7 @@ const Task: React.FC = (props) => {
                     </NumberInput>
                   )}
                   {!isUsed && (
-                    <Text>{t('edit-task--maximumduration-not-limited')}</Text>
+                    <Text>{t('edit-task--maximum-duration-not-limited')}</Text>
                   )}
                 </Stack>
               );

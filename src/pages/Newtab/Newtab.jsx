@@ -13,12 +13,14 @@ const Newtab = () => {
       <NewtabLayout>
         <Center>
           <Heading>
-            <Text>{t('newtab-heading')}</Text>
+            <Text display="inline">{t('newtab-heading')}</Text>
             <Emote emoji="hand" size={40} />
           </Heading>
         </Center>
         <Center>
-          <Text>{t('newtab-description')}</Text>
+          <Text
+            dangerouslySetInnerHTML={{ __html: t('newtab-description') }}
+          ></Text>
         </Center>
         <Center>
           <Button onClick={() => openSettings()}>
