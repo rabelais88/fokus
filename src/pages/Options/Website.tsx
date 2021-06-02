@@ -26,6 +26,7 @@ import addSite from '@/lib/swr/addSite';
 import useSite from '@/lib/useSite';
 import editSite from '@/lib/swr/editSite';
 import matchUrlRegex from '@/lib/matchUrlRegex';
+import { useTranslation } from 'react-i18next';
 
 const logger = makeLogger('pages/Options/Website');
 
@@ -49,13 +50,14 @@ const Website: React.FC = (props) => {
   const [sampleUrl, setSampleUrl] = useState('');
   const history = useHistory();
   const toast = useToast();
+  const { t } = useTranslation();
 
   const _addNewSite = async (siteData: websiteData) => {
     setLoading(true);
     await addSite(siteData);
     setLoading(false);
     history.push('/websites');
-    toast({ status: 'success', title: 'new website has been added' });
+    toast({ status: 'success', title: t('toast--new-website-added') });
   };
 
   const _editSite = async (siteData: websiteData) => {
@@ -63,7 +65,7 @@ const Website: React.FC = (props) => {
     await editSite({ ...siteData, id: site.id });
     setLoading(false);
     history.push('/websites');
-    toast({ status: 'success', title: 'website has been edited' });
+    toast({ status: 'success', title: t('toast--website-edited') });
   };
 
   const onSubmit = (siteData: websiteData) => {
@@ -85,25 +87,26 @@ const Website: React.FC = (props) => {
     <form onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={4}>
         <FormControl isRequired isInvalid={errors.title} id="website-name">
-          <FormLabel htmlFor="title">Name of website</FormLabel>
+          <FormLabel htmlFor="title">
+            {t('edit-website--website-name')}
+          </FormLabel>
           <Input
             name="title"
             type="text"
-            placeholder="name"
+            placeholder={t('edit-website--website-name-placeholder')}
             defaultValue={query.get('title') || site.title}
             ref={register({ required: true })}
           />
-          <FormErrorMessage>
-            {errors.title && 'website name is required'}
-          </FormErrorMessage>
         </FormControl>
 
         <FormControl id="url-regex">
-          <FormLabel htmlFor="description">description</FormLabel>
+          <FormLabel htmlFor="description">
+            {t('edit-website--website-description')}
+          </FormLabel>
           <Input
             name="description"
             type="text"
-            placeholder="description"
+            placeholder={t('edit-website--website-description-placeholder')}
             defaultValue={site.description}
             ref={register}
           />
@@ -111,33 +114,35 @@ const Website: React.FC = (props) => {
 
         <FormControl as="fieldset" id="url-mode">
           <FormLabel as="legend" htmlFor="urlMode">
-            url detection mode
+            {t('edit-website--url-detection-mode')}
           </FormLabel>
           <RadioGroup name="urlMode" defaultValue={site.urlMode}>
             <HStack spacing="24px">
               <Radio name="urlMode" value={URL_MODE_TEXT} ref={register}>
-                plain url
+                {t('edit-website--url-mode-plain-url')}
               </Radio>
               <Radio name="urlMode" value={URL_MODE_REGEX} ref={register}>
-                regex(js)
+                {t('edit-website--url-mode-regex')}
               </Radio>
               <Radio
                 name="urlMode"
                 value={URL_MODE_REGEX_IGNORE_PROTOCOL}
                 ref={register}
               >
-                regex(js) + ignore protocol(http, https, file...)
+                {t('edit-website--url-mode-regex-ignore')}
               </Radio>
             </HStack>
           </RadioGroup>
         </FormControl>
 
         <FormControl isRequired isInvalid={errors.urlRegex} id="url-regex">
-          <FormLabel htmlFor="urlRegex">url(regex)</FormLabel>
+          <FormLabel htmlFor="urlRegex">
+            {t('edit-website--url-regex')}
+          </FormLabel>
           <Input
             name="urlRegex"
             type="text"
-            placeholder="url or regex"
+            placeholder={t('edit-website--url-regex-placeholder')}
             defaultValue={site.urlRegex}
             ref={register({ required: true })}
           />
@@ -160,34 +165,36 @@ const Website: React.FC = (props) => {
         </FormControl>
 
         <FormControl id="url-regex-test" isInvalid={!sampleUrlMatch}>
-          <FormLabel htmlFor="urlRegexTest">test url(regex)</FormLabel>
+          <FormLabel htmlFor="urlRegexTest">
+            {t('edit-website--test-url-regex')}
+          </FormLabel>
           <Input
             name="urlRegexTest"
             type="text"
-            placeholder="test any url with given url(regex)"
+            placeholder={t('edit-website--test-url-regex-placeholder')}
             value={sampleUrl}
             onChange={(ev) => {
               if (ev.target) setSampleUrl(ev.target.value);
             }}
           />
           {sampleUrlMatch && (
-            <FormHelperText>url matches with given regex(url)</FormHelperText>
+            <FormHelperText>{t('edit-website--url-match')}</FormHelperText>
           )}
           {!sampleUrlMatch && (
             <FormErrorMessage>
-              url does not match with given regex(url)
+              {t('edit-website--url-not-match')}
             </FormErrorMessage>
           )}
         </FormControl>
 
         {isNewWebsite && (
           <Button type="submit" isLoading={loading} variant="solid">
-            Add
+            {t('edit-website--create-website')}
           </Button>
         )}
         {!isNewWebsite && (
           <Button type="submit" isLoading={loading} variant="solid">
-            Edit
+            {t('edit-website--save-website')}
           </Button>
         )}
       </Stack>

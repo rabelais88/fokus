@@ -6,7 +6,6 @@ import useQuery from '@/lib/useQuery';
 import {
   Button,
   FormControl,
-  FormErrorMessage,
   FormLabel,
   HStack,
   Input,
@@ -162,13 +161,10 @@ const Task: React.FC = (props) => {
           </FormLabel>
           <Input
             name="title"
-            placeholder="name"
+            placeholder={t('edit-task--task-name-placeholder')}
             defaultValue={query.get('title') || task.title}
             ref={register({ required: true })}
           />
-          <FormErrorMessage>
-            {errors.title && t('edit-task--task-name-required')}
-          </FormErrorMessage>
         </FormControl>
         <FormControl id="emoji-id">
           <FormLabel htmlFor="emoji-id">{t('edit-task--task-icon')}</FormLabel>
@@ -225,7 +221,7 @@ const Task: React.FC = (props) => {
           </FormLabel>
           <Input
             name="description"
-            placeholder="description"
+            placeholder={t('edit-task--task-description-placeholder')}
             defaultValue={task.description}
             ref={register}
           />

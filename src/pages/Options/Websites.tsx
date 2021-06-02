@@ -30,12 +30,34 @@ import React from 'react';
 import { SearchIcon, AddIcon, CloseIcon } from '@chakra-ui/icons';
 import { NavLink } from '@/components';
 import removeSite from '@/lib/removeSite';
+import { Trans, useTranslation } from 'react-i18next';
+
+interface siteItemProps {
+  site: websiteData;
+  onRemoveSite: Function;
+}
+const SiteItem: React.FC<siteItemProps> = ({ site, onRemoveSite }) => {
+  return (
+    <HStack
+      key={site.id}
+      data-site-id={site.id}
+      aria-label="website-item"
+      justifyContent="space-between"
+    >
+      <NavLink to={`/website/${site.id}`}>
+        <Text>{site.title}</Text>
+      </NavLink>
+      <CloseButton onClick={() => onRemoveSite(site.id, site.title)} />
+    </HStack>
+  );
+};
 
 const Websites: React.FC = (props) => {
   const [keyword, setKeyword] = useState('');
   const [removeTargetSiteId, setRemoveTargetSiteId] = useState('');
   const [removeTargetSiteName, setRemoveTargetSiteName] = useState('');
   const { sites, loadState, noSite } = useSites({ keyword });
+  const { t } = useTranslation();
 
   const hasKeyword = keyword.length >= 1;
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -60,7 +82,11 @@ const Websites: React.FC = (props) => {
         <ModalCloseButton />
         <ModalContent>
           <ModalBody>
-            would you like to remove <b>{removeTargetSiteName}</b> ?
+            <Trans
+              i18nKey="modal--remove-website-message"
+              values={{ removeTargetSiteName }}
+              components={[<b />]}
+            />
           </ModalBody>
           <ModalFooter>
             <HStack>
@@ -69,10 +95,10 @@ const Websites: React.FC = (props) => {
                 colorScheme="red"
                 onClick={onRemoveSiteConfirm}
               >
-                Remove
+                {t('modal--remove-website-confirm')}
               </Button>
               <Button variant="outline" onClick={onClose}>
-                No
+                {t('modal--cancel')}
               </Button>
             </HStack>
           </ModalFooter>
@@ -82,7 +108,7 @@ const Websites: React.FC = (props) => {
         <InputGroup>
           <InputLeftElement children={<SearchIcon />} />
           <Input
-            placeholder="please put the site name here"
+            placeholder={t('websites--search-keyword-placeholder')}
             variant="flushed"
             value={keyword}
             onChange={(ev) => setKeyword(ev.target.value)}
@@ -93,11 +119,11 @@ const Websites: React.FC = (props) => {
               <NavLink
                 to={keyword === '' ? '/website' : `/website?title=${keyword}`}
               >
-                <Tooltip label="add new website">
+                <Tooltip label={t('add-new-site')}>
                   <IconButton
                     icon={<AddIcon />}
                     size="sm"
-                    aria-label="add new website"
+                    aria-label={t('add-new-site')}
                     variant="ghost"
                   />
                 </Tooltip>
@@ -108,7 +134,7 @@ const Websites: React.FC = (props) => {
                 onClick={() => setKeyword('')}
                 icon={<CloseIcon />}
                 size="sm"
-                aria-label="reset website search keyword"
+                aria-label={t('websites--reset-search-keyword')}
                 variant="ghost"
               />
             )}
@@ -124,25 +150,13 @@ const Websites: React.FC = (props) => {
         )}
         {loadState === LOAD_SUCCESS && noSite && (
           <Center mt="150">
-            <Text>no websites found</Text>
+            <Text>{t('websites--no-website')}</Text>
           </Center>
         )}
         {loadState === LOAD_SUCCESS && !noSite && (
           <Stack divider={<StackDivider borderColor="gray.200" />} spacing={2}>
             {sites.map((site) => (
-              <HStack
-                key={site.id}
-                data-site-id={site.id}
-                aria-label="website-item"
-                justifyContent="space-between"
-              >
-                <NavLink to={`/website/${site.id}`}>
-                  <Text>{site.title}</Text>
-                </NavLink>
-                <CloseButton
-                  onClick={() => onRemoveSite(site.id, site.title)}
-                />
-              </HStack>
+              <SiteItem key={site.id} {...{ site, onRemoveSite }} />
             ))}
           </Stack>
         )}

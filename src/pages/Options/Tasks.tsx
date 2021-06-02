@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useState } from 'react';
 import useTasks from '@/lib/useTasks';
 import {
@@ -34,6 +34,43 @@ import removeTask from '@/lib/removeTask';
 import useTaskNow from '@/lib/swr/useTaskNow';
 import Emote from '@/components/Emote';
 import { Trans, useTranslation } from 'react-i18next';
+
+interface taskItemProps {
+  task: taskData;
+  taskIdNow: string;
+  onRemoveTask: Function;
+}
+const TaskItem: React.FC<taskItemProps> = ({
+  task,
+  taskIdNow,
+  onRemoveTask,
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <Flex
+      key={task.id}
+      data-task-id={task.id}
+      aria-label="task-item"
+      justifyContent="space-between"
+    >
+      <NavLink to={`/task/${task.id}`}>
+        <HStack>
+          {task.emojiId !== '' && <Emote emoji={task.emojiId} size={24} />}
+          <Text>
+            {task.title}
+            {taskIdNow === task.id && (
+              <Badge size="sm" variant="solid" colorScheme="teal" ml={5}>
+                {t('tasks--active-task-badge')}
+              </Badge>
+            )}
+          </Text>
+        </HStack>
+      </NavLink>
+      <CloseButton onClick={() => onRemoveTask(task.id, task.title)} />
+    </Flex>
+  );
+};
 
 const Tasks: React.FC = (props) => {
   const [keyword, setKeyword] = useState('');
@@ -140,36 +177,7 @@ const Tasks: React.FC = (props) => {
         {loadState === LOAD_SUCCESS && !noTask && (
           <Stack divider={<StackDivider borderColor="gray.200" />} spacing={2}>
             {tasks.map((task) => (
-              <Flex
-                key={task.id}
-                data-task-id={task.id}
-                aria-label="task-item"
-                justifyContent="space-between"
-              >
-                <NavLink to={`/task/${task.id}`}>
-                  <HStack>
-                    {task.emojiId !== '' && (
-                      <Emote emoji={task.emojiId} size={24} />
-                    )}
-                    <Text>
-                      {task.title}
-                      {taskIdNow === task.id && (
-                        <Badge
-                          size="sm"
-                          variant="solid"
-                          colorScheme="teal"
-                          ml={5}
-                        >
-                          {t('tasks--active-task-badge')}
-                        </Badge>
-                      )}
-                    </Text>
-                  </HStack>
-                </NavLink>
-                <CloseButton
-                  onClick={() => onRemoveTask(task.id, task.title)}
-                />
-              </Flex>
+              <TaskItem key={task.id} {...{ taskIdNow, task, onRemoveTask }} />
             ))}
           </Stack>
         )}

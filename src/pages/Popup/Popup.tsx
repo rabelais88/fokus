@@ -97,7 +97,7 @@ const Popup = () => {
                 pb={3}
                 borderRadius={3}
               >
-                <Heading size="sm">Current Task</Heading>
+                <Heading size="sm">{t('popup--current-task')}</Heading>
                 <HStack>
                   {taskNow.emojiId !== '' && (
                     <Emote emoji={taskNow.emojiId} size={32} />
@@ -107,11 +107,15 @@ const Popup = () => {
                   </Heading>
                 </HStack>
                 <Heading size="sm">
-                  {t('hour-minute', startDiff)} since start
+                  {t('popup--task-duration', {
+                    duration: t('hour-minute', startDiff),
+                  })}
                 </Heading>
                 {hasTimeLimit && (
                   <Heading size="sm">
-                    {t('hour-minute', remainingTime)} remaining
+                    {t('popup--remaining-time', {
+                      remainingTime: t('hour-minute', remainingTime),
+                    })}
                   </Heading>
                 )}
               </VStack>
@@ -152,9 +156,10 @@ const Popup = () => {
           {tasksCount === 0 && tasksLoadState === LOAD_SUCCESS && (
             <Box>
               <Text>
-                no tasks detected!
-                <br />
-                add new task from settings page
+                <Trans
+                  i18nKey="popup--no-task"
+                  components={{ lineBreak: <br /> }}
+                />
               </Text>
             </Box>
           )}

@@ -189,9 +189,9 @@ const Stats: React.FC = () => {
         <Table>
           <Thead>
             <Tr>
-              <Th>task name</Th>
-              <Th>start time</Th>
-              <Th>end time</Th>
+              <Th>{t('stats-task-name')}</Th>
+              <Th>{t('stats-task-start-time')}</Th>
+              <Th>{t('stats-task-end-time')}</Th>
             </Tr>
           </Thead>
           <Tbody>
