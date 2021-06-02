@@ -6,6 +6,7 @@
   "websites--no-website" : "등록된 웹사이트가 없습니다",
   "tasks--no-task" : "등록된 작업이 없습니다",
   "donate-description" : "앱에 만족하셨다면<lineBreak />\n커피 한 잔 정도를 기부해주시거나<coffeeEmote /><lineBreak />\n<gitLink>이 깃헙</gitLink>에 생각을 공유해 주세요!",
+  "add-new-task" : "새 작업 만들기",
   "tasks--active-task-badge" : "작업중",
   "modal--remove-webiste-confirm" : "웹사이트 제거",
   "edit-website--test-url-regex-placeholder" : "test any url with given url(regex)",
