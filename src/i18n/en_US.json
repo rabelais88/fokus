@@ -16,6 +16,7 @@
   "stats-task-start-time" : "start time",
   "edit-website--website-name-placeholder" : "website name",
   "websites--reset-search-keyword" : "reset website search keyword",
+  "edit-task--stop-task" : "stop this task",
   "edit-task--task-description" : "task description",
   "export-json-description" : "export settings as .json",
   "edit-website--url-regex-placeholder" : "URL or regex",
