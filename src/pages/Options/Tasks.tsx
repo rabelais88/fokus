@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useState } from 'react';
 import useTasks from '@/lib/useTasks';
 import {
@@ -33,6 +33,44 @@ import { LOAD_SUCCESS } from '@/constants';
 import removeTask from '@/lib/removeTask';
 import useTaskNow from '@/lib/swr/useTaskNow';
 import Emote from '@/components/Emote';
+import { Trans, useTranslation } from 'react-i18next';
+
+interface taskItemProps {
+  task: taskData;
+  taskIdNow: string;
+  onRemoveTask: Function;
+}
+const TaskItem: React.FC<taskItemProps> = ({
+  task,
+  taskIdNow,
+  onRemoveTask,
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <Flex
+      key={task.id}
+      data-task-id={task.id}
+      aria-label="task-item"
+      justifyContent="space-between"
+    >
+      <NavLink to={`/task/${task.id}`}>
+        <HStack>
+          {task.emojiId !== '' && <Emote emoji={task.emojiId} size={24} />}
+          <Text>
+            {task.title}
+            {taskIdNow === task.id && (
+              <Badge size="sm" variant="solid" colorScheme="teal" ml={5}>
+                {t('tasks--active-task-badge')}
+              </Badge>
+            )}
+          </Text>
+        </HStack>
+      </NavLink>
+      <CloseButton onClick={() => onRemoveTask(task.id, task.title)} />
+    </Flex>
+  );
+};
 
 const Tasks: React.FC = (props) => {
   const [keyword, setKeyword] = useState('');
@@ -58,6 +96,7 @@ const Tasks: React.FC = (props) => {
   };
 
   const taskAddable = noTask || keyword === '';
+  const { t } = useTranslation();
 
   return (
     <>
@@ -66,7 +105,11 @@ const Tasks: React.FC = (props) => {
         <ModalCloseButton />
         <ModalContent>
           <ModalBody>
-            would you like to remove <b>{removeTargetTaskName}</b> ?
+            <Trans
+              i18nKey="modal--remove-task-message"
+              components={[<b />]}
+              values={{ removeTargetTaskName }}
+            />
           </ModalBody>
           <ModalFooter>
             <HStack>
@@ -75,10 +118,10 @@ const Tasks: React.FC = (props) => {
                 colorScheme="red"
                 onClick={onRemoveTaskConfirm}
               >
-                Remove
+                {t('modal--remove-task-confirm')}
               </Button>
               <Button variant="outline" onClick={onClose}>
-                No
+                {t('modal--remove-task-cancel')}
               </Button>
             </HStack>
           </ModalFooter>
@@ -88,7 +131,7 @@ const Tasks: React.FC = (props) => {
         <InputGroup>
           <InputLeftElement children={<SearchIcon />} />
           <Input
-            placeholder="please put the task name here"
+            placeholder={t('tasks--task-find-placeholder')}
             variant="flushed"
             value={keyword}
             onChange={(ev) => setKeyword(ev.target.value)}
@@ -97,11 +140,11 @@ const Tasks: React.FC = (props) => {
           <InputRightElement>
             {taskAddable && (
               <NavLink to={keyword === '' ? '/task' : `task?title=${keyword}`}>
-                <Tooltip label="add new task">
+                <Tooltip label={t('add-new-task')}>
                   <IconButton
                     icon={<AddIcon />}
                     size="sm"
-                    aria-label="add new task"
+                    aria-label={t('add-new-task')}
                     variant="ghost"
                   />
                 </Tooltip>
@@ -112,7 +155,7 @@ const Tasks: React.FC = (props) => {
                 onClick={() => setKeyword('')}
                 icon={<CloseIcon />}
                 size="sm"
-                aria-label="reset task search keyword"
+                aria-label={t('tasks--reset-task-search-keyword')}
                 variant="ghost"
               />
             )}
@@ -128,42 +171,13 @@ const Tasks: React.FC = (props) => {
         )}
         {loadState === LOAD_SUCCESS && noTask && (
           <Center mt="150">
-            <Text>no tasks found</Text>
+            <Text>{t('tasks--no-task')}</Text>
           </Center>
         )}
         {loadState === LOAD_SUCCESS && !noTask && (
           <Stack divider={<StackDivider borderColor="gray.200" />} spacing={2}>
             {tasks.map((task) => (
-              <Flex
-                key={task.id}
-                data-task-id={task.id}
-                aria-label="task-item"
-                justifyContent="space-between"
-              >
-                <NavLink to={`/task/${task.id}`}>
-                  <HStack>
-                    {task.emojiId !== '' && (
-                      <Emote emoji={task.emojiId} size={24} />
-                    )}
-                    <Text>
-                      {task.title}
-                      {taskIdNow === task.id && (
-                        <Badge
-                          size="sm"
-                          variant="solid"
-                          colorScheme="teal"
-                          ml={5}
-                        >
-                          NOW
-                        </Badge>
-                      )}
-                    </Text>
-                  </HStack>
-                </NavLink>
-                <CloseButton
-                  onClick={() => onRemoveTask(task.id, task.title)}
-                />
-              </Flex>
+              <TaskItem key={task.id} {...{ taskIdNow, task, onRemoveTask }} />
             ))}
           </Stack>
         )}

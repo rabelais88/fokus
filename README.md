@@ -1,8 +1,7 @@
 # Fokus(chrome extension)
 
-[![Build Status](https://cloud.drone.io/api/badges/rabelais88/fokus/status.svg)](https://cloud.drone.io/rabelais88/fokus)
-
-Chrome Extension that removes any distractions on the web
+[![Build Status](https://cloud.drone.io/api/badges/rabelais88/fokus/status.svg)](https://cloud.drone.io/rabelais88/fokus)<br/>
+Chrome Extension that blocks websites based on current task
 
 # Caveat
 
