@@ -129,7 +129,7 @@ const Website: React.FC = (props) => {
                 value={URL_MODE_REGEX_IGNORE_PROTOCOL}
                 ref={register}
               >
-                {t('edit-website--url-mode-regex-ignore')}
+                {t('edit-website--url-mode-regex-ignore-protocol')}
               </Radio>
             </HStack>
           </RadioGroup>

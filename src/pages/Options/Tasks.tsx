@@ -140,11 +140,11 @@ const Tasks: React.FC = (props) => {
           <InputRightElement>
             {taskAddable && (
               <NavLink to={keyword === '' ? '/task' : `task?title=${keyword}`}>
-                <Tooltip label={t('tasks--add-new-task')}>
+                <Tooltip label={t('add-new-task')}>
                   <IconButton
                     icon={<AddIcon />}
                     size="sm"
-                    aria-label={t('tasks--add-new-task')}
+                    aria-label={t('add-new-task')}
                     variant="ghost"
                   />
                 </Tooltip>
