@@ -1,5 +1,5 @@
 import strToRangedNumber from './strToRangedNumber';
-import { getDebugMode } from '@/lib/controller';
+// import { getDebugMode } from '@/lib/controller';
 
 const colors = [
   '#264653',
@@ -14,12 +14,15 @@ interface consoleInterface {
   (...arg: any[]): void;
 }
 
-const makeLogger = (loggerName: string): consoleInterface => {
+const makeLogger = (
+  loggerName: string,
+  forceDebugMode: boolean = false
+): consoleInterface => {
   const colorIndex = strToRangedNumber(loggerName, colors.length);
   const color = colors[colorIndex];
   const colorStyle = `color: ${color};`;
   return (...args: any[]) => {
-    if (!getDebugMode()) return;
+    // if (!getDebugMode() && forceDebugMode === false) return;
     return console.log(`%c${loggerName}:`, colorStyle, ...args);
   };
 };

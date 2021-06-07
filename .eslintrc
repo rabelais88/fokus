@@ -3,5 +3,6 @@
   "globals": {
     "chrome": "readonly"
   },
-  "plugins": ["cypress"]
+  "plugins": ["cypress"],
+  "ignorePatterns": "build/*"
 }

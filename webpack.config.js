@@ -58,10 +58,15 @@ var options = {
     popup: path.join(__dirname, 'src', 'pages', 'Popup', 'index.jsx'),
     background: path.join(__dirname, 'src', 'pages', 'Background', 'index.js'),
     // contentScript: path.join(__dirname, 'src', 'pages', 'Content', 'index.js'),
+    devtools: path.join(__dirname, 'src', 'pages', 'Devtools', 'index.js'),
+    panel: path.join(__dirname, 'src', 'pages', 'Panel', 'index.jsx'),
   },
   // chromeExtensionBoilerplate: {
   //   notHotReload: ['contentScript'],
   // },
+  chromeExtensionBoilerplate: {
+    notHotReload: ['devtools'],
+  },
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: '[name].bundle.js',
@@ -159,6 +164,15 @@ var options = {
     //     },
     //   ],
     // }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: 'src/lib/bg-loader.js',
+          to: path.join(__dirname, 'build'),
+          force: true,
+        },
+      ],
+    }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src', 'pages', 'Newtab', 'index.html'),
       filename: 'newtab.html',
@@ -178,15 +192,15 @@ var options = {
       cache: false,
     }),
     new HtmlWebpackPlugin({
-      template: path.join(
-        __dirname,
-        'src',
-        'pages',
-        'Background',
-        'index.html'
-      ),
-      filename: 'background.html',
-      chunks: ['background'],
+      template: path.join(__dirname, 'src', 'pages', 'Devtools', 'index.html'),
+      filename: 'devtools.html',
+      chunks: ['devtools'],
+      cache: false,
+    }),
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, 'src', 'pages', 'Panel', 'index.html'),
+      filename: 'panel.html',
+      chunks: ['panel'],
       cache: false,
     }),
     new Dotenv({

@@ -19,7 +19,7 @@ import matchUrlRegex from '@/lib/matchUrlRegex';
 import getTime from '@/lib/getTime';
 import { endTask } from '@/lib/controller/task';
 
-const logger = makeLogger('listenFromBackground');
+const logger = makeLogger('listenFromBackground', true);
 
 export const validateUrl = async (url: string) => {
   const extensionUrl = getSettingsUrl();
