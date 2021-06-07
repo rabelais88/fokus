@@ -51,6 +51,9 @@ export const validateUrl = async (url: string) => {
   return true;
 };
 
+const getBlockedPageUrl = (url: string) =>
+  getSettingsUrl({ [QUERY_BLOCKED_URL]: url });
+
 const onTabUpdate = async (_tab: chrome.tabs.Tab) => {
   logger('onTabUpdate', { tab: _tab, url: _tab.url });
   const currentTask = await storage.get(STORE_TASK_HISTORY_NOW);
@@ -59,7 +62,8 @@ const onTabUpdate = async (_tab: chrome.tabs.Tab) => {
   // eslint-disable-next-line
   if (checkChromeUrl(_tab.url)) return;
   if (currentTask.taskId === '') {
-    chrome.tabs.update(_tab.id, { url: getNewTabUrl() });
+    const url = getBlockedPageUrl(_tab.url);
+    chrome.tabs.update(_tab.id, { url });
     return;
   }
   const isValid = await validateUrl(_tab.url || '');
@@ -73,9 +77,7 @@ const onTabUpdate = async (_tab: chrome.tabs.Tab) => {
   if (isValid && !isTimeout) return;
   if (typeof _tab.id === 'number') {
     if (isTimeout) endTask();
-    const url = getSettingsUrl({
-      [QUERY_BLOCKED_URL]: _tab.url || 'unknown',
-    });
+    const url = getBlockedPageUrl(_tab.url);
     chrome.tabs.update(_tab.id, { url });
   }
 };
