@@ -30,7 +30,7 @@
   "toast--new-task-added" : "new task has been created",
   "edit-task--allow-all-sites" : "allow all sites",
   "toast--task-edited" : "task has been edited",
-  "site-blocked-no-task-description" : "site blockedtry assign a new task before browsing",
+  "site-blocked-no-task-description" : "try assign a new task before browsing",
   "modal--remove-task-confirm" : "remove",
   "toast--website-edited" : "new website has been added",
   "modal--cancel" : "cancel",
