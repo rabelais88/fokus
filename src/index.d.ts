@@ -28,6 +28,8 @@ interface websiteData {
   urlMode: 'URL_MODE_TEXT' | 'URL_MODE_REGEX';
 }
 
+type newWebsiteData = Omit<websiteData, 'id'>;
+
 interface websitesData {
   [key: string]: websiteData;
 }
@@ -36,7 +38,7 @@ interface websitesData {
 type websitesIndex = string[];
 
 interface taskData {
-  id: string;
+  id: '';
   emojiId: string;
   title: string;
   description: string;
@@ -45,6 +47,8 @@ interface taskData {
   blockMode: 'BLOCK_MODE_BLOCK_ALL' | 'BLOCK_MODE_ALLOW_ALL';
   maxDuration: number;
 }
+
+type newTaskData = Omit<taskData, 'id'>;
 
 interface tasksData {
   [key: string]: taskData;
@@ -76,16 +80,23 @@ interface AutoCompleteProps<T = any> {
 }
 
 interface taskHistory {
+  id: string;
   timeStart: number;
   timeEnd: number;
   taskId: string;
 }
 
-type taskNowType = taskData & taskHistory;
+type newTaskHistory = Omit<taskHistory, 'id'>;
 
 type queryType = {
   [key: string]: string;
 };
+
+interface paging<V> {
+  items: V[];
+  count: number;
+  hasNext: boolean;
+}
 
 // interface openModalFunc {
 //   (arg: { type: string; onYes?: () => {}; onNo?: () => {} }): void;
