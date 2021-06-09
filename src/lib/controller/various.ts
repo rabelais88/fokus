@@ -20,6 +20,7 @@ export const setVarious = async <K extends keyof storageVarious>(
 export const getVariousAll = () => {
   return storage.get(STORE_VARIOUS, STORE_VARIOUS_KEY);
 };
-export const setVariousAll = (various: storageVarious) => {
-  return storage.set(STORE_VARIOUS, STORE_VARIOUS_KEY, various);
+export const setVariousAll = async (various: storageVarious) => {
+  await storage.set(STORE_VARIOUS, STORE_VARIOUS_KEY, various);
+  return various;
 };

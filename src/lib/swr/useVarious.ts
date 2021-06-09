@@ -1,4 +1,4 @@
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import {
   SWR_VARIOUS,
   LOAD_SUCCESS,
@@ -14,20 +14,30 @@ import {
   getVariousAll,
 } from '../controller/various';
 
-interface swrVarious {
+interface useVariousResult {
   various: storageVarious;
   loadState: loadStateType;
   setVariousAll: typeof setVariousAll;
   setVarious: typeof setVarious;
 }
-const useVarious = (): swrVarious => {
+const useVarious = (): useVariousResult => {
   const { data, error } = useSWR(SWR_VARIOUS, async () => getVariousAll());
+  const _setVarious: typeof setVarious = async (K, val) => {
+    const newVarious = await setVarious(K, val);
+    mutate(SWR_VARIOUS, newVarious);
+    return newVarious;
+  };
+  const _setVariousAll: typeof setVariousAll = async (val) => {
+    const newVarious = await setVariousAll(val);
+    mutate(SWR_VARIOUS, newVarious);
+    return newVarious;
+  };
 
-  const result: swrVarious = {
+  const result: useVariousResult = {
     various: getDefaultValues()[STORE_VARIOUS],
     loadState: LOAD_INIT,
-    setVariousAll,
-    setVarious,
+    setVariousAll: _setVariousAll,
+    setVarious: _setVarious,
   };
   if (!data && !error) {
     result.loadState = LOAD_LOADING;
