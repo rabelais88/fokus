@@ -3,14 +3,13 @@ import {
   STORE_TASKS,
   STORE_TASK_HISTORY,
   STORE_VARIOUS,
-  STORE_VARIOUS_ID_DEBUG,
-  STORE_VARIOUS_ID_TASK_NOW,
 } from '@/constants/storeKey';
 
 export interface storageVarious {
   id: string;
-  [STORE_VARIOUS_ID_DEBUG]: boolean;
-  [STORE_VARIOUS_ID_TASK_NOW]: string;
+  debug: boolean;
+  nowTaskId: string;
+  nowTaskHistoryId: string;
 }
 export interface storageState {
   [STORE_WEBSITES]: websiteData;
@@ -58,8 +57,9 @@ function getDefaultValues(): storageState {
     },
     [STORE_VARIOUS]: {
       id: '',
-      [STORE_VARIOUS_ID_DEBUG]: false,
-      [STORE_VARIOUS_ID_TASK_NOW]: '',
+      debug: false,
+      nowTaskId: '',
+      nowTaskHistoryId: '',
     },
   };
 }

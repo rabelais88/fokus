@@ -1,0 +1,49 @@
+import useSWR from 'swr';
+import {
+  SWR_VARIOUS,
+  LOAD_SUCCESS,
+  LOAD_LOADING,
+  LOAD_FAIL,
+  STORE_VARIOUS,
+  LOAD_INIT,
+} from '@/constants';
+import getDefaultValues, { storageVarious } from '@/constants/getStoreDefault';
+import {
+  setVariousAll,
+  setVarious,
+  getVariousAll,
+} from '../controller/various';
+
+interface swrVarious {
+  various: storageVarious;
+  loadState: loadStateType;
+  setVariousAll: typeof setVariousAll;
+  setVarious: typeof setVarious;
+}
+const useVarious = (): swrVarious => {
+  const { data, error } = useSWR(SWR_VARIOUS, async () => getVariousAll());
+
+  const result: swrVarious = {
+    various: getDefaultValues()[STORE_VARIOUS],
+    loadState: LOAD_INIT,
+    setVariousAll,
+    setVarious,
+  };
+  if (!data && !error) {
+    result.loadState = LOAD_LOADING;
+    return result;
+  }
+  if (error) {
+    result.loadState = LOAD_FAIL;
+    return result;
+  }
+  if (!data) {
+    return result;
+  }
+  result.loadState = LOAD_SUCCESS;
+  result.various = data;
+
+  return result;
+};
+
+export default useVarious;

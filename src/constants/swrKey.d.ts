@@ -6,3 +6,4 @@ export const SWR_TASKS = 'SWR_TASKS';
 export const SWR_TASK_HISTORIES = 'SWR_TASK_HISTORIES';
 export const SWR_TASK_NOW = 'SWR_TASK_NOW';
 export const SWR_DEBUG_MODE = 'SWR_DEBUG_MODE';
+export const SWR_VARIOUS = 'SWR_VARIOUS';

@@ -6,7 +6,6 @@ import {
   STORE_TASK_HISTORY,
   STORE_VARIOUS,
   STORE_DB,
-  STORE_VARIOUS_ID_DEBUG,
   STORE_VARIOUS_KEY,
 } from '@/constants/storeKey';
 
@@ -36,7 +35,7 @@ const DebugController = () => {
     const settings = await db.get(STORE_VARIOUS, STORE_VARIOUS_KEY);
     await db.put(
       STORE_VARIOUS,
-      { ...settings, [STORE_VARIOUS_ID_DEBUG]: value },
+      { ...settings, debug: value },
       STORE_VARIOUS_KEY
     );
   };
@@ -44,7 +43,7 @@ const DebugController = () => {
   const getDebugMode = async (): Promise<boolean> => {
     if (!db) db = await openDB(STORE_DB, dbVer, dbOpt);
     const settings = await db.get(STORE_VARIOUS, STORE_VARIOUS_KEY);
-    return settings[STORE_VARIOUS_ID_DEBUG];
+    return settings.debug;
   };
 
   return { setDebugMode, getDebugMode };

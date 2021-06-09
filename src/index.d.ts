@@ -38,7 +38,7 @@ interface websitesData {
 type websitesIndex = string[];
 
 interface taskData {
-  id: '';
+  id: string;
   emojiId: string;
   title: string;
   description: string;
@@ -97,6 +97,18 @@ interface paging<V> {
   count: number;
   hasNext: boolean;
 }
+
+interface pagingArg {
+  size?: number;
+  cursorId?: string;
+}
+
+type pagingSearchFunc<V> = (arg: V) => boolean;
+type loadStateType =
+  | 'LOAD_SUCCESS'
+  | 'LOAD_FAIL'
+  | 'LOAD_LOADING'
+  | 'LOAD_INIT';
 
 // interface openModalFunc {
 //   (arg: { type: string; onYes?: () => {}; onNo?: () => {} }): void;
