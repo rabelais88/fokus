@@ -100,8 +100,9 @@ export const removeTask = (taskId: string) => {
   return storage.remove(STORE_TASKS, taskId);
 };
 
-export const editTask = (targetTask: taskData) => {
-  return storage.set(STORE_TASKS, targetTask.id, targetTask);
+export const editTask = async (targetTask: taskData) => {
+  await storage.set(STORE_TASKS, targetTask.id, targetTask);
+  return targetTask;
 };
 
 export const startTask = async (taskId: string) => {

@@ -7,18 +7,25 @@ import {
   SWR_TASK,
 } from '@/constants';
 import getDefaultValues from '@/constants/getStoreDefault';
-import useSWR from 'swr';
-import { getTask } from '../controller/task';
+import useSWR, { mutate } from 'swr';
+import { editTask, getTask } from '../controller/task';
 
 interface useTaskResult {
   task: taskData;
   loadState: loadStateType;
+  editTask: typeof editTask;
 }
 const useTask = (taskId: string): useTaskResult => {
   const { data, error } = useSWR([SWR_TASK, taskId], () => getTask(taskId));
+  const _editTask: typeof editTask = async (targetTask: taskData) => {
+    await editTask(targetTask);
+    mutate([SWR_TASK, targetTask.id]);
+    return targetTask;
+  };
   const result: useTaskResult = {
     loadState: LOAD_INIT,
     task: getDefaultValues()[STORE_TASKS],
+    editTask: _editTask,
   };
   if (!data && !error) {
     result.loadState = LOAD_LOADING;
@@ -35,3 +42,5 @@ const useTask = (taskId: string): useTaskResult => {
   result.loadState = LOAD_SUCCESS;
   return result;
 };
+
+export default useTask;
