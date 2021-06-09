@@ -8,7 +8,7 @@ import {
 } from '@/constants';
 import getDefaultValues from '@/constants/getStoreDefault';
 import useSWR, { mutate } from 'swr';
-import { editTask, getTask } from '../controller/task';
+import { editTask, getTask } from '@/lib/controller/task';
 
 interface useTaskResult {
   task: taskData;

@@ -1,6 +1,4 @@
 import useSWR from 'swr';
-import storage from '@/lib/storage';
-import { STORE_TASK_HISTORY } from '@/constants/storeKey';
 import {
   LOAD_FAIL,
   LOAD_INIT,
@@ -8,12 +6,13 @@ import {
   LOAD_SUCCESS,
   SWR_TASK_HISTORIES,
 } from '@/constants';
-import { getPagingDefault } from '@/constants/getStoreDefault';
+import { searchTaskHistoryByTime } from '../controller/taskHistory';
 
 interface useTaskHistoryArg {
   size?: number;
-  cursor?: string;
-  title?: string;
+  cursorId?: string;
+  timeStart: number;
+  timeEnd: number;
 }
 interface useTaskHistoryResult extends paging<taskHistory> {
   loadState: loadStateType;
@@ -22,12 +21,13 @@ type useTaskHistoryFunc = (arg: useTaskHistoryArg) => useTaskHistoryResult;
 
 const useTaskHistory: useTaskHistoryFunc = ({
   size = 20,
-  cursor,
-  title = '',
-} = {}) => {
+  cursorId,
+  timeStart,
+  timeEnd,
+}) => {
   const { data, error } = useSWR<paging<taskHistory>>(
-    [SWR_TASK_HISTORIES, size, cursor],
-    async () => storage.sea(STORE_TASK_HISTORY, size, cursor)
+    [SWR_TASK_HISTORIES, size, cursorId],
+    () => searchTaskHistoryByTime(timeStart, timeEnd).getAll({ size, cursorId })
   );
   let result: useTaskHistoryResult = {
     items: [],
@@ -35,13 +35,21 @@ const useTaskHistory: useTaskHistoryFunc = ({
     count: 0,
     hasNext: false,
   };
+  if (error && !data) {
+    result.loadState = LOAD_LOADING;
+    return result;
+  }
   if (error) {
     result.loadState = LOAD_FAIL;
     return result;
   }
-  if (!error && data) {
-    loadState = LOAD_SUCCESS;
+  if (!data) {
+    return result;
   }
+  result.loadState = LOAD_SUCCESS;
+  result.items = data.items;
+  result.hasNext = data.hasNext;
+  result.count = data.count;
   return result;
 };
 

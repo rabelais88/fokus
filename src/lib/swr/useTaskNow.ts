@@ -12,7 +12,6 @@ import makeLogger from '@/lib/makeLogger';
 const logger = makeLogger('lib/swr/useTaskNow');
 
 export function useTaskNow() {
-  const;
   // let taskNow: taskNowType = {
   //   title: '',
   //   id: '',
@@ -38,7 +37,6 @@ export function useTaskNow() {
   // logger({ lastTask });
   // if (lastTask && lastTask.timeEnd !== -1)
   //   return { taskNow, hasTask: false, loadState: LOAD_SUCCESS };
-
   // // task history is in tact, but task detail does not exist
   // const taskData = tasks.data[lastTask.taskId];
   // if (!taskData) return { taskNow, hasTask: false, loadState: LOAD_FAIL };
