@@ -104,39 +104,3 @@ export const editTask = async (targetTask: taskData) => {
   await storage.set(STORE_TASKS, targetTask.id, targetTask);
   return targetTask;
 };
-
-export const startTask = async (taskId: string) => {
-  const historyId = makeId();
-  const th: taskHistory = {
-    id: historyId,
-    timeStart: getTime(),
-    timeEnd: -1,
-    taskId,
-  };
-  const various: storageVarious = {
-    ...(await storage.get(STORE_VARIOUS, STORE_VARIOUS_KEY)),
-    nowTaskId: taskId,
-    nowTaskHistoryId: historyId,
-  };
-  const schedules = [
-    storage.add(STORE_TASK_HISTORY, th),
-    storage.set(STORE_VARIOUS, STORE_VARIOUS_KEY, various),
-  ];
-  await Promise.all(schedules);
-};
-
-export const endTask = async () => {
-  const various = await storage.get(STORE_VARIOUS, STORE_VARIOUS_KEY);
-  const { nowTaskHistoryId } = various;
-  const lastHistory = await storage.get(STORE_TASK_HISTORY, nowTaskHistoryId);
-  lastHistory.timeEnd = getTime();
-  const schedules = [storage.set(STORE_VARIOUS, STORE_VARIOUS_KEY, various)];
-  if (lastHistory.id !== '') {
-    schedules.push(
-      storage.set(STORE_TASK_HISTORY, nowTaskHistoryId, lastHistory)
-    );
-  }
-  various.nowTaskId = '';
-  various.nowTaskHistoryId = '';
-  await Promise.all(schedules);
-};

@@ -8,9 +8,7 @@ import {
 } from '@/constants';
 import { searchTaskHistoryByTime } from '../controller/taskHistory';
 
-interface useTaskHistoryArg {
-  size?: number;
-  cursorId?: string;
+interface useTaskHistoryArg extends pagingArg {
   timeStart: number;
   timeEnd: number;
 }
@@ -26,7 +24,7 @@ const useTaskHistory: useTaskHistoryFunc = ({
   timeEnd,
 }) => {
   const { data, error } = useSWR<paging<taskHistory>>(
-    [SWR_TASK_HISTORIES, size, cursorId],
+    [SWR_TASK_HISTORIES, size, cursorId, timeStart, timeEnd],
     () => searchTaskHistoryByTime(timeStart, timeEnd).getAll({ size, cursorId })
   );
   let result: useTaskHistoryResult = {
