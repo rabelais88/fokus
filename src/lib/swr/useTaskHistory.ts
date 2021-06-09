@@ -27,7 +27,7 @@ const useTaskHistory: useTaskHistoryFunc = ({
 } = {}) => {
   const { data, error } = useSWR<paging<taskHistory>>(
     [SWR_TASK_HISTORIES, size, cursor],
-    async () => storage.getAll(STORE_TASK_HISTORY, size, cursor)
+    async () => storage.sea(STORE_TASK_HISTORY, size, cursor)
   );
   let result: useTaskHistoryResult = {
     items: [],
