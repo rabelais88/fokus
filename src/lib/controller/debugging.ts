@@ -1,4 +1,7 @@
-// even might be used within core modules. avoid all module dependencies, except constants.
+/**
+ * this might be used within core modules.
+ * AVOID ALL module dependencies, except constants.
+ *  */
 import { openDB, IDBPDatabase, OpenDBCallbacks } from 'idb';
 import {
   STORE_WEBSITES,
