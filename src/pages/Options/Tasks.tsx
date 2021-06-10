@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useState } from 'react';
-import useTasks from '@/lib/useTasks';
+import useTasks from '@/lib/swr/useTasks';
 import {
   Box,
   IconButton,
@@ -30,10 +30,10 @@ import {
 import { AddIcon, CloseIcon, SearchIcon } from '@chakra-ui/icons';
 import { NavLink } from '@/components';
 import { LOAD_SUCCESS } from '@/constants';
-import removeTask from '@/lib/removeTask';
 import useTaskNow from '@/lib/swr/useTaskNow';
 import Emote from '@/components/Emote';
 import { Trans, useTranslation } from 'react-i18next';
+import { removeTask } from '@/lib/controller/task';
 
 interface taskItemProps {
   task: taskData;
@@ -77,8 +77,9 @@ const Tasks: React.FC = (props) => {
   const [removeTargetTaskId, setRemoveTargetTaskId] = useState('');
   const [removeTargetTaskName, setRemoveTargetTaskName] = useState('');
 
-  const { tasks, loadState, noTask } = useTasks({ keyword });
-  const { taskNow } = useTaskNow();
+  const { items: tasks, loadState, count } = useTasks({ title: keyword });
+  const noTask = count === 0;
+  const { task: taskNow } = useTaskNow();
   const taskIdNow = (taskNow || {}).id;
 
   const hasKeyword = keyword.length >= 1;

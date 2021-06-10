@@ -23,12 +23,12 @@ var alias = {
   'react-dom': '@hot-loader/react-dom',
   '@': rootPath,
 };
-if (isDevEnv)
-  alias[path.join(rootPath, 'lib', 'storage')] = path.join(
-    rootPath,
-    'lib',
-    'storageDev'
-  );
+// if (isDevEnv)
+//   alias[path.join(rootPath, 'lib', 'storage')] = path.join(
+//     rootPath,
+//     'lib',
+//     'storageDev'
+//   );
 
 // load the secrets
 var secretsPath = path.join(__dirname, 'secrets.' + env.NODE_ENV + '.js');

@@ -10,7 +10,7 @@ interface getSitesArg extends pagingArg {
 }
 
 export const getSites = ({
-  size = 20,
+  size = Infinity,
   cursorId,
   searchFunc,
 }: getSitesArg = {}) => {

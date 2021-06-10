@@ -8,23 +8,25 @@ const DailyTaskWrapper = () => {
       width={500}
       height={500}
       padding={50}
-      history={[
-        {
-          timeStart: new Date('2020-01-01 08:00').getTime(),
-          timeEnd: new Date('2020-01-01 10:00').getTime(),
-          taskId: 'task1',
-        },
-        {
-          timeStart: new Date('2020-01-01 08:01').getTime(),
-          timeEnd: -1,
-          taskId: 'task2',
-        },
-        {
-          timeStart: new Date('2020-01-01 22:00').getTime(),
-          timeEnd: -1,
-          taskId: 'task3',
-        },
-      ]}
+      history={
+        [
+          // {
+          //   timeStart: new Date('2020-01-01 08:00').getTime(),
+          //   timeEnd: new Date('2020-01-01 10:00').getTime(),
+          //   taskId: 'task1',
+          // },
+          // {
+          //   timeStart: new Date('2020-01-01 08:01').getTime(),
+          //   timeEnd: -1,
+          //   taskId: 'task2',
+          // },
+          // {
+          //   timeStart: new Date('2020-01-01 22:00').getTime(),
+          //   timeEnd: -1,
+          //   taskId: 'task3',
+          // },
+        ]
+      }
       tasks={{
         task1: {
           id: 'task1',

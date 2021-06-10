@@ -3,6 +3,7 @@ import {
   STORE_TASKS,
   STORE_TASK_HISTORY,
   STORE_VARIOUS,
+  STORE_VARIOUS_KEY,
 } from '@/constants/storeKey';
 
 export interface storageVarious {
@@ -56,7 +57,7 @@ function getDefaultValues(): storageState {
       taskId: '',
     },
     [STORE_VARIOUS]: {
-      id: '',
+      id: STORE_VARIOUS_KEY,
       debug: false,
       nowTaskId: '',
       nowTaskHistoryId: '',

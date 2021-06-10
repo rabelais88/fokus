@@ -7,17 +7,20 @@ import {
   QUERY_BLOCKED_URL,
   TIME_MINUTE,
 } from '@/constants';
-import getTaskInfo from '@/lib/getTaskInfo';
+// import getTaskInfo from '@/lib/getTaskInfo';
 import storage from '@/lib/storage';
 import getSettingsUrl from '@/lib/getSettingsUrl';
-import { STORE_TASKS, STORE_TASK_HISTORY_NOW } from '@/constants/storeKey';
-import STORE_PRESERVED_KEYS from '@/constants/STORE_PRESERVED_KEYS';
+// import STORE_PRESERVED_KEYS from '@/constants/STORE_PRESERVED_KEYS';
 import checkChromeUrl from '@/lib/checkChromeUrl';
 import getNewTabUrl from '@/lib/getNewTabUrl';
 import saveJson from '@/lib/file/saveJson';
 import matchUrlRegex from '@/lib/matchUrlRegex';
 import getTime from '@/lib/getTime';
-import { endTask } from '@/lib/controller/task';
+import { getVarious } from '../controller/various';
+import { getTask } from '../controller/task';
+import { endTask, getTaskHistory } from '../controller/taskHistory';
+import { getSites } from '../controller/site';
+// import { endTask } from '@/lib/controller/task';
 
 const logger = makeLogger('listenFromBackground', true);
 
@@ -25,7 +28,18 @@ export const validateUrl = async (url: string) => {
   const extensionUrl = getSettingsUrl();
   if (url.includes(extensionUrl)) return true;
   if (url === '') return true;
-  const { allowedSites, blockedSites, blockMode } = await getTaskInfo();
+  const nowTaskId = await getVarious('nowTaskId');
+  const nowTask = await getTask(nowTaskId);
+  const { blockedSiteIds, allowedSiteIds, blockMode } = nowTask;
+  const { items: blockedSites } = await getSites({
+    size: -1,
+    searchFunc: (website) => blockedSiteIds.includes(website.id),
+  });
+  const { items: allowedSites } = await getSites({
+    size: -1,
+    searchFunc: (website) => allowedSiteIds.includes(website.id),
+  });
+
   logger('validateUrl', { url, allowedSites, blockedSites, blockMode });
   if (blockMode === BLOCK_MODE_ALLOW_ALL) {
     const result = blockedSites.findIndex(({ urlMode, urlRegex }) => {
@@ -56,23 +70,24 @@ const getBlockedPageUrl = (url: string) =>
 
 const onTabUpdate = async (_tab: chrome.tabs.Tab) => {
   logger('onTabUpdate', { tab: _tab, url: _tab.url });
-  const currentTask = await storage.get(STORE_TASK_HISTORY_NOW);
+  const currentTaskId = await getVarious('nowTaskId');
+  const currentTaskHistoryId = await getVarious('nowTaskHistoryId');
   // if it's not a site with proper url(i.g. new tab), just show.
   if (!_tab.url || !_tab.id) return;
   // eslint-disable-next-line
   if (checkChromeUrl(_tab.url)) return;
-  if (currentTask.taskId === '') {
+  if (currentTaskId === '') {
     const url = getBlockedPageUrl(_tab.url);
     chrome.tabs.update(_tab.id, { url });
     return;
   }
   const isValid = await validateUrl(_tab.url || '');
-  const tasks = await storage.get(STORE_TASKS);
-  const currentTaskDetail = tasks[currentTask.taskId];
+  const currentTask = await getTask(currentTaskId);
+  const currentTaskHistory = await getTaskHistory(currentTaskHistoryId);
   const targetTime =
-    currentTask.timeStart + currentTaskDetail.maxDuration * TIME_MINUTE;
+    currentTaskHistory.timeStart + currentTask.maxDuration * TIME_MINUTE;
   let isTimeout = false;
-  if (currentTaskDetail.maxDuration > 0) isTimeout = getTime() > targetTime;
+  if (currentTask.maxDuration > 0) isTimeout = getTime() > targetTime;
   logger('checking', { timeNow: getTime(), targetTime, isTimeout });
   if (isValid && !isTimeout) return;
   if (typeof _tab.id === 'number') {
@@ -94,11 +109,12 @@ const onStorageChange = () => {
 };
 
 const onExportSettings = async () => {
-  logger('onExportSettings');
-  const readers = STORE_PRESERVED_KEYS.map(storage.get);
-  const data = {
-    settings: await Promise.all(readers),
-  };
+  // logger('onExportSettings');
+  // const readers = STORE_PRESERVED_KEYS.map(storage.get);
+  // const data = {
+  //   settings: await Promise.all(readers),
+  // };
+  const data = {};
   saveJson(data, 'settings.json');
 };
 

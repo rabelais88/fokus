@@ -21,29 +21,32 @@ import useTaskHistory from '@/lib/swr/useTaskHistory';
 import DailyTask from '@/components/chart/DailyTask';
 import useTaskNow from '@/lib/swr/useTaskNow';
 import { LOAD_SUCCESS, STORE_TASKS } from '@/constants';
-import useTasks from '@/lib/useTasks';
+import useTasks from '@/lib/swr/useTasks';
 import analyzeTime from '@/lib/analyzeTime';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import DatePicker from '@/components/DatePicker';
 import useDebugMode from '@/lib/swr/useDebugMode';
+import useTask from '@/lib/swr/useTask';
+import useTaskHistories from '@/lib/swr/useTaskHistories';
 
 type CurrentTaskDisplayArg = {
-  taskNow: taskNowType;
+  taskId: string;
   hasTask: boolean;
 };
 const CurrentTaskDisplay: React.FC<CurrentTaskDisplayArg> = ({
-  taskNow,
+  taskId,
   hasTask,
 }) => {
   if (!hasTask) return <Text>no task assigned at the moment </Text>;
+  const { task } = useTask(taskId);
 
   return (
     <Table>
       <Tbody>
         <Tr>
           <Td>Current task</Td>
-          <Td>{taskNow.title}</Td>
+          <Td>{task.title}</Td>
         </Tr>
       </Tbody>
     </Table>
@@ -51,14 +54,13 @@ const CurrentTaskDisplay: React.FC<CurrentTaskDisplayArg> = ({
 };
 
 type Action =
-  | { type: 'setPage'; page: number }
   | { type: 'setSize'; size: number }
   | { type: 'setTimeStart'; timeStart: number }
   | { type: 'setTimeEnd'; timeEnd: number };
 
 interface State {
   size: number;
-  page: number;
+  cursorId?: string;
   timeStart: number;
   timeEnd: number;
 }
@@ -74,15 +76,13 @@ const today = dayjs(new Date())
 
 const initialState: State = {
   size: 20,
-  page: 0,
+  cursorId: undefined,
   timeStart: today,
   timeEnd: get24hPast(today),
 };
 
 const reducer: Reducer<State, Action> = (state, action) => {
   switch (action.type) {
-    case 'setPage':
-      return { ...state, cursor: action.page };
     case 'setSize':
       return { ...state, size: action.size };
     case 'setTimeStart':
@@ -94,49 +94,34 @@ const reducer: Reducer<State, Action> = (state, action) => {
   }
 };
 
-interface TaskRowProps extends TableRowProps, taskHistory {
-  taskName: string;
+interface TaskRowProps extends TableRowProps {
+  taskId: string;
+  taskHistoryId: string;
 }
 
 const TaskRow: React.FC<TaskRowProps> = (props) => {
   const { t } = useTranslation();
+  const { task } = useTask(props.taskId);
+  const { taskHistory } = useTaskHistory(props.taskHistoryId);
   return (
     <Tr>
-      <Td>{props.taskName}</Td>
-      <Td>{t('full-time', analyzeTime(props.timeStart))}</Td>
-      <Td>{t('full-time', analyzeTime(props.timeEnd))}</Td>
+      <Td>{task.title}</Td>
+      <Td>{t('full-time', analyzeTime(taskHistory.timeStart))}</Td>
+      <Td>{t('full-time', analyzeTime(taskHistory.timeEnd))}</Td>
     </Tr>
   );
 };
 
 const Stats: React.FC = () => {
-  const {
-    taskHistory,
-    noTaskHistory,
-    loadState: taskHistoryLoadState,
-  } = useTaskHistory();
-  const { hasTask, taskNow, loadState: taskNowLoadState } = useTaskNow();
-  const { tasksById, loadState: tasksLoadState } = useTasks();
+  const { hasTask, task: taskNow, loadState: taskNowLoadState } = useTaskNow();
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { timeStart, timeEnd } = state;
+  const { timeStart, timeEnd, size, cursorId } = state;
   const { t } = useTranslation();
-
-  const todayHistory = useMemo(() => {
-    return taskHistory.filter(
-      (hist) => hist.timeStart >= timeStart && hist.timeStart <= timeEnd
-    );
-  }, [timeStart, timeEnd]);
+  const { items: todayHistory, loadState: taskHistoryLoadState } =
+    useTaskHistories({ timeStart, timeEnd, size, cursorId });
+  const { items: tasks, loadState: tasksLoadState } = useTasks({ size: 9999 });
 
   const hasEnoughTask = useMemo(() => todayHistory.length >= 2, [todayHistory]);
-  const hasNext = useMemo(
-    () => taskHistory.length < state.page * state.size,
-    [taskHistory, state]
-  );
-  const filteredHistory = useMemo(() => {
-    const startIndex = state.page * state.size;
-    const endIndex = startIndex + state.size;
-    return taskHistory.slice(startIndex, endIndex);
-  }, [taskHistory, state]);
 
   const { debugMode, setDebugMode } = useDebugMode();
 
@@ -149,7 +134,7 @@ const Stats: React.FC = () => {
         {t('statistics-heading')}
       </Heading>
       {taskNowLoadState === LOAD_SUCCESS && (
-        <CurrentTaskDisplay taskNow={taskNow} hasTask={hasTask} />
+        <CurrentTaskDisplay taskId={taskNow.id} hasTask={hasTask} />
       )}
       {!hasEnoughTask && <Text>{t('stats-not-sufficient-record')}</Text>}
       <HStack>
@@ -179,7 +164,7 @@ const Stats: React.FC = () => {
       {hasEnoughTask && (
         <DailyTask
           history={todayHistory}
-          tasks={tasksById}
+          tasks={{}}
           width={500}
           height={500}
           padding={50}
@@ -195,12 +180,8 @@ const Stats: React.FC = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {filteredHistory.map((hist, i) => (
-              <TaskRow
-                key={i}
-                taskName={(tasksById[hist.taskId] || {}).title || ''}
-                {...hist}
-              />
+            {todayHistory.map((hist, i) => (
+              <TaskRow key={i} taskId={hist.taskId} taskHistoryId={hist.id} />
             ))}
           </Tbody>
         </Table>

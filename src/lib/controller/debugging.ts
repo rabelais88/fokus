@@ -8,6 +8,7 @@ import {
   STORE_DB,
   STORE_VARIOUS_KEY,
 } from '@/constants/storeKey';
+import getDefaultValues from '@/constants/getStoreDefault';
 
 const DebugController = () => {
   let db: IDBPDatabase<unknown> | null = null;
@@ -33,6 +34,13 @@ const DebugController = () => {
   const setDebugMode = async (value: boolean) => {
     if (!db) db = await openDB(STORE_DB, dbVer, dbOpt);
     const settings = await db.get(STORE_VARIOUS, STORE_VARIOUS_KEY);
+    if (!settings) {
+      await db.add(STORE_VARIOUS, {
+        ...getDefaultValues()[STORE_VARIOUS],
+        debug: value,
+      });
+      return;
+    }
     await db.put(
       STORE_VARIOUS,
       { ...settings, debug: value },
@@ -43,6 +51,7 @@ const DebugController = () => {
   const getDebugMode = async (): Promise<boolean> => {
     if (!db) db = await openDB(STORE_DB, dbVer, dbOpt);
     const settings = await db.get(STORE_VARIOUS, STORE_VARIOUS_KEY);
+    if (!settings) return getDefaultValues()[STORE_VARIOUS].debug;
     return settings.debug;
   };
 

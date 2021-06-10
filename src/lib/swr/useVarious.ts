@@ -12,7 +12,7 @@ import {
   setVariousAll,
   setVarious,
   getVariousAll,
-} from '../controller/various';
+} from '@/lib/controller/various';
 
 interface useVariousResult {
   various: storageVarious;
@@ -20,18 +20,18 @@ interface useVariousResult {
   setVariousAll: typeof setVariousAll;
   setVarious: typeof setVarious;
 }
+const _setVarious: typeof setVarious = async (K, val) => {
+  const newVarious = await setVarious(K, val);
+  mutate(SWR_VARIOUS, newVarious);
+  return newVarious;
+};
+const _setVariousAll: typeof setVariousAll = async (val) => {
+  const newVarious = await setVariousAll(val);
+  mutate(SWR_VARIOUS, newVarious);
+  return newVarious;
+};
 const useVarious = (): useVariousResult => {
   const { data, error } = useSWR(SWR_VARIOUS, async () => getVariousAll());
-  const _setVarious: typeof setVarious = async (K, val) => {
-    const newVarious = await setVarious(K, val);
-    mutate(SWR_VARIOUS, newVarious);
-    return newVarious;
-  };
-  const _setVariousAll: typeof setVariousAll = async (val) => {
-    const newVarious = await setVariousAll(val);
-    mutate(SWR_VARIOUS, newVarious);
-    return newVarious;
-  };
 
   const result: useVariousResult = {
     various: getDefaultValues()[STORE_VARIOUS],

@@ -1,27 +1,17 @@
-import storage from '@/lib/storage';
-import {
-  STORE_TASKS,
-  STORE_TASK_HISTORY_NOW,
-  STORE_WEBSITES,
-} from '@/constants/storeKey';
+import { getSites } from './controller/site';
+import { getTask } from './controller/task';
+import { getVarious } from './controller/various';
 
 const getTaskInfo = async () => {
-  const [taskHistoryNow, tasksById, sitesById] = await Promise.all([
-    storage.get(STORE_TASK_HISTORY_NOW),
-    storage.get(STORE_TASKS),
-    storage.get(STORE_WEBSITES),
+  // const nowTaskHistoryId = await getVarious('nowTaskHistoryId');
+  const nowTaskId = await getVarious('nowTaskId');
+  const nowTask = await getTask(nowTaskId);
+  const { allowedSiteIds, blockedSiteIds } = nowTask;
+  const [{ items: allowedSites }, { items: blockedSites }] = await Promise.all([
+    getSites({ searchFunc: (website) => allowedSiteIds.includes(website.id) }),
+    getSites({ searchFunc: (website) => blockedSiteIds.includes(website.id) }),
   ]);
-  if (taskHistoryNow.taskId === '') {
-    return { allowedSites: [], blockedSites: [] };
-  }
-  const taskNow = tasksById[taskHistoryNow.taskId];
-  const allowedSites = taskNow.allowedSiteIds.map(
-    (siteId) => sitesById[siteId]
-  );
-  const blockedSites = taskNow.blockedSiteIds.map(
-    (siteId) => sitesById[siteId]
-  );
-  return { allowedSites, blockedSites, blockMode: taskNow.blockMode };
+  return { allowedSites, blockedSites, blockMode: nowTask.blockMode };
 };
 
 export default getTaskInfo;

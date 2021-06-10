@@ -73,7 +73,7 @@ const storage = () => {
     value: storageState[K]
   ) {
     if (!db) db = await openDB<DB>(STORE_DB, dbVer, dbOpt);
-    logger('set()', { key, value });
+    logger(`set(${key})`, value);
     onStorageChange();
     const s = db.transaction(store, 'readwrite').store;
     await s.put(value, key);
@@ -84,7 +84,7 @@ const storage = () => {
     value: storageState[K]
   ) {
     if (!db) db = await openDB<DB>(STORE_DB, dbVer, dbOpt);
-    logger('add()', { store, value });
+    logger(`add(${store})`, value);
     onStorageChange();
     const tx = db.transaction(store, 'readwrite');
     await tx.store.add(value);
@@ -96,12 +96,14 @@ const storage = () => {
     key: string
   ): Promise<DB[K]['value']> {
     if (!db) db = await openDB(STORE_DB, dbVer, dbOpt);
-    logger('get()', { key });
     const val = await db.get(store, key);
+    logger(`get(${key})`, val);
     if (val === undefined) {
       const defaultValues = getDefaultValues();
+      logger(`get(${key}) return default`, getDefaultValues()[store]);
       return defaultValues[store];
     }
+    logger(`get(${key}) return`, val);
     return val;
   }
 

@@ -17,7 +17,7 @@ export const getTaskHistory = (taskHistoryId: string) => {
 };
 
 export const getTaskHistories = ({
-  size = 20,
+  size = Infinity,
   cursorId,
   searchFunc,
 }: getTaskHistoryArg = {}) => {

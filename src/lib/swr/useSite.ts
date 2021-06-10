@@ -3,13 +3,12 @@ import {
   LOAD_INIT,
   LOAD_LOADING,
   LOAD_SUCCESS,
-  STORE_TASKS,
   STORE_WEBSITES,
   SWR_WEBSITE,
 } from '@/constants';
 import getDefaultValues from '@/constants/getStoreDefault';
 import useSWR from 'swr';
-import { getSite } from '../controller/site';
+import { getSite } from '@/lib/controller/site';
 
 interface useSiteResult {
   site: websiteData;

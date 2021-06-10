@@ -4,35 +4,28 @@ import {
   LOAD_INIT,
   LOAD_LOADING,
   LOAD_SUCCESS,
-  SWR_TASK_HISTORIES,
+  STORE_TASK_HISTORY,
+  SWR_TASK_HISTORY,
 } from '@/constants';
-import { searchTaskHistoryByTime } from '../controller/taskHistory';
+import { getTaskHistory } from '@/lib/controller/taskHistory';
+import getDefaultValues from '@/constants/getStoreDefault';
 
-interface useTaskHistoryArg extends pagingArg {
-  timeStart: number;
-  timeEnd: number;
-}
-interface useTaskHistoryResult extends paging<taskHistory> {
+interface useTaskHistoryResult {
+  taskHistory: taskHistory;
   loadState: loadStateType;
 }
-type useTaskHistoryFunc = (arg: useTaskHistoryArg) => useTaskHistoryResult;
 
-const useTaskHistory: useTaskHistoryFunc = ({
-  size = 20,
-  cursorId,
-  timeStart,
-  timeEnd,
-}) => {
-  const { data, error } = useSWR<paging<taskHistory>>(
-    [SWR_TASK_HISTORIES, size, cursorId, timeStart, timeEnd],
-    () => searchTaskHistoryByTime(timeStart, timeEnd).getAll({ size, cursorId })
+const useTaskHistory = (taskHistoryId: string) => {
+  const { data, error } = useSWR<taskHistory>(
+    [SWR_TASK_HISTORY, taskHistoryId],
+    async () => await getTaskHistory(taskHistoryId)
   );
+
   let result: useTaskHistoryResult = {
-    items: [],
     loadState: LOAD_INIT,
-    count: 0,
-    hasNext: false,
+    taskHistory: getDefaultValues()[STORE_TASK_HISTORY],
   };
+
   if (error && !data) {
     result.loadState = LOAD_LOADING;
     return result;
@@ -45,9 +38,7 @@ const useTaskHistory: useTaskHistoryFunc = ({
     return result;
   }
   result.loadState = LOAD_SUCCESS;
-  result.items = data.items;
-  result.hasNext = data.hasNext;
-  result.count = data.count;
+  result.taskHistory = data;
   return result;
 };
 

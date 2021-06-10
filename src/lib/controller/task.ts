@@ -65,7 +65,7 @@ interface getTasksArg extends pagingArg {
 }
 
 export const getTasks = ({
-  size = 20,
+  size = Infinity,
   cursorId,
   searchFunc,
 }: getTasksArg = {}) => {

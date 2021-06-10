@@ -16,12 +16,8 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import useTaskNow from '@/lib/swr/useTaskNow';
-import useTasks from '@/lib/useTasks';
-import storage from '@/lib/storage';
-import startTask from '@/lib/swr/startTask';
-import { STORE_TASKS } from '@/constants/storeKey';
+import useTasks from '@/lib/swr/useTasks';
 import { analyzeTime, makeResult } from '@/lib';
-import endTask from '@/lib/swr/endTask';
 import { Trans, useTranslation } from 'react-i18next';
 import AutoComplete from '@/components/AutoComplete';
 import { CheckIcon, SettingsIcon, SmallCloseIcon } from '@chakra-ui/icons';
@@ -29,16 +25,24 @@ import Emote from '@/components/Emote';
 import useNow from '@/lib/useNow';
 import getTimeDiff from '@/lib/getTimeDiff';
 import { TIME_MINUTE } from '@/constants';
+import { searchTaskTitle } from '@/lib/controller/task';
 
 const logger = makeLogger('Popup.jsx');
 
 const Popup = () => {
-  const { taskNow, hasTask, loadState: taskNowLoadState } = useTaskNow();
-  const { tasksCount, loadState: tasksLoadState } = useTasks();
+  const {
+    task: taskNow,
+    taskHistory: taskHistoryNow,
+    hasTask,
+    loadState: taskNowLoadState,
+    startTask,
+    endTask,
+  } = useTaskNow();
+  const { count: tasksCount, loadState: tasksLoadState } = useTasks({});
   const { timestampNow } = useNow();
   const { t } = useTranslation();
   const startDiff = useMemo(
-    () => getTimeDiff(timestampNow, taskNow.timeStart),
+    () => getTimeDiff(timestampNow, taskHistoryNow.timeStart),
     [taskNow, timestampNow]
   );
   1e3;
@@ -46,7 +50,7 @@ const Popup = () => {
     () =>
       getTimeDiff(
         timestampNow,
-        taskNow.timeStart + taskNow.maxDuration * TIME_MINUTE
+        taskHistoryNow.timeStart + taskNow.maxDuration * TIME_MINUTE
       ),
     [taskNow, timestampNow]
   );
@@ -56,12 +60,8 @@ const Popup = () => {
   };
 
   const onSuggestTasks = async (keyword: string) => {
-    const reqTasks = await storage.get(STORE_TASKS);
-    const reKeyword = new RegExp(keyword, 'i');
-    const matchKeywords = Object.values<taskData>(reqTasks).filter(
-      (task) => reKeyword.test(task.title) || reKeyword.test(task.description)
-    );
-    const result: any = matchKeywords.map((task) => ({
+    const reqTasks = await searchTaskTitle(keyword).getAll({ size: 50 });
+    const result: any = reqTasks.items.map((task) => ({
       key: task.id,
       text: task.title,
     }));

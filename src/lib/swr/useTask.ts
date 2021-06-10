@@ -15,13 +15,13 @@ interface useTaskResult {
   loadState: loadStateType;
   editTask: typeof editTask;
 }
+const _editTask: typeof editTask = async (targetTask: taskData) => {
+  await editTask(targetTask);
+  mutate([SWR_TASK, targetTask.id]);
+  return targetTask;
+};
 const useTask = (taskId: string): useTaskResult => {
   const { data, error } = useSWR([SWR_TASK, taskId], () => getTask(taskId));
-  const _editTask: typeof editTask = async (targetTask: taskData) => {
-    await editTask(targetTask);
-    mutate([SWR_TASK, targetTask.id]);
-    return targetTask;
-  };
   const result: useTaskResult = {
     loadState: LOAD_INIT,
     task: getDefaultValues()[STORE_TASKS],

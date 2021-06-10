@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { LOAD_SUCCESS } from '@/constants';
-import useSites from '@/lib/useSites';
+import useSites from '@/lib/swr/useSites';
 import {
   Box,
   Button,
@@ -29,8 +29,8 @@ import {
 import React from 'react';
 import { SearchIcon, AddIcon, CloseIcon } from '@chakra-ui/icons';
 import { NavLink } from '@/components';
-import removeSite from '@/lib/removeSite';
 import { Trans, useTranslation } from 'react-i18next';
+import { removeSite } from '@/lib/controller/site';
 
 interface siteItemProps {
   site: websiteData;
@@ -56,7 +56,9 @@ const Websites: React.FC = (props) => {
   const [keyword, setKeyword] = useState('');
   const [removeTargetSiteId, setRemoveTargetSiteId] = useState('');
   const [removeTargetSiteName, setRemoveTargetSiteName] = useState('');
-  const { sites, loadState, noSite } = useSites({ keyword });
+  const { items: sites, loadState, count } = useSites({ title: keyword });
+  const noSite = count === 0;
+
   const { t } = useTranslation();
 
   const hasKeyword = keyword.length >= 1;

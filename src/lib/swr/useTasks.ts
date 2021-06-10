@@ -7,7 +7,7 @@ import {
 } from '@/constants';
 import { getPagingDefault } from '@/constants/getStoreDefault';
 import useSWR from 'swr';
-import { getTasks, searchTaskTitle } from '../controller/task';
+import { getTasks, searchTaskTitle } from '@/lib/controller/task';
 
 interface useTasksArg extends pagingArg {
   title?: string;
@@ -19,7 +19,7 @@ interface useTasksResult extends paging<taskData> {
 
 type useTasksFunc = (arg: useTasksArg) => useTasksResult;
 
-const useTasks: useTasksFunc = ({ size = 20, cursorId, title = '' }) => {
+const useTasks: useTasksFunc = ({ size = Infinity, cursorId, title = '' }) => {
   const { data, error } = useSWR(
     [SWR_TASKS, size, cursorId, title],
     async () => {

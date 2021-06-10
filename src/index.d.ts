@@ -30,10 +30,6 @@ interface websiteData {
 
 type newWebsiteData = Omit<websiteData, 'id'>;
 
-interface websitesData {
-  [key: string]: websiteData;
-}
-
 // stores order of website ids
 type websitesIndex = string[];
 
@@ -49,10 +45,6 @@ interface taskData {
 }
 
 type newTaskData = Omit<taskData, 'id'>;
-
-interface tasksData {
-  [key: string]: taskData;
-}
 
 type tasksIndex = string[];
 

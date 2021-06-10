@@ -22,11 +22,10 @@ import {
 } from '@/constants';
 import useQuery from '@/lib/useQuery';
 import makeLogger from '@/lib/makeLogger';
-import addSite from '@/lib/swr/addSite';
-import useSite from '@/lib/useSite';
-import editSite from '@/lib/swr/editSite';
+import useSite from '@/lib/swr/useSite';
 import matchUrlRegex from '@/lib/matchUrlRegex';
 import { useTranslation } from 'react-i18next';
+import { addSite, editSite } from '@/lib/controller/site';
 
 const logger = makeLogger('pages/Options/Website');
 
