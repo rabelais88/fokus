@@ -117,7 +117,11 @@ const storage = () => {
         items.push(cursor.value);
         i += 1;
       }
-      await cursor.continue();
+      try {
+        await cursor.continue();
+      } catch (err) {
+        // intended blank
+      }
     }
     const hasNext = !!cursor;
     const count = await tx.store.count();
