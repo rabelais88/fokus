@@ -107,20 +107,20 @@ const storage = () => {
     if (!db) db = await openDB<DB>(STORE_DB, dbVer, dbOpt);
 
     const tx = db.transaction(store, 'readwrite');
-    const cursor = await tx.store.openCursor(cursorId);
+    let cursor = await tx.store.openCursor(cursorId);
     let i = 0;
     let items = [];
-    while (i < size) {
-      if (!cursor) break;
-      const isItemValid = searchFunc ? searchFunc(cursor.value) : true;
+    while (i < size && cursor) {
+      const isItemValid =
+        typeof searchFunc === 'function' ? searchFunc(cursor.value) : true;
       if (isItemValid) {
         items.push(cursor.value);
         i += 1;
       }
       try {
-        await cursor.continue();
+        cursor = await cursor.continue();
       } catch (err) {
-        // intended blank
+        break;
       }
     }
     const hasNext = !!cursor;
