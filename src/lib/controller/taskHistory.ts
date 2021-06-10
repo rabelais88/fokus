@@ -68,7 +68,7 @@ export const startTask = async (taskId: string) => {
   };
   const schedules = [
     storage.add(STORE_TASK_HISTORY, th),
-    storage.set(STORE_VARIOUS, STORE_VARIOUS_KEY, various),
+    storage.set(STORE_VARIOUS, various),
   ];
   await Promise.all(schedules);
   return { taskHistory: th, various };
@@ -79,11 +79,9 @@ export const endTask = async () => {
   const { nowTaskHistoryId } = various;
   const lastHistory = await storage.get(STORE_TASK_HISTORY, nowTaskHistoryId);
   lastHistory.timeEnd = getTime();
-  const schedules = [storage.set(STORE_VARIOUS, STORE_VARIOUS_KEY, various)];
+  const schedules = [storage.set(STORE_VARIOUS, various)];
   if (lastHistory.id !== '') {
-    schedules.push(
-      storage.set(STORE_TASK_HISTORY, nowTaskHistoryId, lastHistory)
-    );
+    schedules.push(storage.set(STORE_TASK_HISTORY, lastHistory));
   }
   various.nowTaskId = '';
   various.nowTaskHistoryId = '';

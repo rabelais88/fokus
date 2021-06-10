@@ -1,64 +1,9 @@
 import storage from '@/lib/storage';
-import {
-  STORE_TASKS,
-  STORE_TASK_HISTORY,
-  STORE_TASK_HISTORY_NOW,
-  STORE_VARIOUS,
-  STORE_VARIOUS_KEY,
-} from '@/constants/storeKey';
-import getTime from '@/lib/getTime';
+import { STORE_TASKS } from '@/constants/storeKey';
 import makeResult from '@/lib/makeResult';
 import makeError from '@/lib/makeError';
 import _cloneDeep from 'lodash/cloneDeep';
 import { makeId } from '@/lib';
-import { storageVarious } from '@/constants/getStoreDefault';
-
-// interface startTaskArg {
-//   (taskId: string): Promise<
-//     resolvable<{ history: taskHistory[]; now: taskNowType }>
-//   >;
-// }
-// export const startTask: startTaskArg = async (taskId: string) => {
-//   try {
-//     const history = await storage.get(STORE_TASK_HISTORY);
-//     const timeNow = getTime();
-
-//     const currentTask = { taskId, timeStart: timeNow, timeEnd: -1 };
-
-//     const newHistory = [...history, currentTask];
-//     await storage.set(STORE_TASK_HISTORY, newHistory);
-//     await storage.set(STORE_TASK_HISTORY_NOW, currentTask);
-//     return makeResult({ history: newHistory, now: currentTask });
-//   } catch (error) {
-//     return makeError(undefined, error);
-//   }
-// };
-
-// interface endTaskArg {
-//   (): Promise<resolvable<taskHistory[]>>;
-// }
-// export const endTask: endTaskArg = async () => {
-//   try {
-//     const history = await storage.get(STORE_TASK_HISTORY);
-//     const lastHistory = history[history.length - 1];
-//     if (!lastHistory) return makeError('NO_CURRENT_TASK');
-//     if (lastHistory.timeStart === -1) return makeError('NO_START_TIME');
-//     const newLastHistory = _cloneDeep(lastHistory);
-//     const timeNow = getTime();
-//     newLastHistory.timeEnd = timeNow;
-//     const newHistory = _cloneDeep(history);
-//     newHistory[history.length - 1] = newLastHistory;
-//     await storage.set(STORE_TASK_HISTORY, newHistory);
-//     await storage.set(STORE_TASK_HISTORY_NOW, {
-//       taskId: '',
-//       timeStart: -1,
-//       timeEnd: -1,
-//     });
-//     return makeResult(newHistory);
-//   } catch (error) {
-//     return makeError(undefined, error);
-//   }
-// };
 
 interface getTasksArg extends pagingArg {
   searchFunc?: pagingSearchFunc<taskData>;
@@ -101,6 +46,6 @@ export const removeTask = (taskId: string) => {
 };
 
 export const editTask = async (targetTask: taskData) => {
-  await storage.set(STORE_TASKS, targetTask.id, targetTask);
+  await storage.set(STORE_TASKS, targetTask);
   return targetTask;
 };

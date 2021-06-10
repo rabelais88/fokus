@@ -8,6 +8,7 @@ import {
 import { getPagingDefault } from '@/constants/getStoreDefault';
 import useSWR from 'swr';
 import { getSites, searchSiteTitle } from '../controller/site';
+import useLogger from '../useLogger';
 
 interface useSitesArg extends pagingArg {
   title?: string;
@@ -20,6 +21,8 @@ interface useSitesResult extends paging<websiteData> {
 type useSitesFunc = (arg: useSitesArg) => useSitesResult;
 
 const useSites: useSitesFunc = ({ size = Infinity, title = '', cursorId }) => {
+  const logger = useLogger('useSites');
+  logger({ size, title });
   const { data, error } = useSWR(
     [SWR_WEBSITES, size, cursorId, title],
     async () => {
@@ -28,6 +31,7 @@ const useSites: useSitesFunc = ({ size = Infinity, title = '', cursorId }) => {
       return getSites({ size, cursorId });
     }
   );
+  logger('result', { data, error });
 
   const result: useSitesResult = {
     loadState: LOAD_INIT,

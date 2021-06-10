@@ -14,10 +14,7 @@ interface consoleInterface {
   (...arg: any[]): void;
 }
 
-const makeLogger = (
-  loggerName: string,
-  forceDebugMode: boolean = false
-): consoleInterface => {
+const makeLogger = (loggerName: string, forceDebugMode: boolean = false) => {
   const colorIndex = strToRangedNumber(loggerName, colors.length);
   const color = colors[colorIndex];
   const colorStyle = `color: ${color};`;

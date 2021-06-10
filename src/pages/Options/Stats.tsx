@@ -119,7 +119,7 @@ const Stats: React.FC = () => {
   const { t } = useTranslation();
   const { items: todayHistory, loadState: taskHistoryLoadState } =
     useTaskHistories({ timeStart, timeEnd, size, cursorId });
-  const { items: tasks, loadState: tasksLoadState } = useTasks({ size: 9999 });
+  const { items: tasks, loadState: tasksLoadState } = useTasks({});
 
   const hasEnoughTask = useMemo(() => todayHistory.length >= 2, [todayHistory]);
 

@@ -8,6 +8,7 @@ import {
 import { getPagingDefault } from '@/constants/getStoreDefault';
 import useSWR from 'swr';
 import { getTasks, searchTaskTitle } from '@/lib/controller/task';
+import useLogger from '../useLogger';
 
 interface useTasksArg extends pagingArg {
   title?: string;
@@ -20,6 +21,8 @@ interface useTasksResult extends paging<taskData> {
 type useTasksFunc = (arg: useTasksArg) => useTasksResult;
 
 const useTasks: useTasksFunc = ({ size = Infinity, cursorId, title = '' }) => {
+  const logger = useLogger('useTasks');
+  logger({ size, title });
   const { data, error } = useSWR(
     [SWR_TASKS, size, cursorId, title],
     async () => {
@@ -27,6 +30,7 @@ const useTasks: useTasksFunc = ({ size = Infinity, cursorId, title = '' }) => {
       return searchTaskTitle(title).getAll({ size, cursorId });
     }
   );
+  logger('result', { data, error });
 
   const result: useTasksResult = {
     loadState: LOAD_INIT,

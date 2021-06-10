@@ -52,31 +52,22 @@ const storage = () => {
   const dbVer = 3;
   const dbOpt: OpenDBCallbacks<DB> = {
     upgrade(_db) {
-      _db
-        .createObjectStore(STORE_WEBSITES, { keyPath: 'id' })
-        .createIndex('id', 'id', { unique: true });
-      _db
-        .createObjectStore(STORE_TASKS, { keyPath: 'id' })
-        .createIndex('id', 'id', { unique: true });
-      _db
-        .createObjectStore(STORE_TASK_HISTORY, { keyPath: 'id' })
-        .createIndex('id', 'id', { unique: true });
-      _db
-        .createObjectStore(STORE_VARIOUS, { keyPath: 'id' })
-        .createIndex('id', 'id', { unique: true });
+      _db.createObjectStore(STORE_WEBSITES, { keyPath: 'id' });
+      _db.createObjectStore(STORE_TASKS, { keyPath: 'id' });
+      _db.createObjectStore(STORE_TASK_HISTORY, { keyPath: 'id' });
+      _db.createObjectStore(STORE_VARIOUS, { keyPath: 'id' });
     },
   };
 
   async function set<K extends keyof storageState>(
     store: K,
-    key: string,
     value: storageState[K]
   ) {
     if (!db) db = await openDB<DB>(STORE_DB, dbVer, dbOpt);
-    logger(`set(${key})`, value);
+    logger('set()', value);
     onStorageChange();
     const s = db.transaction(store, 'readwrite').store;
-    await s.put(value, key);
+    await s.put(value);
   }
 
   async function add<K extends keyof storageState>(
@@ -119,7 +110,8 @@ const storage = () => {
     const cursor = await tx.store.openCursor(cursorId);
     let i = 0;
     let items = [];
-    while (cursor && i < size) {
+    while (i < size) {
+      if (!cursor) break;
       const isItemValid = searchFunc ? searchFunc(cursor.value) : true;
       if (isItemValid) {
         items.push(cursor.value);

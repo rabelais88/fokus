@@ -13,7 +13,7 @@ export const setVarious = async <K extends keyof storageVarious>(
 ) => {
   const settings = await storage.get(STORE_VARIOUS, STORE_VARIOUS_KEY);
   settings[key] = val;
-  await storage.set(STORE_VARIOUS, STORE_VARIOUS_KEY, settings);
+  await storage.set(STORE_VARIOUS, settings);
   return settings;
 };
 
@@ -21,6 +21,6 @@ export const getVariousAll = () => {
   return storage.get(STORE_VARIOUS, STORE_VARIOUS_KEY);
 };
 export const setVariousAll = async (various: storageVarious) => {
-  await storage.set(STORE_VARIOUS, STORE_VARIOUS_KEY, various);
+  await storage.set(STORE_VARIOUS, various);
   return various;
 };

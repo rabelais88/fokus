@@ -16,18 +16,10 @@ const DebugController = () => {
   const dbVer = 3;
   const dbOpt: OpenDBCallbacks<unknown> = {
     upgrade(_db) {
-      _db
-        .createObjectStore(STORE_WEBSITES, { keyPath: 'id' })
-        .createIndex('id', 'id', { unique: true });
-      _db
-        .createObjectStore(STORE_TASKS, { keyPath: 'id' })
-        .createIndex('id', 'id', { unique: true });
-      _db
-        .createObjectStore(STORE_TASK_HISTORY, { keyPath: 'id' })
-        .createIndex('id', 'id', { unique: true });
-      _db
-        .createObjectStore(STORE_VARIOUS, { keyPath: 'id' })
-        .createIndex('id', 'id', { unique: true });
+      _db.createObjectStore(STORE_WEBSITES, { keyPath: 'id' });
+      _db.createObjectStore(STORE_TASKS, { keyPath: 'id' });
+      _db.createObjectStore(STORE_TASK_HISTORY, { keyPath: 'id' });
+      _db.createObjectStore(STORE_VARIOUS, { keyPath: 'id' });
     },
   };
 
@@ -41,11 +33,7 @@ const DebugController = () => {
       });
       return;
     }
-    await db.put(
-      STORE_VARIOUS,
-      { ...settings, debug: value },
-      STORE_VARIOUS_KEY
-    );
+    await db.put(STORE_VARIOUS, { ...settings, debug: value });
   };
 
   const getDebugMode = async (): Promise<boolean> => {

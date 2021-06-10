@@ -42,5 +42,5 @@ export const removeSite = (siteId: string) => {
 };
 
 export const editSite = (targetSite: websiteData) => {
-  return storage.set(STORE_WEBSITES, targetSite.id, targetSite);
+  return storage.set(STORE_WEBSITES, targetSite);
 };
