@@ -12,7 +12,7 @@ const useDebugMode = () => {
   const _setDebugMode = useCallback((v: boolean) => {
     logger('setDebugMode', v);
     setDebugMode(v);
-    mutate(SWR_DEBUG_MODE, v, true);
+    mutate(SWR_DEBUG_MODE, v);
   }, []);
   return { setDebugMode: _setDebugMode, debugMode: debugMode || false };
 };

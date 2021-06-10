@@ -6,6 +6,7 @@ import {
   FormLabel,
   Heading,
   HStack,
+  Spinner,
   StatNumber,
   Switch,
   Table,
@@ -101,13 +102,30 @@ interface TaskRowProps extends TableRowProps {
 
 const TaskRow: React.FC<TaskRowProps> = (props) => {
   const { t } = useTranslation();
-  const { task } = useTask(props.taskId);
-  const { taskHistory } = useTaskHistory(props.taskHistoryId);
+  const { task, loadState: taskLoadState } = useTask(props.taskId);
+  const { taskHistory, loadState: taskHistoryLoadState } = useTaskHistory(
+    props.taskHistoryId
+  );
+  const hasFinished = taskHistory.timeEnd !== -1;
+  if (taskLoadState !== LOAD_SUCCESS || taskHistoryLoadState !== LOAD_SUCCESS) {
+    return (
+      <Tr data-task-id={props.taskId}>
+        <Td col={3}>
+          <Spinner />
+        </Td>
+      </Tr>
+    );
+  }
   return (
     <Tr>
       <Td>{task.title}</Td>
       <Td>{t('full-time', analyzeTime(taskHistory.timeStart))}</Td>
-      <Td>{t('full-time', analyzeTime(taskHistory.timeEnd))}</Td>
+      <Td>
+        {hasFinished && (
+          <span>{t('full-time', analyzeTime(taskHistory.timeEnd))}</span>
+        )}
+        {!hasFinished && <span>-</span>}
+      </Td>
     </Tr>
   );
 };
@@ -161,7 +179,7 @@ const Stats: React.FC = () => {
           }}
         />
       </HStack>
-      {hasEnoughTask && (
+      {false && (
         <DailyTask
           history={todayHistory}
           tasks={{}}
