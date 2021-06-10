@@ -31,7 +31,10 @@ interface DB extends DBSchema {
   [STORE_TASK_HISTORY]: {
     key: string;
     value: taskHistory;
-    indexes: { id: string };
+    indexes: {
+      id: string;
+      byTimeStart: ['timeStart', 'title'];
+    };
   };
   [STORE_VARIOUS]: {
     key: string;
@@ -54,7 +57,8 @@ const storage = () => {
     upgrade(_db) {
       _db.createObjectStore(STORE_WEBSITES, { keyPath: 'id' });
       _db.createObjectStore(STORE_TASKS, { keyPath: 'id' });
-      _db.createObjectStore(STORE_TASK_HISTORY, { keyPath: 'id' });
+      const th = _db.createObjectStore(STORE_TASK_HISTORY, { keyPath: 'id' });
+      th.createIndex('byTimeStart', ['timeStart', 'title']);
       _db.createObjectStore(STORE_VARIOUS, { keyPath: 'id' });
     },
   };
@@ -108,6 +112,7 @@ const storage = () => {
 
     const tx = db.transaction(store, 'readwrite');
     let cursor = await tx.store.openCursor(cursorId);
+
     let i = 0;
     let items = [];
     while (i < size && cursor) {
@@ -140,7 +145,12 @@ const storage = () => {
     onStorageChange = func;
   }
 
-  return { add, set, get, getAll, remove, onChange };
+  const getDB = async () => {
+    if (!db) db = await openDB<DB>(STORE_DB, dbVer, dbOpt);
+    return db;
+  };
+
+  return { add, set, get, getAll, remove, onChange, getDB };
 };
 
 export default storage();

@@ -21,7 +21,9 @@ const DebugController = () => {
     upgrade(_db) {
       _db.createObjectStore(STORE_WEBSITES, { keyPath: 'id' });
       _db.createObjectStore(STORE_TASKS, { keyPath: 'id' });
-      _db.createObjectStore(STORE_TASK_HISTORY, { keyPath: 'id' });
+      const th = _db.createObjectStore(STORE_TASK_HISTORY, { keyPath: 'id' });
+      th.createIndex('byTimeStart', 'timeStart');
+      th.createIndex('byTimeEnd', 'timeEnd');
       _db.createObjectStore(STORE_VARIOUS, { keyPath: 'id' });
     },
   };
