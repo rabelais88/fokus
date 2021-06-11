@@ -54,18 +54,23 @@ async function importFromJson(
   const importObj = JSON.parse(jsonData);
   const schedules = [];
   const importStore = async <K extends keyof storageState>(storeName: K) => {
+    logger('storeName', storeName);
     const tx = await db.transaction(storeName, 'readwrite');
     type tmpType = fokusDbSchema[K]['value'];
     const storeItems: tmpType[] = Array.from(importObj[storeName]);
     storeItems.forEach((item) => {
+      logger('storeItems', item);
       const req = async () => {
+        logger('start finding item', item.id);
         const cursor = await tx.store.openCursor(item.id);
+        logger('findItem - ', item.id, !!cursor);
         // create when the item does not exist
         if (!cursor) {
           await tx.store.add(item);
           return;
         }
         await tx.store.put(item);
+        logger('item write finished', item.id);
       };
       schedules.push(req);
     });
@@ -73,7 +78,9 @@ async function importFromJson(
   for (const storeName of db.objectStoreNames) {
     schedules.push(importStore(storeName));
   }
+  logger('all task assigned');
   await Promise.all(schedules);
+  logger('finished');
 }
 
 /**
@@ -85,9 +92,14 @@ const importSettings = async () => {
   const req = await openFile('.json');
   if (req.error) return req;
   if (!req.result) return makeError('RESULT_NULL');
-  makeLogger(req.result);
+  logger(req.result);
   const db = await storage.getDB();
-  importFromJson(db, req.result);
+  try {
+    importFromJson(db, req.result);
+  } catch (err) {
+    console.error(err);
+    logger('error', err);
+  }
 
   return makeResult('SUCCESS');
 };
