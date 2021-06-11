@@ -40,10 +40,11 @@ import { QUERY_BLOCKED_URL } from '@/constants';
 import Blocked from './Blocked';
 import { env } from '@/lib/env';
 import { AttachmentIcon, DownloadIcon } from '@chakra-ui/icons';
-import send from '@/lib/senders/fromOptions';
-import { EXPORT_SETTINGS } from '@/constants/messages';
+// import send from '@/lib/senders/fromOptions';
+// import { EXPORT_SETTINGS } from '@/constants/messages';
 import importSettings from '@/lib/importSettings';
 import Donate from './Donate';
+import exportSettings from '@/lib/exportSettings';
 
 const logger = makeLogger('pages/Options/index.tsx');
 logger({ env });
@@ -88,7 +89,7 @@ const NavMenu: React.FC = (props) => {
   );
 };
 
-const exportSettings = async () => {
+const onExportSettings = async () => {
   // send(EXPORT_SETTINGS);
   const data = await exportSettings();
   logger('exportSettings', data);
@@ -114,7 +115,7 @@ const ToolMenu = () => {
           variant="ghost"
           icon={<DownloadIcon />}
           aria-label={t('export-json-description')}
-          onClick={exportSettings}
+          onClick={onExportSettings}
         />
       </Tooltip>
       <Tooltip label={t('import-json')}>

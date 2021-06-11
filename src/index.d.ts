@@ -102,6 +102,10 @@ type loadStateType =
   | 'LOAD_LOADING'
   | 'LOAD_INIT';
 
+type mapAsArray<Type> = {
+  [Property in keyof Type]: Type[Property][];
+};
+
 // interface openModalFunc {
 //   (arg: { type: string; onYes?: () => {}; onNo?: () => {} }): void;
 // }
