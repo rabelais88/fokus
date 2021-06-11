@@ -12,11 +12,11 @@ import getSettingsUrl from '@/lib/getSettingsUrl';
 import checkChromeUrl from '@/lib/checkChromeUrl';
 import matchUrlRegex from '@/lib/matchUrlRegex';
 import getTime from '@/lib/getTime';
-import { getVarious } from '../controller/various';
-import { getTask } from '../controller/task';
-import { endTask, getTaskHistory } from '../controller/taskHistory';
-import { getSites } from '../controller/site';
-import exportSettings from '../exportSettings';
+import { getVarious } from '@/lib/controller/various';
+import { getTask } from '@/lib/controller/task';
+import { endTask, getTaskHistory } from '@/lib/controller/taskHistory';
+import { getSites } from '@/lib/controller/site';
+import exportSettings from '@/lib/exportSettings';
 // import { endTask } from '@/lib/controller/task';
 
 const logger = makeLogger('listenFromBackground', true);

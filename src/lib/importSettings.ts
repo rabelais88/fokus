@@ -1,4 +1,3 @@
-// import STORE_PRESERVED_KEYS from '@/constants/STORE_PRESERVED_KEYS';
 import { fokusDbSchema, storageState } from '@/constants/getStoreDefault';
 import openFile from '@/lib/file/openFile';
 import { IDBPDatabase } from 'idb';
@@ -12,7 +11,7 @@ const logger = makeLogger('lib/importSettings');
 /**
  * @description
  * Import data from JSON into an IndexedDB database.
- * This does not delete any existing data from the database, so keys may clash.
+ * be careful! it overwrites pre-existing keys.
  */
 async function importFromJson(
   db: IDBPDatabase<fokusDbSchema>,

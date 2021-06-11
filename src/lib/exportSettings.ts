@@ -1,5 +1,3 @@
-// Copy this whole snippet to your browser console
-
 import { storageState } from '@/constants/getStoreDefault';
 import storage from '@/lib/storage';
 import saveJson from '@/lib/file/saveJson';
