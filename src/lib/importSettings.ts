@@ -54,6 +54,7 @@ async function importFromJson(
   const importObj = JSON.parse(jsonData);
   const schedules = [];
   const importStore = async <K extends keyof storageState>(storeName: K) => {
+    const _schedules: Promise<void>[] = [];
     logger('storeName', storeName);
     const tx = await db.transaction(storeName, 'readwrite');
     type tmpType = fokusDbSchema[K]['value'];
@@ -72,8 +73,9 @@ async function importFromJson(
         await tx.store.put(item);
         logger('item write finished', item.id);
       };
-      schedules.push(req);
+      _schedules.push(req());
     });
+    await Promise.all(_schedules);
   };
   for (const storeName of db.objectStoreNames) {
     schedules.push(importStore(storeName));
