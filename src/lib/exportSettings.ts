@@ -21,6 +21,7 @@ const exportSettings = async () => {
         break;
       }
     }
+    await tx.done;
     exportObj[storeName] = storeObjs;
   };
   for (const storeName of db.objectStoreNames) {
