@@ -1,40 +1,39 @@
-import React, { useCallback, useContext, useEffect } from 'react';
-import { useState } from 'react';
-import useTasks from '@/lib/swr/useTasks';
+import { NavLink } from '@/components';
+import Emote from '@/components/Emote';
 import {
+  ACTION_HIDE_MODAL,
+  ACTION_SHOW_MODAL,
+  LOAD_SUCCESS,
+} from '@/constants';
+import { MiscContext } from '@/lib/context/MiscContext';
+import { ModalContext } from '@/lib/context/ModalContext';
+import { removeTask } from '@/lib/controller/task';
+import useTaskNow from '@/lib/swr/useTaskNow';
+import useTasks from '@/lib/swr/useTasks';
+import { AddIcon, CloseIcon, SearchIcon } from '@chakra-ui/icons';
+import {
+  Badge,
   Box,
+  Button,
+  Center,
+  CloseButton,
+  Flex,
+  HStack,
   IconButton,
   Input,
   InputGroup,
   InputLeftElement,
   InputRightElement,
-  Stack,
-  Skeleton,
-  Center,
-  StackDivider,
-  Flex,
-  CloseButton,
-  Modal,
-  ModalOverlay,
-  ModalCloseButton,
   ModalBody,
-  ModalContent,
   ModalFooter,
-  Button,
-  useDisclosure,
+  Skeleton,
+  Stack,
+  StackDivider,
   Text,
-  Badge,
   Tooltip,
-  HStack,
 } from '@chakra-ui/react';
-import { AddIcon, CloseIcon, SearchIcon } from '@chakra-ui/icons';
-import { NavLink } from '@/components';
-import { LOAD_SUCCESS } from '@/constants';
-import useTaskNow from '@/lib/swr/useTaskNow';
-import Emote from '@/components/Emote';
+import React, { useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { removeTask } from '@/lib/controller/task';
-import { MiscContext } from '@/lib/context/MiscContext';
 
 interface taskItemProps {
   task: taskData;
@@ -75,9 +74,6 @@ const TaskItem: React.FC<taskItemProps> = ({
 
 const Tasks: React.FC = (props) => {
   const [keyword, setKeyword] = useState('');
-  const [removeTargetTaskId, setRemoveTargetTaskId] = useState('');
-  const [removeTargetTaskName, setRemoveTargetTaskName] = useState('');
-
   const {
     items: tasks,
     loadState,
@@ -89,19 +85,44 @@ const Tasks: React.FC = (props) => {
   const taskIdNow = (taskNow || {}).id;
 
   const hasKeyword = keyword.length >= 1;
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { dispatch: dispatchOnModal } = useContext(ModalContext);
   const { state } = useContext(MiscContext);
 
   const onRemoveTask = (taskId: string, taskTitle: string) => {
-    setRemoveTargetTaskId(taskId);
-    setRemoveTargetTaskName(taskTitle);
-    onOpen();
-  };
-
-  const onRemoveTaskConfirm = () => {
-    removeTask(removeTargetTaskId);
-    revalidateTasks();
-    onClose();
+    const onRemoveTaskConfirm = () => {
+      removeTask(taskId);
+      revalidateTasks();
+      dispatchOnModal({ type: ACTION_HIDE_MODAL });
+    };
+    const ModalContent = (
+      <>
+        <ModalBody pb={6}>
+          <Trans
+            i18nKey="modal--remove-task-message"
+            components={[<b />]}
+            values={{ removeTargetTaskName: taskTitle }}
+          />
+        </ModalBody>
+        <ModalFooter>
+          <HStack>
+            <Button
+              variant="solid"
+              colorScheme="red"
+              onClick={onRemoveTaskConfirm}
+            >
+              {t('modal--remove-task-confirm')}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => dispatchOnModal({ type: ACTION_HIDE_MODAL })}
+            >
+              {t('modal--remove-task-cancel')}
+            </Button>
+          </HStack>
+        </ModalFooter>
+      </>
+    );
+    dispatchOnModal({ type: ACTION_SHOW_MODAL, content: ModalContent });
   };
 
   useEffect(() => {
@@ -112,90 +133,61 @@ const Tasks: React.FC = (props) => {
   const { t } = useTranslation();
 
   return (
-    <>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalCloseButton />
-        <ModalContent>
-          <ModalBody>
-            <Trans
-              i18nKey="modal--remove-task-message"
-              components={[<b />]}
-              values={{ removeTargetTaskName }}
+    <Box>
+      <InputGroup>
+        <InputLeftElement children={<SearchIcon />} />
+        <Input
+          placeholder={t('tasks--task-find-placeholder')}
+          variant="flushed"
+          value={keyword}
+          onChange={(ev) => setKeyword(ev.target.value)}
+          key="task-search-keyword"
+        />
+        <InputRightElement>
+          {taskAddable && (
+            <NavLink to={keyword === '' ? '/task' : `task?title=${keyword}`}>
+              <Tooltip label={t('add-new-task')}>
+                <IconButton
+                  icon={<AddIcon />}
+                  size="sm"
+                  aria-label={t('add-new-task')}
+                  variant="ghost"
+                />
+              </Tooltip>
+            </NavLink>
+          )}
+          {hasKeyword && (
+            <IconButton
+              onClick={() => setKeyword('')}
+              icon={<CloseIcon />}
+              size="sm"
+              aria-label={t('tasks--reset-task-search-keyword')}
+              variant="ghost"
             />
-          </ModalBody>
-          <ModalFooter>
-            <HStack>
-              <Button
-                variant="solid"
-                colorScheme="red"
-                onClick={onRemoveTaskConfirm}
-              >
-                {t('modal--remove-task-confirm')}
-              </Button>
-              <Button variant="outline" onClick={onClose}>
-                {t('modal--remove-task-cancel')}
-              </Button>
-            </HStack>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-      <Box>
-        <InputGroup>
-          <InputLeftElement children={<SearchIcon />} />
-          <Input
-            placeholder={t('tasks--task-find-placeholder')}
-            variant="flushed"
-            value={keyword}
-            onChange={(ev) => setKeyword(ev.target.value)}
-            key="task-search-keyword"
-          />
-          <InputRightElement>
-            {taskAddable && (
-              <NavLink to={keyword === '' ? '/task' : `task?title=${keyword}`}>
-                <Tooltip label={t('add-new-task')}>
-                  <IconButton
-                    icon={<AddIcon />}
-                    size="sm"
-                    aria-label={t('add-new-task')}
-                    variant="ghost"
-                  />
-                </Tooltip>
-              </NavLink>
-            )}
-            {hasKeyword && (
-              <IconButton
-                onClick={() => setKeyword('')}
-                icon={<CloseIcon />}
-                size="sm"
-                aria-label={t('tasks--reset-task-search-keyword')}
-                variant="ghost"
-              />
-            )}
-          </InputRightElement>
-        </InputGroup>
-        <Box height="30px" />
-        {loadState !== LOAD_SUCCESS && (
-          <Stack>
-            <Skeleton height="20px"></Skeleton>
-            <Skeleton height="20px"></Skeleton>
-            <Skeleton height="20px"></Skeleton>
-          </Stack>
-        )}
-        {loadState === LOAD_SUCCESS && noTask && (
-          <Center mt="150">
-            <Text>{t('tasks--no-task')}</Text>
-          </Center>
-        )}
-        {loadState === LOAD_SUCCESS && !noTask && (
-          <Stack divider={<StackDivider borderColor="gray.200" />} spacing={2}>
-            {tasks.map((task) => (
-              <TaskItem key={task.id} {...{ taskIdNow, task, onRemoveTask }} />
-            ))}
-          </Stack>
-        )}
-      </Box>
-    </>
+          )}
+        </InputRightElement>
+      </InputGroup>
+      <Box height="30px" />
+      {loadState !== LOAD_SUCCESS && (
+        <Stack>
+          <Skeleton height="20px"></Skeleton>
+          <Skeleton height="20px"></Skeleton>
+          <Skeleton height="20px"></Skeleton>
+        </Stack>
+      )}
+      {loadState === LOAD_SUCCESS && noTask && (
+        <Center mt="150">
+          <Text>{t('tasks--no-task')}</Text>
+        </Center>
+      )}
+      {loadState === LOAD_SUCCESS && !noTask && (
+        <Stack divider={<StackDivider borderColor="gray.200" />} spacing={2}>
+          {tasks.map((task) => (
+            <TaskItem key={task.id} {...{ taskIdNow, task, onRemoveTask }} />
+          ))}
+        </Stack>
+      )}
+    </Box>
   );
 };
 

@@ -1,31 +1,28 @@
-import React, { useMemo, useState } from 'react';
-import popupSend from '@/lib/senders/fromPopup';
-import { LOAD_LOADING, LOAD_SUCCESS, MSG_CHANGE_COLOR } from '@/constants';
-import makeLogger from '@/lib/makeLogger';
-import openSettings from '@/lib/openSettings';
+import AutoComplete from '@/components/AutoComplete';
+import Emote from '@/components/Emote';
+import { LOAD_LOADING, LOAD_SUCCESS, TIME_MINUTE } from '@/constants';
 import Document from '@/containers/Document';
 import { PopupLayout } from '@/containers/layout';
+import { makeResult } from '@/lib';
+import { searchTaskTitle } from '@/lib/controller/task';
+import getTimeDiff from '@/lib/getTimeDiff';
+import makeLogger from '@/lib/makeLogger';
+import openSettings from '@/lib/openSettings';
+import useTaskNow from '@/lib/swr/useTaskNow';
+import useTasks from '@/lib/swr/useTasks';
+import useNow from '@/lib/useNow';
+import { CheckIcon, SettingsIcon, SmallCloseIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
   ButtonGroup,
-  Center,
   Heading,
   HStack,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import useTaskNow from '@/lib/swr/useTaskNow';
-import useTasks from '@/lib/swr/useTasks';
-import { analyzeTime, makeResult } from '@/lib';
+import React, { useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import AutoComplete from '@/components/AutoComplete';
-import { CheckIcon, SettingsIcon, SmallCloseIcon } from '@chakra-ui/icons';
-import Emote from '@/components/Emote';
-import useNow from '@/lib/useNow';
-import getTimeDiff from '@/lib/getTimeDiff';
-import { TIME_MINUTE } from '@/constants';
-import { searchTaskTitle } from '@/lib/controller/task';
 
 const logger = makeLogger('Popup.jsx');
 

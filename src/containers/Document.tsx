@@ -4,8 +4,7 @@ import '@/i18n';
 import chakraTheme from '@/lib/chakraTheme';
 import 'emoji-mart/css/emoji-mart.css';
 import { MiscContextProvider } from '@/lib/context/MiscContext';
-// import { getDefaultModalState, MODAL_NONE } from '@/constants/modalState';
-// import ModalContext from '@/lib/context/ModalContext';
+import { ModalContextProvider } from '@/lib/context/ModalContext';
 
 interface DocumentProp {
   resetCSS?: boolean;
@@ -16,34 +15,12 @@ interface DocumentProp {
  * the top container that includes all default styles & settings for the rest
  */
 const Document: React.FC<DocumentProp> = (props) => {
-  // const [stateModal, setStateModal] = useState(getDefaultModalState());
-
-  // const closeModal = () => {
-  //   setStateModal({
-  //     ...stateModal,
-  //     modalType: MODAL_NONE,
-  //     modalBody: <div></div>,
-  //   });
-  // };
-
-  // const openModal: openModalFunc = ({ type, onYes, onNo }) => {
-  //   setStateModal({
-  //     ...stateModal,
-  //     modalType: type,
-  //     onYes: onYes || stateModal.onYes,
-  //     onNo: onNo || stateModal.onNo,
-  //   });
-  // };
-
   return (
-    // <ModalContext.Provider value={{ ...stateModal, openModal, closeModal }}>
     <MiscContextProvider>
       <ChakraProvider theme={chakraTheme} resetCSS={props.resetCSS}>
-        {props.children}
+        <ModalContextProvider>{props.children}</ModalContextProvider>
       </ChakraProvider>
     </MiscContextProvider>
-
-    // </ModalContext.Provider>
   );
 };
 

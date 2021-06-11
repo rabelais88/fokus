@@ -1,16 +1,15 @@
-import React, { useContext, useEffect } from 'react';
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  useLocation,
-  useHistory,
-  Redirect,
-} from 'react-router-dom';
-import { render } from 'react-dom';
-
+import { ACTION_REVALIDATE, QUERY_BLOCKED_URL } from '@/constants';
 import Document from '@/containers/Document';
 import { OptionsLayout } from '@/containers/layout';
+import { MiscContext } from '@/lib/context/MiscContext';
+import { env } from '@/lib/env';
+import exportSettings from '@/lib/exportSettings';
+// import send from '@/lib/senders/fromOptions';
+// import { EXPORT_SETTINGS } from '@/constants/messages';
+import importSettings from '@/lib/importSettings';
+import makeLogger from '@/lib/makeLogger';
+import useQuery from '@/lib/useQuery';
+import { AttachmentIcon, DownloadIcon } from '@chakra-ui/icons';
 import {
   Box,
   Flex,
@@ -20,33 +19,27 @@ import {
   Tab,
   TabList,
   Tabs,
-  Text,
   Tooltip,
   useToast,
 } from '@chakra-ui/react';
-import Websites from './Websites';
-import Website from './Website';
-import Tasks from './Tasks';
-import Stats from './Stats';
-import makeLogger from '@/lib/makeLogger';
-import Task from './Task';
-import { useTranslation, Trans } from 'react-i18next';
-import useQuery from '@/lib/useQuery';
+import React, { useContext } from 'react';
+import { render } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import {
-  ACTION_REVALIDATE,
-  QUERY_BLOCKED_URL,
-  SWR_TASKS,
-  SWR_WEBSITES,
-} from '@/constants';
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+  useHistory,
+  useLocation,
+} from 'react-router-dom';
 import Blocked from './Blocked';
-import { env } from '@/lib/env';
-import { AttachmentIcon, DownloadIcon } from '@chakra-ui/icons';
-// import send from '@/lib/senders/fromOptions';
-// import { EXPORT_SETTINGS } from '@/constants/messages';
-import importSettings from '@/lib/importSettings';
 import Donate from './Donate';
-import exportSettings from '@/lib/exportSettings';
-import { MiscContext, MiscContextProvider } from '@/lib/context/MiscContext';
+import Stats from './Stats';
+import Task from './Task';
+import Tasks from './Tasks';
+import Website from './Website';
+import Websites from './Websites';
 
 const logger = makeLogger('pages/Options/index.tsx');
 logger({ env });

@@ -1,11 +1,14 @@
-import React, {
-  Reducer,
-  useMemo,
-  useReducer,
-  forwardRef,
-  useContext,
-  useEffect,
-} from 'react';
+import DailyTask from '@/components/chart/DailyTask';
+import DatePicker from '@/components/DatePicker';
+import { LOAD_SUCCESS } from '@/constants';
+import analyzeTime from '@/lib/analyzeTime';
+import { MiscContext } from '@/lib/context/MiscContext';
+import useDebugMode from '@/lib/swr/useDebugMode';
+import useTask from '@/lib/swr/useTask';
+import useTaskHistories from '@/lib/swr/useTaskHistories';
+import useTaskHistory from '@/lib/swr/useTaskHistory';
+import useTaskNow from '@/lib/swr/useTaskNow';
+import useLogger from '@/lib/useLogger';
 import {
   Box,
   FormControl,
@@ -14,7 +17,6 @@ import {
   Heading,
   HStack,
   Spinner,
-  StatNumber,
   Switch,
   Table,
   TableRowProps,
@@ -25,19 +27,15 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react';
-import useTaskHistory from '@/lib/swr/useTaskHistory';
-import DailyTask from '@/components/chart/DailyTask';
-import useTaskNow from '@/lib/swr/useTaskNow';
-import { LOAD_SUCCESS } from '@/constants';
-import analyzeTime from '@/lib/analyzeTime';
-import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
-import DatePicker from '@/components/DatePicker';
-import useDebugMode from '@/lib/swr/useDebugMode';
-import useTask from '@/lib/swr/useTask';
-import useTaskHistories from '@/lib/swr/useTaskHistories';
-import useLogger from '@/lib/useLogger';
-import { MiscContext } from '@/lib/context/MiscContext';
+import React, {
+  Reducer,
+  useContext,
+  useEffect,
+  useMemo,
+  useReducer,
+} from 'react';
+import { useTranslation } from 'react-i18next';
 
 type CurrentTaskDisplayArg = {
   taskId: string;

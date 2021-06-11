@@ -1,46 +1,45 @@
-import React, { useState } from 'react';
-import makeLogger from '@/lib/makeLogger';
-import { useHistory, useParams } from 'react-router-dom';
-import { Controller, useForm } from 'react-hook-form';
-import useQuery from '@/lib/useQuery';
-import {
-  Button,
-  FormControl,
-  FormLabel,
-  HStack,
-  Input,
-  Stack,
-  Tag,
-  TagCloseButton,
-  TagLabel,
-  Switch,
-  NumberInput,
-  NumberInputField,
-  Text,
-  RadioGroup,
-  Radio,
-  useToast,
-  ButtonGroup,
-  Box,
-  IconButton,
-} from '@chakra-ui/react';
-import useTask from '@/lib/swr/useTask';
-import useSite from '@/lib/swr/useSite';
+import AutoComplete from '@/components/AutoComplete';
+import Emote from '@/components/Emote';
+import EmotePicker from '@/components/EmotePicker';
 import {
   BLOCK_MODE_ALLOW_ALL,
   BLOCK_MODE_BLOCK_ALL,
   LOAD_SUCCESS,
 } from '@/constants';
 import { makeResult } from '@/lib';
-import useTaskNow from '@/lib/swr/useTaskNow';
-import AutoComplete from '@/components/AutoComplete';
-import Emote from '@/components/Emote';
-import EmotePicker from '@/components/EmotePicker';
-import { EmojiData } from 'emoji-mart';
-import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
-import { useTranslation } from 'react-i18next';
 import { searchSiteTitle } from '@/lib/controller/site';
 import { addTask, editTask } from '@/lib/controller/task';
+import makeLogger from '@/lib/makeLogger';
+import useSite from '@/lib/swr/useSite';
+import useTask from '@/lib/swr/useTask';
+import useTaskNow from '@/lib/swr/useTaskNow';
+import useQuery from '@/lib/useQuery';
+import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import {
+  Button,
+  ButtonGroup,
+  FormControl,
+  FormLabel,
+  HStack,
+  IconButton,
+  Input,
+  NumberInput,
+  NumberInputField,
+  Radio,
+  RadioGroup,
+  Stack,
+  Switch,
+  Tag,
+  TagCloseButton,
+  TagLabel,
+  Text,
+  useToast,
+} from '@chakra-ui/react';
+import { EmojiData } from 'emoji-mart';
+import React, { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { useHistory, useParams } from 'react-router-dom';
 
 const logger = makeLogger('pages/Options/Task');
 

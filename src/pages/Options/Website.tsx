@@ -1,4 +1,14 @@
 import {
+  URL_MODE_REGEX,
+  URL_MODE_REGEX_IGNORE_PROTOCOL,
+  URL_MODE_TEXT,
+} from '@/constants';
+import { addSite, editSite } from '@/lib/controller/site';
+import makeLogger from '@/lib/makeLogger';
+import matchUrlRegex from '@/lib/matchUrlRegex';
+import useSite from '@/lib/swr/useSite';
+import useQuery from '@/lib/useQuery';
+import {
   Button,
   FormControl,
   FormErrorMessage,
@@ -9,23 +19,12 @@ import {
   Radio,
   RadioGroup,
   Stack,
-  Text,
   useToast,
 } from '@chakra-ui/react';
-import React, { ChangeEvent, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import {
-  URL_MODE_TEXT,
-  URL_MODE_REGEX,
-  URL_MODE_REGEX_IGNORE_PROTOCOL,
-} from '@/constants';
-import useQuery from '@/lib/useQuery';
-import makeLogger from '@/lib/makeLogger';
-import useSite from '@/lib/swr/useSite';
-import matchUrlRegex from '@/lib/matchUrlRegex';
 import { useTranslation } from 'react-i18next';
-import { addSite, editSite } from '@/lib/controller/site';
+import { useHistory, useParams } from 'react-router-dom';
 
 const logger = makeLogger('pages/Options/Website');
 
