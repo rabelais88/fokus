@@ -16,6 +16,7 @@ interface useTasksArg extends pagingArg {
 
 interface useTasksResult extends paging<taskData> {
   loadState: loadStateType;
+  revalidate: () => Promise<boolean>;
 }
 
 type useTasksFunc = (arg: useTasksArg) => useTasksResult;
@@ -23,7 +24,7 @@ type useTasksFunc = (arg: useTasksArg) => useTasksResult;
 const useTasks: useTasksFunc = ({ size = Infinity, cursorId, title = '' }) => {
   const logger = useLogger('useTasks');
   logger({ size, title });
-  const { data, error } = useSWR(
+  const { data, error, revalidate } = useSWR(
     [SWR_TASKS, size, cursorId, title],
     async () => {
       if (title === '') return getTasks({ size, cursorId });
@@ -34,6 +35,7 @@ const useTasks: useTasksFunc = ({ size = Infinity, cursorId, title = '' }) => {
 
   const result: useTasksResult = {
     loadState: LOAD_INIT,
+    revalidate,
     ...getPagingDefault<taskData>(),
   };
 

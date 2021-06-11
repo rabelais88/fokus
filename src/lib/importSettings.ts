@@ -11,42 +11,9 @@ const logger = makeLogger('lib/importSettings');
 
 /**
  * @description
- * https://gist.github.com/loilo/ed43739361ec718129a15ae5d531095b
  * Import data from JSON into an IndexedDB database.
  * This does not delete any existing data from the database, so keys may clash.
  */
-// export function importFromJson(
-//   idbDatabase: IDBPDatabase<fokusDbSchema>,
-//   json: string
-// ) {
-//   return new Promise((resolve, reject) => {
-//     const transaction = idbDatabase.transaction(
-//       [...idbDatabase.objectStoreNames],
-//       'readwrite'
-//     );
-//     transaction.addEventListener('error', reject);
-
-//     var importObject = JSON.parse(json);
-//     for (const storeName of idbDatabase.objectStoreNames) {
-//       let count = 0;
-//       for (const toAdd of importObject[storeName]) {
-//         const request = transaction.objectStore(storeName).add(toAdd);
-//         request.then(() => {
-//           count++;
-//           if (count === importObject[storeName].length) {
-//             // Added all objects for this store
-//             delete importObject[storeName];
-//             if (Object.keys(importObject).length === 0) {
-//               // Added all object stores
-//               resolve(undefined);
-//             }
-//           }
-//         });
-//       }
-//     }
-//   });
-// }
-
 async function importFromJson(
   db: IDBPDatabase<fokusDbSchema>,
   jsonData: string

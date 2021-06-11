@@ -77,7 +77,12 @@ const Tasks: React.FC = (props) => {
   const [removeTargetTaskId, setRemoveTargetTaskId] = useState('');
   const [removeTargetTaskName, setRemoveTargetTaskName] = useState('');
 
-  const { items: tasks, loadState, count } = useTasks({ title: keyword });
+  const {
+    items: tasks,
+    loadState,
+    count,
+    revalidate: revalidateTasks,
+  } = useTasks({ title: keyword });
   const noTask = count === 0;
   const { task: taskNow } = useTaskNow();
   const taskIdNow = (taskNow || {}).id;
@@ -93,6 +98,7 @@ const Tasks: React.FC = (props) => {
 
   const onRemoveTaskConfirm = () => {
     removeTask(removeTargetTaskId);
+    revalidateTasks();
     onClose();
   };
 
