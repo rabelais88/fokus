@@ -22,8 +22,7 @@ const DebugController = () => {
       _db.createObjectStore(STORE_WEBSITES, { keyPath: 'id' });
       _db.createObjectStore(STORE_TASKS, { keyPath: 'id' });
       const th = _db.createObjectStore(STORE_TASK_HISTORY, { keyPath: 'id' });
-      th.createIndex('byTimeStart', 'timeStart');
-      th.createIndex('byTimeEnd', 'timeEnd');
+      th.createIndex('byTimeStart', ['timeStart', 'title']);
       _db.createObjectStore(STORE_VARIOUS, { keyPath: 'id' });
     },
   };

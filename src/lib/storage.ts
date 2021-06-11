@@ -31,10 +31,7 @@ interface DB extends DBSchema {
   [STORE_TASK_HISTORY]: {
     key: string;
     value: taskHistory;
-    indexes: {
-      id: string;
-      byTimeStart: ['timeStart', 'title'];
-    };
+    indexes: { id: string; byTimeStart: [number, string] };
   };
   [STORE_VARIOUS]: {
     key: string;
@@ -112,6 +109,13 @@ const storage = () => {
 
     const tx = db.transaction(store, 'readwrite');
     let cursor = await tx.store.openCursor(cursorId);
+    if (store === STORE_TASK_HISTORY) {
+      // due to weird errors, need to convert type
+      const index = 'byTimeStart' as keyof DB[K]['indexes'];
+      cursor = await tx.store
+        .index(index)
+        .openCursor(IDBKeyRange.lowerBound([0, cursorId], true), 'next');
+    }
 
     let i = 0;
     let items = [];

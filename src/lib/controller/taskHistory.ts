@@ -82,12 +82,12 @@ export const endTask = async () => {
   const { nowTaskHistoryId } = various;
   const lastHistory = await storage.get(STORE_TASK_HISTORY, nowTaskHistoryId);
   lastHistory.timeEnd = getTime();
+  various.nowTaskId = '';
+  various.nowTaskHistoryId = '';
   const schedules = [storage.set(STORE_VARIOUS, various)];
   if (lastHistory.id !== '') {
     schedules.push(storage.set(STORE_TASK_HISTORY, lastHistory));
   }
-  various.nowTaskId = '';
-  various.nowTaskHistoryId = '';
   await Promise.all(schedules);
   return various;
 };
