@@ -14,6 +14,7 @@ interface useTaskResult {
   task: taskData;
   loadState: loadStateType;
   editTask: typeof editTask;
+  revalidate: revalidateTypeAlt;
 }
 const _editTask: typeof editTask = async (targetTask: taskData) => {
   await editTask(targetTask);
@@ -21,11 +22,14 @@ const _editTask: typeof editTask = async (targetTask: taskData) => {
   return targetTask;
 };
 const useTask = (taskId: string): useTaskResult => {
-  const { data, error } = useSWR([SWR_TASK, taskId], () => getTask(taskId));
+  const { data, error, revalidate } = useSWR([SWR_TASK, taskId], () =>
+    getTask(taskId)
+  );
   const result: useTaskResult = {
     loadState: LOAD_INIT,
     task: getDefaultValues()[STORE_TASKS],
     editTask: _editTask,
+    revalidate,
   };
   if (!data && !error) {
     result.loadState = LOAD_LOADING;

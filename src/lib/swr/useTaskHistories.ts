@@ -14,6 +14,7 @@ interface useTaskHistoryArg extends pagingArg {
 }
 interface useTaskHistoryResult extends paging<taskHistory> {
   loadState: loadStateType;
+  revalidate: revalidateTypeAlt;
 }
 type useTaskHistoryFunc = (arg: useTaskHistoryArg) => useTaskHistoryResult;
 
@@ -23,7 +24,7 @@ const useTaskHistories: useTaskHistoryFunc = ({
   timeStart,
   timeEnd,
 }) => {
-  const { data, error } = useSWR<paging<taskHistory>>(
+  const { data, error, revalidate } = useSWR<paging<taskHistory>>(
     [SWR_TASK_HISTORIES, size, cursorId, timeStart, timeEnd],
     () => searchTaskHistoryByTime(timeStart, timeEnd).getAll({ size, cursorId })
   );
@@ -32,6 +33,7 @@ const useTaskHistories: useTaskHistoryFunc = ({
     loadState: LOAD_INIT,
     count: 0,
     hasNext: false,
+    revalidate,
   };
   if (error && !data) {
     result.loadState = LOAD_LOADING;

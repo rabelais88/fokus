@@ -1,4 +1,11 @@
-import React, { Reducer, useMemo, useReducer, forwardRef } from 'react';
+import React, {
+  Reducer,
+  useMemo,
+  useReducer,
+  forwardRef,
+  useContext,
+  useEffect,
+} from 'react';
 import {
   Box,
   FormControl,
@@ -30,6 +37,7 @@ import useDebugMode from '@/lib/swr/useDebugMode';
 import useTask from '@/lib/swr/useTask';
 import useTaskHistories from '@/lib/swr/useTaskHistories';
 import useLogger from '@/lib/useLogger';
+import { MiscContext } from '@/lib/context/MiscContext';
 
 type CurrentTaskDisplayArg = {
   taskId: string;
@@ -102,10 +110,23 @@ interface TaskRowProps extends TableRowProps {
 
 const TaskRow: React.FC<TaskRowProps> = (props) => {
   const { t } = useTranslation();
-  const { task, loadState: taskLoadState } = useTask(props.taskId);
-  const { taskHistory, loadState: taskHistoryLoadState } = useTaskHistory(
-    props.taskHistoryId
-  );
+  const {
+    task,
+    loadState: taskLoadState,
+    revalidate: taskRevalidate,
+  } = useTask(props.taskId);
+  const {
+    taskHistory,
+    loadState: taskHistoryLoadState,
+    revalidate: taskHistoryRevalidate,
+  } = useTaskHistory(props.taskHistoryId);
+
+  const { state } = useContext(MiscContext);
+  useEffect(() => {
+    taskRevalidate();
+    taskHistoryRevalidate();
+  }, [state.validId]);
+
   const hasFinished = taskHistory.timeEnd !== -1;
   if (taskLoadState !== LOAD_SUCCESS || taskHistoryLoadState !== LOAD_SUCCESS) {
     return (

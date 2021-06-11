@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -13,14 +13,10 @@ import Document from '@/containers/Document';
 import { OptionsLayout } from '@/containers/layout';
 import {
   Box,
-  Button,
   Flex,
   Heading,
   HStack,
   IconButton,
-  Link,
-  List,
-  ListItem,
   Tab,
   TabList,
   Tabs,
@@ -36,7 +32,12 @@ import makeLogger from '@/lib/makeLogger';
 import Task from './Task';
 import { useTranslation, Trans } from 'react-i18next';
 import useQuery from '@/lib/useQuery';
-import { QUERY_BLOCKED_URL } from '@/constants';
+import {
+  ACTION_REVALIDATE,
+  QUERY_BLOCKED_URL,
+  SWR_TASKS,
+  SWR_WEBSITES,
+} from '@/constants';
 import Blocked from './Blocked';
 import { env } from '@/lib/env';
 import { AttachmentIcon, DownloadIcon } from '@chakra-ui/icons';
@@ -45,6 +46,7 @@ import { AttachmentIcon, DownloadIcon } from '@chakra-ui/icons';
 import importSettings from '@/lib/importSettings';
 import Donate from './Donate';
 import exportSettings from '@/lib/exportSettings';
+import { MiscContext, MiscContextProvider } from '@/lib/context/MiscContext';
 
 const logger = makeLogger('pages/Options/index.tsx');
 logger({ env });
@@ -98,6 +100,7 @@ const onExportSettings = async () => {
 const ToolMenu = () => {
   const toast = useToast();
   const { t } = useTranslation();
+  const { dispatch } = useContext(MiscContext);
 
   const _importSettings = async () => {
     const req = await importSettings();
@@ -107,6 +110,8 @@ const ToolMenu = () => {
     }
     toast({ status: 'success', title: t('json-import-success') });
     logger(req.result);
+
+    dispatch({ type: ACTION_REVALIDATE });
   };
   return (
     <HStack>

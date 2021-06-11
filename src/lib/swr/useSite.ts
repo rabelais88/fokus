@@ -13,16 +13,18 @@ import { getSite } from '@/lib/controller/site';
 interface useSiteResult {
   site: websiteData;
   loadState: loadStateType;
+  revalidate: revalidateTypeAlt;
 }
 
 const useSite = (siteId: string) => {
-  const { data, error } = useSWR([SWR_WEBSITE, siteId], async () =>
+  const { data, error, revalidate } = useSWR([SWR_WEBSITE, siteId], async () =>
     getSite(siteId)
   );
 
   const result: useSiteResult = {
     site: getDefaultValues()[STORE_WEBSITES],
     loadState: LOAD_INIT,
+    revalidate,
   };
 
   if (error) {

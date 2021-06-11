@@ -1,24 +1,40 @@
 import React from 'react';
-import { ACTION_REVALIDATE, ACTION_REVALIDATE_DONE } from '@/constants';
-const getDefaultState = () => ({
-  revalidationRequired: false,
+import { ACTION_REVALIDATE } from '@/constants';
+import makeId from '../makeId';
+
+// SWR revalidator
+// validId = randomized number to check if newer validity check is required
+// validType = keyof swr request type
+
+interface miscState {
+  validId: string;
+}
+
+const getDefaultState = (): miscState => ({
+  validId: '',
 });
 
-function miscReducer(state, action) {
+interface setRevalidation {
+  type: typeof ACTION_REVALIDATE;
+}
+
+export type miscActions = setRevalidation; // | ... so on
+
+function miscReducer(state: miscState, action: miscActions): miscState {
   if (action.type === ACTION_REVALIDATE) {
     return {
-      revalidationRequired: true,
+      validId: makeId(),
     };
-  }
-  if (action.type === ACTION_REVALIDATE_DONE) {
-    return { revalidationRequired: false };
   }
   return state;
 }
 
-const MiscContext = React.createContext(getDefaultState());
+export const MiscContext = React.createContext<{
+  state: miscState;
+  dispatch: React.Dispatch<miscActions>;
+}>({ state: getDefaultState(), dispatch: () => undefined });
 
-const MiscContextProvider: React.FC = (props) => {
+export const MiscContextProvider: React.FC = (props) => {
   const [state, dispatch] = React.useReducer(miscReducer, getDefaultState());
   return (
     <MiscContext.Provider value={{ state, dispatch }}>

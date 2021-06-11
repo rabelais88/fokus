@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { LOAD_SUCCESS } from '@/constants';
 import useSites from '@/lib/swr/useSites';
 import {
@@ -31,6 +31,7 @@ import { SearchIcon, AddIcon, CloseIcon } from '@chakra-ui/icons';
 import { NavLink } from '@/components';
 import { Trans, useTranslation } from 'react-i18next';
 import { removeSite } from '@/lib/controller/site';
+import { MiscContext } from '@/lib/context/MiscContext';
 
 interface siteItemProps {
   site: websiteData;
@@ -56,8 +57,14 @@ const Websites: React.FC = (props) => {
   const [keyword, setKeyword] = useState('');
   const [removeTargetSiteId, setRemoveTargetSiteId] = useState('');
   const [removeTargetSiteName, setRemoveTargetSiteName] = useState('');
-  const { items: sites, loadState, count } = useSites({ title: keyword });
+  const {
+    items: sites,
+    loadState,
+    count,
+    revalidate: revalidateSites,
+  } = useSites({ title: keyword });
   const noSite = count === 0;
+  const { state } = useContext(MiscContext);
 
   const { t } = useTranslation();
 
@@ -72,8 +79,13 @@ const Websites: React.FC = (props) => {
 
   const onRemoveSiteConfirm = () => {
     removeSite(removeTargetSiteId);
+    revalidateSites();
     onClose();
   };
+
+  useEffect(() => {
+    revalidateSites();
+  }, [state.validId]);
 
   const siteAddable = noSite || keyword === '';
 

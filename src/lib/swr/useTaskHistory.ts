@@ -13,10 +13,11 @@ import getDefaultValues from '@/constants/getStoreDefault';
 interface useTaskHistoryResult {
   taskHistory: taskHistory;
   loadState: loadStateType;
+  revalidate: revalidateTypeAlt;
 }
 
 const useTaskHistory = (taskHistoryId: string) => {
-  const { data, error } = useSWR<taskHistory>(
+  const { data, error, revalidate } = useSWR<taskHistory>(
     [SWR_TASK_HISTORY, taskHistoryId],
     async () => await getTaskHistory(taskHistoryId)
   );
@@ -24,6 +25,7 @@ const useTaskHistory = (taskHistoryId: string) => {
   let result: useTaskHistoryResult = {
     loadState: LOAD_INIT,
     taskHistory: getDefaultValues()[STORE_TASK_HISTORY],
+    revalidate,
   };
 
   if (error && !data) {

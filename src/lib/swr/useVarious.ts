@@ -19,6 +19,7 @@ interface useVariousResult {
   loadState: loadStateType;
   setVariousAll: typeof setVariousAll;
   setVarious: typeof setVarious;
+  revalidate: revalidateTypeAlt;
 }
 const _setVarious: typeof setVarious = async (K, val) => {
   const newVarious = await setVarious(K, val);
@@ -31,13 +32,16 @@ const _setVariousAll: typeof setVariousAll = async (val) => {
   return newVarious;
 };
 const useVarious = (): useVariousResult => {
-  const { data, error } = useSWR(SWR_VARIOUS, async () => getVariousAll());
+  const { data, error, revalidate } = useSWR(SWR_VARIOUS, async () =>
+    getVariousAll()
+  );
 
   const result: useVariousResult = {
     various: getDefaultValues()[STORE_VARIOUS],
     loadState: LOAD_INIT,
     setVariousAll: _setVariousAll,
     setVarious: _setVarious,
+    revalidate,
   };
   if (!data && !error) {
     result.loadState = LOAD_LOADING;

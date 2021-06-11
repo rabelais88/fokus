@@ -36,6 +36,7 @@ interface useTaskNowResult {
   startTask: typeof startTask;
   endTask: typeof endTask;
   hasTask: boolean;
+  revalidate: revalidateTypeAlt;
 }
 
 const _startTask: typeof startTask = async (taskId) => {
@@ -57,7 +58,7 @@ const _endTask: typeof endTask = async () => {
 };
 
 const useTaskNow = (): useTaskNowResult => {
-  const { data, error } = useSWR(SWR_TASK_NOW, getTaskNow);
+  const { data, error, revalidate } = useSWR(SWR_TASK_NOW, getTaskNow);
 
   const result: useTaskNowResult = {
     task: getDefaultValues()[STORE_TASKS],
@@ -66,6 +67,7 @@ const useTaskNow = (): useTaskNowResult => {
     startTask: _startTask,
     endTask: _endTask,
     hasTask: false,
+    revalidate,
   };
 
   if (error) {

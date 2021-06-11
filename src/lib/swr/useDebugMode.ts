@@ -6,7 +6,7 @@ import useLogger from '@/lib/useLogger';
 
 const useDebugMode = () => {
   const logger = useLogger('lib/src/useDebugModule');
-  const { data, error } = useSWR(SWR_DEBUG_MODE, getDebugMode);
+  const { data, error, revalidate } = useSWR(SWR_DEBUG_MODE, getDebugMode);
   const debugMode = !error && data;
   logger({ debugMode, data, error });
   const _setDebugMode = useCallback((v: boolean) => {
@@ -14,7 +14,11 @@ const useDebugMode = () => {
     setDebugMode(v);
     mutate(SWR_DEBUG_MODE, v);
   }, []);
-  return { setDebugMode: _setDebugMode, debugMode: debugMode || false };
+  return {
+    setDebugMode: _setDebugMode,
+    debugMode: debugMode || false,
+    revalidate,
+  };
 };
 
 export default useDebugMode;

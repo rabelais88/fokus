@@ -16,7 +16,7 @@ interface useTasksArg extends pagingArg {
 
 interface useTasksResult extends paging<taskData> {
   loadState: loadStateType;
-  revalidate: () => Promise<boolean>;
+  revalidate: revalidateTypeAlt;
 }
 
 type useTasksFunc = (arg: useTasksArg) => useTasksResult;

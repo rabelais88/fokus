@@ -16,6 +16,7 @@ interface useSitesArg extends pagingArg {
 
 interface useSitesResult extends paging<websiteData> {
   loadState: loadStateType;
+  revalidate: revalidateTypeAlt;
 }
 
 type useSitesFunc = (arg: useSitesArg) => useSitesResult;
@@ -23,7 +24,7 @@ type useSitesFunc = (arg: useSitesArg) => useSitesResult;
 const useSites: useSitesFunc = ({ size = Infinity, title = '', cursorId }) => {
   const logger = useLogger('useSites');
   logger({ size, title });
-  const { data, error } = useSWR(
+  const { data, error, revalidate } = useSWR(
     [SWR_WEBSITES, size, cursorId, title],
     async () => {
       if (title !== '')
@@ -36,6 +37,7 @@ const useSites: useSitesFunc = ({ size = Infinity, title = '', cursorId }) => {
   const result: useSitesResult = {
     loadState: LOAD_INIT,
     ...getPagingDefault(),
+    revalidate,
   };
 
   if (error) {

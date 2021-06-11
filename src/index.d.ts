@@ -106,6 +106,7 @@ type mapAsArray<Type> = {
   [Property in keyof Type]: Type[Property][];
 };
 
+type revalidateTypeAlt = () => Promise<boolean>;
 // interface openModalFunc {
 //   (arg: { type: string; onYes?: () => {}; onNo?: () => {} }): void;
 // }

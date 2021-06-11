@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { useState } from 'react';
 import useTasks from '@/lib/swr/useTasks';
 import {
@@ -34,6 +34,7 @@ import useTaskNow from '@/lib/swr/useTaskNow';
 import Emote from '@/components/Emote';
 import { Trans, useTranslation } from 'react-i18next';
 import { removeTask } from '@/lib/controller/task';
+import { MiscContext } from '@/lib/context/MiscContext';
 
 interface taskItemProps {
   task: taskData;
@@ -89,6 +90,7 @@ const Tasks: React.FC = (props) => {
 
   const hasKeyword = keyword.length >= 1;
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { state } = useContext(MiscContext);
 
   const onRemoveTask = (taskId: string, taskTitle: string) => {
     setRemoveTargetTaskId(taskId);
@@ -101,6 +103,10 @@ const Tasks: React.FC = (props) => {
     revalidateTasks();
     onClose();
   };
+
+  useEffect(() => {
+    revalidateTasks();
+  }, [state.validId]);
 
   const taskAddable = noTask || keyword === '';
   const { t } = useTranslation();
