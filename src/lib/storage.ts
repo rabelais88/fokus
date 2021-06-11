@@ -49,13 +49,14 @@ const storage = () => {
   let db: IDBPDatabase<DB> | null = null;
   let onStorageChange: Function = () => {};
 
-  const dbVer = 3;
+  const dbVer = 1;
   const dbOpt: OpenDBCallbacks<DB> = {
     upgrade(_db) {
       _db.createObjectStore(STORE_WEBSITES, { keyPath: 'id' });
       _db.createObjectStore(STORE_TASKS, { keyPath: 'id' });
       const th = _db.createObjectStore(STORE_TASK_HISTORY, { keyPath: 'id' });
-      th.createIndex('byTimeStart', ['timeStart', 'title']);
+      // multiple keys are allowed
+      th.createIndex('byTimeStart', ['timeStart', 'id']);
       _db.createObjectStore(STORE_VARIOUS, { keyPath: 'id' });
     },
   };
@@ -110,11 +111,12 @@ const storage = () => {
     const tx = db.transaction(store, 'readwrite');
     let cursor = await tx.store.openCursor(cursorId);
     if (store === STORE_TASK_HISTORY) {
-      // due to weird errors, need to convert type
+      // monkey patch for type error
       const index = 'byTimeStart' as keyof DB[K]['indexes'];
+      // must use the same parameter time
       cursor = await tx.store
         .index(index)
-        .openCursor(IDBKeyRange.lowerBound([0, cursorId], true), 'next');
+        .openCursor(IDBKeyRange.lowerBound([0, cursorId || ''], true));
     }
 
     let i = 0;

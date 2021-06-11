@@ -30,6 +30,7 @@ import DatePicker from '@/components/DatePicker';
 import useDebugMode from '@/lib/swr/useDebugMode';
 import useTask from '@/lib/swr/useTask';
 import useTaskHistories from '@/lib/swr/useTaskHistories';
+import useLogger from '@/lib/useLogger';
 
 type CurrentTaskDisplayArg = {
   taskId: string;
@@ -137,14 +138,14 @@ const Stats: React.FC = () => {
   const { t } = useTranslation();
   const { items: todayHistory, loadState: taskHistoryLoadState } =
     useTaskHistories({ timeStart, timeEnd, size, cursorId });
-  const { items: tasks, loadState: tasksLoadState } = useTasks({});
 
   const hasEnoughTask = useMemo(() => todayHistory.length >= 2, [todayHistory]);
 
   const { debugMode, setDebugMode } = useDebugMode();
 
-  const tableLoaded =
-    tasksLoadState === LOAD_SUCCESS && taskHistoryLoadState === LOAD_SUCCESS;
+  const tableLoaded = taskHistoryLoadState === LOAD_SUCCESS;
+  const logger = useLogger('pages/Options/Stats.tsx');
+  logger({ todayHistory });
 
   return (
     <Box mt={5} pb={5}>

@@ -16,13 +16,13 @@ import getDefaultValues from '@/constants/getStoreDefault';
 const DebugController = () => {
   let db: IDBPDatabase<unknown> | null = null;
 
-  const dbVer = 3;
+  const dbVer = 1;
   const dbOpt: OpenDBCallbacks<unknown> = {
     upgrade(_db) {
       _db.createObjectStore(STORE_WEBSITES, { keyPath: 'id' });
       _db.createObjectStore(STORE_TASKS, { keyPath: 'id' });
       const th = _db.createObjectStore(STORE_TASK_HISTORY, { keyPath: 'id' });
-      th.createIndex('byTimeStart', ['timeStart', 'title']);
+      th.createIndex('byTimeStart', ['timeStart', 'id']);
       _db.createObjectStore(STORE_VARIOUS, { keyPath: 'id' });
     },
   };
