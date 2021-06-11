@@ -18,7 +18,8 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["chrome"]
+    "types": ["chrome"],
+    "downlevelIteration": true
   },
   "include": ["src"],
   "exclude": ["build", "node_modules"]

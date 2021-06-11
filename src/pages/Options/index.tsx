@@ -88,8 +88,10 @@ const NavMenu: React.FC = (props) => {
   );
 };
 
-const exportSettings = () => {
-  send(EXPORT_SETTINGS);
+const exportSettings = async () => {
+  // send(EXPORT_SETTINGS);
+  const data = await exportSettings();
+  logger('exportSettings', data);
 };
 
 const ToolMenu = () => {

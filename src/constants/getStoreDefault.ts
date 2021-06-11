@@ -5,6 +5,7 @@ import {
   STORE_VARIOUS,
   STORE_VARIOUS_KEY,
 } from '@/constants/storeKey';
+import { DBSchema } from 'idb';
 
 export interface storageVarious {
   id: string;
@@ -62,6 +63,29 @@ function getDefaultValues(): storageState {
       nowTaskId: '',
       nowTaskHistoryId: '',
     },
+  };
+}
+
+export interface fokusDbSchema extends DBSchema {
+  [STORE_WEBSITES]: {
+    key: string;
+    value: websiteData;
+    indexes: { id: string };
+  };
+  [STORE_TASKS]: {
+    key: string;
+    value: taskData;
+    indexes: { id: string };
+  };
+  [STORE_TASK_HISTORY]: {
+    key: string;
+    value: taskHistory;
+    indexes: { id: string; byTimeStart: [number, string] };
+  };
+  [STORE_VARIOUS]: {
+    key: string;
+    value: storageVarious;
+    indexes: { id: string };
   };
 }
 

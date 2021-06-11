@@ -1,12 +1,10 @@
 import makeLogger from '@/lib/makeLogger';
 import getDefaultValues, {
-  getPagingDefault,
   storageState,
-  storageStateNew,
-  storageVarious,
+  fokusDbSchema,
 } from '@/constants/getStoreDefault';
 import { IDBPDatabase, OpenDBCallbacks } from 'idb';
-import { openDB, DBSchema } from 'idb';
+import { openDB } from 'idb';
 import {
   STORE_WEBSITES,
   STORE_TASKS,
@@ -17,40 +15,17 @@ import {
 
 const logger = makeLogger('storage');
 
-interface DB extends DBSchema {
-  [STORE_WEBSITES]: {
-    key: string;
-    value: websiteData;
-    indexes: { id: string };
-  };
-  [STORE_TASKS]: {
-    key: string;
-    value: taskData;
-    indexes: { id: string };
-  };
-  [STORE_TASK_HISTORY]: {
-    key: string;
-    value: taskHistory;
-    indexes: { id: string; byTimeStart: [number, string] };
-  };
-  [STORE_VARIOUS]: {
-    key: string;
-    value: storageVarious;
-    indexes: { id: string };
-  };
-}
-
 /**
  * @description
  * production-grade storage wrapper.
  * prod uses indexed DB, but dev uses localstorage
  */
 const storage = () => {
-  let db: IDBPDatabase<DB> | null = null;
+  let db: IDBPDatabase<fokusDbSchema> | null = null;
   let onStorageChange: Function = () => {};
 
   const dbVer = 1;
-  const dbOpt: OpenDBCallbacks<DB> = {
+  const dbOpt: OpenDBCallbacks<fokusDbSchema> = {
     upgrade(_db) {
       _db.createObjectStore(STORE_WEBSITES, { keyPath: 'id' });
       _db.createObjectStore(STORE_TASKS, { keyPath: 'id' });
@@ -61,11 +36,16 @@ const storage = () => {
     },
   };
 
+  const getDB = async () => {
+    if (!db) db = await openDB<fokusDbSchema>(STORE_DB, dbVer, dbOpt);
+    return db;
+  };
+
   async function set<K extends keyof storageState>(
     store: K,
     value: storageState[K]
   ) {
-    if (!db) db = await openDB<DB>(STORE_DB, dbVer, dbOpt);
+    if (!db) db = await getDB();
     logger(`set(${store})`, value);
     onStorageChange();
     const s = db.transaction(store, 'readwrite').store;
@@ -76,7 +56,7 @@ const storage = () => {
     store: K,
     value: storageState[K]
   ) {
-    if (!db) db = await openDB<DB>(STORE_DB, dbVer, dbOpt);
+    if (!db) db = await getDB();
     logger(`add(${store})`, value);
     onStorageChange();
     const tx = db.transaction(store, 'readwrite');
@@ -87,7 +67,7 @@ const storage = () => {
   async function get<K extends keyof storageState>(
     store: K,
     key: string
-  ): Promise<DB[K]['value']> {
+  ): Promise<fokusDbSchema[K]['value']> {
     if (!db) db = await openDB(STORE_DB, dbVer, dbOpt);
     const val = await db.get(store, key);
     logger(`get(${store}, ${key})`, val);
@@ -104,15 +84,15 @@ const storage = () => {
     store: K,
     size: number,
     cursorId?: string,
-    searchFunc?: (arg: DB[K]['value']) => boolean
-  ): Promise<paging<DB[K]['value']>> {
-    if (!db) db = await openDB<DB>(STORE_DB, dbVer, dbOpt);
+    searchFunc?: (arg: fokusDbSchema[K]['value']) => boolean
+  ): Promise<paging<fokusDbSchema[K]['value']>> {
+    if (!db) db = await getDB();
 
     const tx = db.transaction(store, 'readwrite');
     let cursor = await tx.store.openCursor(cursorId);
     if (store === STORE_TASK_HISTORY) {
       // monkey patch for type error
-      const index = 'byTimeStart' as keyof DB[K]['indexes'];
+      const index = 'byTimeStart' as keyof fokusDbSchema[K]['indexes'];
       // must use the same parameter time
       cursor = await tx.store
         .index(index)
@@ -143,18 +123,13 @@ const storage = () => {
     store: K,
     cursorId: string
   ) {
-    if (!db) db = await openDB<DB>(STORE_DB, dbVer, dbOpt);
+    if (!db) db = await getDB();
     await db.delete(store, cursorId);
   }
 
   function onChange(func: Function) {
     onStorageChange = func;
   }
-
-  const getDB = async () => {
-    if (!db) db = await openDB<DB>(STORE_DB, dbVer, dbOpt);
-    return db;
-  };
 
   return { add, set, get, getAll, remove, onChange, getDB };
 };

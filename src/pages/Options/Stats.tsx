@@ -21,8 +21,7 @@ import {
 import useTaskHistory from '@/lib/swr/useTaskHistory';
 import DailyTask from '@/components/chart/DailyTask';
 import useTaskNow from '@/lib/swr/useTaskNow';
-import { LOAD_SUCCESS, STORE_TASKS } from '@/constants';
-import useTasks from '@/lib/swr/useTasks';
+import { LOAD_SUCCESS } from '@/constants';
 import analyzeTime from '@/lib/analyzeTime';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';

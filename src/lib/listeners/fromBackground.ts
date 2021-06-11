@@ -7,19 +7,16 @@ import {
   QUERY_BLOCKED_URL,
   TIME_MINUTE,
 } from '@/constants';
-// import getTaskInfo from '@/lib/getTaskInfo';
 import storage from '@/lib/storage';
 import getSettingsUrl from '@/lib/getSettingsUrl';
-// import STORE_PRESERVED_KEYS from '@/constants/STORE_PRESERVED_KEYS';
 import checkChromeUrl from '@/lib/checkChromeUrl';
-import getNewTabUrl from '@/lib/getNewTabUrl';
-import saveJson from '@/lib/file/saveJson';
 import matchUrlRegex from '@/lib/matchUrlRegex';
 import getTime from '@/lib/getTime';
 import { getVarious } from '../controller/various';
 import { getTask } from '../controller/task';
 import { endTask, getTaskHistory } from '../controller/taskHistory';
 import { getSites } from '../controller/site';
+import exportSettings from '../exportSettings';
 // import { endTask } from '@/lib/controller/task';
 
 const logger = makeLogger('listenFromBackground', true);
@@ -109,24 +106,17 @@ const onStorageChange = () => {
 };
 
 const onExportSettings = async () => {
-  // logger('onExportSettings');
-  // const readers = STORE_PRESERVED_KEYS.map(storage.get);
-  // const data = {
-  //   settings: await Promise.all(readers),
-  // };
-  const data = {};
-  saveJson(data, 'settings.json');
+  const data = await exportSettings();
+  logger('saving storage data', data);
 };
 
 // listen from background
 const listenFromBackground = () => {
   logger('listening...');
   chrome.runtime.onMessage.addListener(function (message = {}, sender, reply) {
+    logger('onMessage', { message, sender, reply });
     const { code } = message;
     if (code === EXPORT_SETTINGS) onExportSettings();
-    logger('onMessage', { message, sender, reply });
-    // chrome.runtime.onMessage.removeListener(event);
-    // reply({ message: 'hello from background!' });
   });
 
   chrome.tabs.onUpdated.addListener((_tabId, _changeInfo, tab) => {
