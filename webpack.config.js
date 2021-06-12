@@ -6,7 +6,9 @@ var webpack = require('webpack'),
   CopyWebpackPlugin = require('copy-webpack-plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   TerserPlugin = require('terser-webpack-plugin'),
-  Dotenv = require('dotenv-webpack');
+  Dotenv = require('dotenv-webpack'),
+  SpeedMeasurePlugin = require('speed-measure-webpack-plugin')
+const { ESBuildMinifyPlugin } = require('esbuild-loader')
 
 const ASSET_PATH = process.env.ASSET_PATH || '/';
 
@@ -18,6 +20,14 @@ const envFiles = {
 
 const isDevEnv = env.NODE_ENV === 'development';
 const isProdEnv = env.NODE_ENV === 'production';
+const buildPerformanceLog = './build-perf.json';
+const smp = new SpeedMeasurePlugin({
+  // outputFormat: 'json',
+  // outputTarget: buildPerformanceLog,
+  compareLoadersBuild: {
+    filePath: buildPerformanceLog,
+  },
+});
 
 var alias = {
   'react-dom': '@hot-loader/react-dom',
@@ -48,6 +58,12 @@ var fileExtensions = [
 
 if (fileSystem.existsSync(secretsPath)) {
   alias['secrets'] = secretsPath;
+}
+
+let moduleRulesTsLoader = { test: /\.(ts|tsx)$/, loader: 'ts-loader', exclude: /node_modules/ };
+if (process.env.CYPRESS_MODE === 'true') {
+  moduleRulesTsLoader.loader = 'esbuild-loader';
+  moduleRulesTsLoader.options = { loader: 'tsx', target: 'es2015', exclude: /node_modules/};
 }
 
 var options = {
@@ -91,6 +107,13 @@ var options = {
               sourceMap: true,
             },
           },
+          {
+            loader: 'esbuild-loader',
+            options: {
+              loader: 'css',
+              minify: true
+            }
+          }
         ],
       },
       {
@@ -106,7 +129,7 @@ var options = {
         loader: 'html-loader',
         exclude: /node_modules/,
       },
-      { test: /\.(ts|tsx)$/, loader: 'ts-loader', exclude: /node_modules/ },
+      moduleRulesTsLoader,
       {
         test: /\.(js|jsx)$/,
         use: [
@@ -218,11 +241,14 @@ if (env.NODE_ENV === 'development') {
   options.optimization = {
     minimize: true,
     minimizer: [
-      new TerserPlugin({
-        extractComments: false,
-      }),
+      // new TerserPlugin({
+      //   extractComments: false,
+      // }),
+      new ESBuildMinifyPlugin({
+        target: 'es2015',
+      })
     ],
   };
 }
 
-module.exports = options;
+module.exports = smp.wrap(options);
