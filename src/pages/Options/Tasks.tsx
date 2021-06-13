@@ -137,6 +137,7 @@ const Tasks: React.FC = (props) => {
       <InputGroup>
         <InputLeftElement children={<SearchIcon />} />
         <Input
+          data-intro--tasks--search-box
           placeholder={t('tasks--task-find-placeholder')}
           variant="flushed"
           value={keyword}
@@ -148,6 +149,7 @@ const Tasks: React.FC = (props) => {
             <NavLink to={keyword === '' ? '/task' : `task?title=${keyword}`}>
               <Tooltip label={t('add-new-task')}>
                 <IconButton
+                  data-intro--tasks--btn-add
                   icon={<AddIcon />}
                   size="sm"
                   aria-label={t('add-new-task')}

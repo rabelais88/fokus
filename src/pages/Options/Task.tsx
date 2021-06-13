@@ -39,7 +39,8 @@ import { EmojiData } from 'emoji-mart';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import useRouter from '@/lib/useRouter';
 
 const logger = makeLogger('pages/Options/Task');
 
@@ -76,7 +77,7 @@ const Task: React.FC = (props) => {
   const { handleSubmit, errors, register, control, watch } = useForm();
   const query = useQuery();
   const [loading, setLoading] = useState(false);
-  const history = useHistory();
+  const { redirect } = useRouter();
   const toast = useToast();
   const [openEmotePicker, setOpenEmotePicker] = useState(false);
   const { t } = useTranslation();
@@ -108,7 +109,7 @@ const Task: React.FC = (props) => {
     setLoading(true);
     await addTask(taskData);
     setLoading(false);
-    history.push('/tasks');
+    redirect('/tasks');
     toast({ status: 'success', title: t('toast--new-task-added') });
   };
 
@@ -116,7 +117,7 @@ const Task: React.FC = (props) => {
     setLoading(true);
     await editTask(taskData);
     setLoading(false);
-    history.push('/tasks');
+    redirect('/tasks');
     toast({ status: 'success', title: t('toast--task-edited') });
   };
 
@@ -142,7 +143,7 @@ const Task: React.FC = (props) => {
   const tempBlockMode = watch('blockMode', task.blockMode);
 
   const onAddNewSite = () => {
-    history.push('/website');
+    redirect('/website');
   };
 
   return (
@@ -234,7 +235,12 @@ const Task: React.FC = (props) => {
             defaultValue={task.blockMode}
             render={({ onChange: _onChange, value: _value }) => {
               return (
-                <RadioGroup spacing="10px" onChange={_onChange} value={_value}>
+                <RadioGroup
+                  spacing="10px"
+                  onChange={_onChange}
+                  value={_value}
+                  data-intro--task--block-mode
+                >
                   <Stack direction="row">
                     <Radio value={BLOCK_MODE_ALLOW_ALL}>
                       {t('edit-task--allow-all-sites')}
@@ -266,7 +272,7 @@ const Task: React.FC = (props) => {
                 _onChange([..._value, siteId]);
               };
               return (
-                <Stack spacing="10px">
+                <Stack spacing="10px" data-intro--task--allowed-mode>
                   <HStack>
                     {_value.map((allowedSiteId: string) => (
                       <SelectedSite
@@ -312,7 +318,7 @@ const Task: React.FC = (props) => {
                 _onChange([..._value, siteId]);
               };
               return (
-                <Stack spacing="10px">
+                <Stack spacing="10px" data-intro--task--blocked-sites>
                   <HStack>
                     {_value.map((blockedSiteId: string) => (
                       <SelectedSite
@@ -351,7 +357,7 @@ const Task: React.FC = (props) => {
             render={({ onChange: _onChange, value: _value }) => {
               const isUsed = _value !== -1;
               return (
-                <Stack spacing="10px">
+                <Stack spacing="10px" data-intro--task--max-duration>
                   <Switch
                     onChange={(ev) => {
                       logger({ ev, target: ev.target });
@@ -377,7 +383,12 @@ const Task: React.FC = (props) => {
           />
         </FormControl>
         {isNewTask && (
-          <Button type="submit" isLoading={loading} variant="solid">
+          <Button
+            type="submit"
+            isLoading={loading}
+            variant="solid"
+            data-intro--task--submit
+          >
             {t('edit-task--submit-new')}
           </Button>
         )}

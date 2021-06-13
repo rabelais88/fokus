@@ -119,7 +119,7 @@ const Websites: React.FC = (props) => {
           variant="flushed"
           value={keyword}
           onChange={(ev) => setKeyword(ev.target.value)}
-          key="website-search-keyword"
+          key="website--search-keyword"
         />
         <InputRightElement>
           {siteAddable && (
@@ -128,6 +128,7 @@ const Websites: React.FC = (props) => {
             >
               <Tooltip label={t('add-new-site')}>
                 <IconButton
+                  className="website--btn-add"
                   icon={<AddIcon />}
                   size="sm"
                   aria-label={t('add-new-site')}

@@ -40,7 +40,8 @@ import Task from './Task';
 import Tasks from './Tasks';
 import Website from './Website';
 import Websites from './Websites';
-import Tutorial from './Tutorial';
+import _Tutorial from './Tutorial';
+const Tutorial: any = _Tutorial;
 
 const logger = makeLogger('pages/Options/index.tsx');
 logger({ env });
@@ -76,10 +77,10 @@ const NavMenu: React.FC = (props) => {
       flexGrow={1}
     >
       <TabList>
-        <Tab className="tab-tasks">{t('tab-tasks')}</Tab>
-        <Tab className="tab-websites">{t('tab-websites')}</Tab>
-        <Tab className="tab-stats">{t('tab-stats')}</Tab>
-        <Tab className="tab-donate">{t('tab-donate')}</Tab>
+        <Tab data-intro--tab-tasks>{t('tab-tasks')}</Tab>
+        <Tab data-intro--tab-websites>{t('tab-websites')}</Tab>
+        <Tab data-intro--tab-stats>{t('tab-stats')}</Tab>
+        <Tab data-intro--tab-donate>{t('tab-donate')}</Tab>
       </TabList>
     </Tabs>
   );
