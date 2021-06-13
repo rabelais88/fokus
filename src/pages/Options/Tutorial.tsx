@@ -19,12 +19,20 @@ const Tutorial: React.FC = () => {
         {
           element: getEl('.tab-websites'),
           intro:
-            'this tab shows all the website groups you have registered. try create website group first before create a task.',
+            'this tab shows all the website groups you have registered. try create website group first before creating a task.',
         },
         {
           element: getEl('.tab-tasks'),
           intro:
             'this tab shows all the tasks you have registered. create task that blocks websites according to website groups you have created earlier.',
+        },
+        {
+          element: getEl('.tab-stats'),
+          intro:
+            'this tab shows statistics of your daily task assignments, and provides miscellaneous options.',
+        },
+        {
+          intro: 'try register any website first, then create task.',
         },
       ];
       intro()
