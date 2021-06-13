@@ -17,12 +17,12 @@ const Tutorial: React.FC = () => {
             'learn how to use this extension from this short tutorial. click next when you are ready!',
         },
         {
-          element: getEl('tab-websites'),
+          element: getEl('.tab-websites'),
           intro:
             'this tab shows all the website groups you have registered. try create website group first before create a task.',
         },
         {
-          element: getEl('tab-tasks'),
+          element: getEl('.tab-tasks'),
           intro:
             'this tab shows all the tasks you have registered. create task that blocks websites according to website groups you have created earlier.',
         },
