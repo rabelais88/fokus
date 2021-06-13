@@ -7,8 +7,8 @@ var webpack = require('webpack'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   TerserPlugin = require('terser-webpack-plugin'),
   Dotenv = require('dotenv-webpack'),
-  SpeedMeasurePlugin = require('speed-measure-webpack-plugin')
-const { ESBuildMinifyPlugin } = require('esbuild-loader')
+  SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
+const { ESBuildMinifyPlugin } = require('esbuild-loader');
 
 const ASSET_PATH = process.env.ASSET_PATH || '/';
 
@@ -60,10 +60,18 @@ if (fileSystem.existsSync(secretsPath)) {
   alias['secrets'] = secretsPath;
 }
 
-let moduleRulesTsLoader = { test: /\.(ts|tsx)$/, loader: 'ts-loader', exclude: /node_modules/ };
-if (process.env.CYPRESS_MODE === 'true') {
+let moduleRulesTsLoader = {
+  test: /\.(ts|tsx)$/,
+  loader: 'ts-loader',
+  exclude: /node_modules/,
+};
+// if (process.env.CYPRESS_MODE === 'true') {
+if (true) {
   moduleRulesTsLoader.loader = 'esbuild-loader';
-  moduleRulesTsLoader.options = { loader: 'tsx', target: 'es2015', exclude: /node_modules/};
+  moduleRulesTsLoader.options = {
+    loader: 'tsx',
+    target: 'es2015',
+  };
 }
 
 var options = {
@@ -111,9 +119,9 @@ var options = {
             loader: 'esbuild-loader',
             options: {
               loader: 'css',
-              minify: true
-            }
-          }
+              minify: true,
+            },
+          },
         ],
       },
       {
@@ -137,7 +145,11 @@ var options = {
             loader: 'source-map-loader',
           },
           {
-            loader: 'babel-loader',
+            loader: 'esbuild-loader',
+            options: {
+              loader: 'jsx',
+              target: 'es2015',
+            },
           },
         ],
         exclude: /node_modules/,
@@ -246,7 +258,8 @@ if (env.NODE_ENV === 'development') {
       // }),
       new ESBuildMinifyPlugin({
         target: 'es2015',
-      })
+        css: true,
+      }),
     ],
   };
 }

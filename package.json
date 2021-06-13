@@ -7,7 +7,7 @@
     "url": "https://github.com/rabelais88/fokus.git"
   },
   "scripts": {
-    "build": "NODE_ENV=production node utils/build.js",
+    "build": "yarn typecheck && NODE_ENV=production node utils/build.js",
     "start": "NODE_ENV=development node utils/webserver.js",
     "prettier": "prettier --write '**/*.{js,jsx,css,html}'",
     "test-unit": "jest",
@@ -16,7 +16,8 @@
     "test-cypress-ci": "cypress run --project ./e2e",
     "test-e2e-ci": "CYPRESS_MODE=true CYPRESS_baseUrl=http://localhost:3000 start-server-and-test start http://localhost:3000 test-cypress-ci",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.0.5",
@@ -33,6 +34,7 @@
     "i18next": "^20.2.1",
     "i18next-browser-languagedetector": "^6.1.0",
     "idb": "^6.1.2",
+    "intro.js": "^3.4.0",
     "lodash": "^4.17.21",
     "nanoid": "^3.1.20",
     "react": "^17.0.1",
@@ -59,6 +61,7 @@
     "@types/chrome": "0.0.132",
     "@types/d3": "^6.3.0",
     "@types/emoji-mart": "^3.0.4",
+    "@types/intro.js": "^3.0.1",
     "@types/jest": "^26.0.20",
     "@types/react": "^17.0.2",
     "@types/react-datepicker": "^3.1.8",

@@ -40,6 +40,7 @@ import Task from './Task';
 import Tasks from './Tasks';
 import Website from './Website';
 import Websites from './Websites';
+import Tutorial from './Tutorial';
 
 const logger = makeLogger('pages/Options/index.tsx');
 logger({ env });
@@ -75,10 +76,10 @@ const NavMenu: React.FC = (props) => {
       flexGrow={1}
     >
       <TabList>
-        <Tab>{t('tab-tasks')}</Tab>
-        <Tab>{t('tab-websites')}</Tab>
-        <Tab>{t('tab-stats')}</Tab>
-        <Tab>{t('tab-donate')}</Tab>
+        <Tab className="tab-tasks">{t('tab-tasks')}</Tab>
+        <Tab className="tab-websites">{t('tab-websites')}</Tab>
+        <Tab className="tab-stats">{t('tab-stats')}</Tab>
+        <Tab className="tab-donate">{t('tab-donate')}</Tab>
       </TabList>
     </Tabs>
   );
@@ -132,6 +133,7 @@ const Options = () => {
   return (
     <Router>
       <Document>
+        <Tutorial />
         <OptionsLayout>
           <Flex>
             <Box display="inline-block" marginRight="3" role="logo">
