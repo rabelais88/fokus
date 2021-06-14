@@ -2,7 +2,7 @@ import miscStorage from '@/lib/miscStorage';
 import { Steps } from 'intro.js-react';
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-// import { withTranslation } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 // intro.js-react does not support typescript (yet)
 // also does not support functional components (yet)
@@ -128,4 +128,4 @@ class Tutorial extends React.Component {
   }
 }
 
-export default withRouter(Tutorial);
+export default withTranslation()(withRouter(Tutorial));
