@@ -18,7 +18,7 @@ steps:
   - name: "cypress e2e test"
     image: cypress/included:3.4.0
     commands:
-      - yarn install cypress
+      - yarn install -D cypress
       - yarn test-e2e-ci
   - name: "push to git(master)"
     image: node:12.20.2
