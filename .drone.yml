@@ -1,6 +1,6 @@
 kind: pipeline
 type: docker
-name: test-to-publish
+name: "unit-test"
 
 platform:
   os: linux
@@ -15,12 +15,22 @@ steps:
     commands:
       - yarn install
       - yarn test-unit-ci
+---
+kind: pipeline
+type: docker
+name: "e2e-test"
+steps:
   - name: "cypress e2e test"
     image: cypress/included:3.4.0
     commands:
       - yarn remove cypress
       - yarn add -D cypress
       - yarn test-e2e-ci
+---
+kind: pipeline
+type: docker
+name: "build"
+steps:
   - name: "push to git(master)"
     image: node:12.20.2
     environment:
@@ -28,3 +38,7 @@ steps:
         from_secret: github_token
     commands:
       - . ./check-version.sh
+
+depends_on:
+  - "unit-test"
+  - "e2e-test"

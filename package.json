@@ -7,7 +7,7 @@
     "url": "https://github.com/rabelais88/fokus.git"
   },
   "scripts": {
-    "build": "yarn typecheck && NODE_ENV=production node utils/build.js",
+    "build": "SKIP_BUILD_LOG=true yarn typecheck && NODE_ENV=production node utils/build.js",
     "build-release": "NODE_ENV=production node utils/build.js",
     "start": "NODE_ENV=development node utils/webserver.js",
     "prettier": "prettier --write '**/*.{js,jsx,css,html}'",
