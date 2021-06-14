@@ -21,8 +21,8 @@ if [ "$LATEST_VERSION" != "$NOW_VERSION" ]; then
 	rm -rf release
 	rm -f *.zip
 	yarn install
-	yarn build
-	$VERSION_TAG="v${NOW_VERSION}"
+	yarn build-fast
+	VERSION_TAG="v${NOW_VERSION}"
 	mv build release
 	zip -r ${VERSION_TAG}.zip release
 	git add .
