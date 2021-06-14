@@ -11,6 +11,7 @@ if [ "$LATEST_VERSION" != "$NOW_VERSION" ]; then
 	apt-get update
 	apt install zip
 	git clone https://github.com/rabelais88/fokus fokus-build
+	git checkout master
 	cd fokus-build
 	# hide secrets from console
 	# must use escape secret value with $$
