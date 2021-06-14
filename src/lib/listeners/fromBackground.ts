@@ -29,11 +29,9 @@ export const validateUrl = async (url: string) => {
   const nowTask = await getTask(nowTaskId);
   const { blockedSiteIds, allowedSiteIds, blockMode } = nowTask;
   const { items: blockedSites } = await getSites({
-    size: -1,
     searchFunc: (website) => blockedSiteIds.includes(website.id),
   });
   const { items: allowedSites } = await getSites({
-    size: -1,
     searchFunc: (website) => allowedSiteIds.includes(website.id),
   });
 
