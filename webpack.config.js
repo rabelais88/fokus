@@ -18,13 +18,12 @@ const envFiles = {
   development: './.env.development',
 };
 
-// const isCypress = env.CYPRESS_MODE === 'true';
-const smpOption = {
-  disable: env.skipBuildLog,
-  compareLoadersBuild: {
+const smpOption = {};
+if (!env.skipBuildLog) {
+  smpOption.compareLoadersBuild = {
     filePath: './build-perf.json',
-  },
-};
+  };
+}
 const smp = new SpeedMeasurePlugin(smpOption);
 
 var alias = {
