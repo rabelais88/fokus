@@ -23,8 +23,7 @@ steps:
   - name: "cypress e2e test"
     image: cypress/included:3.4.0
     commands:
-      - yarn remove cypress
-      - yarn add -D cypress
+      - yarn install
       - yarn test-e2e-ci
 ---
 kind: pipeline

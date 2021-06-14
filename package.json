@@ -7,17 +7,17 @@
     "url": "https://github.com/rabelais88/fokus.git"
   },
   "scripts": {
-    "build": "SKIP_BUILD_LOG=true yarn typecheck && NODE_ENV=production node utils/build.js",
-    "build-release": "NODE_ENV=production node utils/build.js",
+    "build": "yarn typecheck && NODE_ENV=production node utils/build.js",
+    "build-release": "BUILD_PERFORMANCE_LOG=true NODE_ENV=production node utils/build.js",
     "start": "NODE_ENV=development node utils/webserver.js",
     "prettier": "prettier --write '**/*.{js,jsx,css,html}'",
-    "test-unit": "SKIP_BUILD_LOG=true jest",
-    "test-unit-ci": "SKIP_BUILD_LOG=true jest",
+    "test-unit": "jest",
+    "test-unit-ci": "jest",
     "test-cypress": "cypress open --project ./e2e",
     "test-cypress-ci": "cypress run --project ./e2e",
-    "test-e2e-ci": "SKIP_BUILD_LOG=true CYPRESS_MODE=true CYPRESS_baseUrl=http://localhost:3000 start-server-and-test start http://localhost:3000 test-cypress-ci",
-    "storybook": "SKIP_BUILD_LOG=true start-storybook -p 6006",
-    "build-storybook": "SKIP_BUILD_LOG=true build-storybook",
+    "test-e2e-ci": "CYPRESS_MODE=true CYPRESS_baseUrl=http://localhost:3000 start-server-and-test start http://localhost:3000 test-cypress-ci",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

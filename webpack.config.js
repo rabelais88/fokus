@@ -19,7 +19,7 @@ const envFiles = {
 };
 
 const smpOption = {};
-if (!env.skipBuildLog) {
+if (env.isBuildPerformanceLog) {
   smpOption.compareLoadersBuild = {
     filePath: './build-perf.json',
   };
