@@ -1,7 +1,7 @@
-export LATEST_VERSION=$(git ls-remote --exit-code --refs --tags https://github.com/rabelais88/fokus.git | tail -1 | awk '{print $2}' | grep -Eo "[\.0-9]+")
-echo $LATEST_VERSION
-export NOW_VERSION=$(cat ./src/manifest.json | grep -Eo '"version": "([\.0-9]+)"' | grep -Eo "[\.0-9]+")
-echo $NOW_VERSION
+LATEST_VERSION=$(git ls-remote --exit-code --refs --tags https://github.com/rabelais88/fokus.git | tail -1 | awk '{print $2}' | grep -Eo "[\.0-9]+")
+echo "latest version on github: ${LATEST_VERSION}"
+NOW_VERSION=$(cat ./src/manifest.json | grep -Eo '"version": "([\.0-9]+)"' | grep -Eo "[\.0-9]+")
+echo "current version on manifest.json: ${NOW_VERSION}"
 if [ "$DRONE_COMMIT_BRANCH" != "develop" ]; then
 	echo "build is not allowed in non-develop branch: ${DRONE_COMMIT_BRANCH}"
 	exit 0

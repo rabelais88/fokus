@@ -1,6 +1,6 @@
 kind: pipeline
 type: docker
-name: test-and-release
+name: test-to-publish
 
 platform:
   os: linux
