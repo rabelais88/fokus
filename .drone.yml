@@ -21,7 +21,9 @@ type: docker
 name: "e2e-test"
 steps:
   - name: "cypress e2e test"
-    image: cypress/included:3.4.0
+    # image: cypress/included:3.4.0
+    # https://hub.docker.com/r/cypress/browsers/tags?page=1&ordering=last_updated
+    image: cypress/browsers:node14.16.0-chrome90-ff88
     commands:
       - yarn install
       - yarn test-e2e-ci
