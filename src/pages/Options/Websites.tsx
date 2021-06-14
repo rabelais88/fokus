@@ -1,35 +1,34 @@
-import { useState } from 'react';
-import { LOAD_SUCCESS } from '@/constants';
-import useSites from '@/lib/useSites';
+import { NavLink } from '@/components';
+import {
+  ACTION_HIDE_MODAL,
+  ACTION_SHOW_MODAL,
+  LOAD_SUCCESS,
+} from '@/constants';
+import { MiscContext } from '@/lib/context/MiscContext';
+import { ModalContext } from '@/lib/context/ModalContext';
+import { removeSite } from '@/lib/controller/site';
+import useSites from '@/lib/swr/useSites';
+import { AddIcon, CloseIcon, SearchIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
   Center,
   CloseButton,
-  Flex,
   HStack,
   IconButton,
   Input,
   InputGroup,
   InputLeftElement,
   InputRightElement,
-  Modal,
   ModalBody,
-  ModalCloseButton,
-  ModalContent,
   ModalFooter,
-  ModalOverlay,
   Skeleton,
   Stack,
   StackDivider,
   Text,
   Tooltip,
-  useDisclosure,
 } from '@chakra-ui/react';
-import React from 'react';
-import { SearchIcon, AddIcon, CloseIcon } from '@chakra-ui/icons';
-import { NavLink } from '@/components';
-import removeSite from '@/lib/removeSite';
+import React, { useContext, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 interface siteItemProps {
@@ -54,114 +53,122 @@ const SiteItem: React.FC<siteItemProps> = ({ site, onRemoveSite }) => {
 
 const Websites: React.FC = (props) => {
   const [keyword, setKeyword] = useState('');
-  const [removeTargetSiteId, setRemoveTargetSiteId] = useState('');
-  const [removeTargetSiteName, setRemoveTargetSiteName] = useState('');
-  const { sites, loadState, noSite } = useSites({ keyword });
+  const {
+    items: sites,
+    loadState,
+    count,
+    revalidate: revalidateSites,
+  } = useSites({ title: keyword });
+  const noSite = count === 0;
+  const { state } = useContext(MiscContext);
+
   const { t } = useTranslation();
 
   const hasKeyword = keyword.length >= 1;
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { dispatch: dispatchOnModal } = useContext(ModalContext);
 
   const onRemoveSite = (siteId: string, siteTitle: string) => {
-    setRemoveTargetSiteId(siteId);
-    setRemoveTargetSiteName(siteTitle);
-    onOpen();
+    const onRemoveSiteConfirm = () => {
+      removeSite(siteId);
+      revalidateSites();
+      dispatchOnModal({ type: ACTION_HIDE_MODAL });
+    };
+    const ModalContent = (
+      <>
+        <ModalBody>
+          <Trans
+            i18nKey="modal--remove-website-message"
+            values={{ removeTargetSiteName: siteTitle }}
+            components={[<b />]}
+          />
+        </ModalBody>
+        <ModalFooter>
+          <HStack>
+            <Button
+              variant="solid"
+              colorScheme="red"
+              onClick={onRemoveSiteConfirm}
+            >
+              {t('modal--remove-website-confirm')}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => dispatchOnModal({ type: ACTION_HIDE_MODAL })}
+            >
+              {t('modal--cancel')}
+            </Button>
+          </HStack>
+        </ModalFooter>
+      </>
+    );
+    dispatchOnModal({ type: ACTION_SHOW_MODAL, content: ModalContent });
   };
 
-  const onRemoveSiteConfirm = () => {
-    removeSite(removeTargetSiteId);
-    onClose();
-  };
+  useEffect(() => {
+    revalidateSites();
+  }, [state.validId]);
 
   const siteAddable = noSite || keyword === '';
 
   return (
-    <>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalCloseButton />
-        <ModalContent>
-          <ModalBody>
-            <Trans
-              i18nKey="modal--remove-website-message"
-              values={{ removeTargetSiteName }}
-              components={[<b />]}
+    <Box>
+      <InputGroup>
+        <InputLeftElement children={<SearchIcon />} />
+        <Input
+          placeholder={t('websites--search-keyword-placeholder')}
+          variant="flushed"
+          value={keyword}
+          onChange={(ev) => setKeyword(ev.target.value)}
+          key="website--search-keyword"
+        />
+        <InputRightElement>
+          {siteAddable && (
+            <NavLink
+              to={keyword === '' ? '/website' : `/website?title=${keyword}`}
+            >
+              <Tooltip label={t('add-new-site')}>
+                <IconButton
+                  className="website--btn-add"
+                  icon={<AddIcon />}
+                  size="sm"
+                  aria-label={t('add-new-site')}
+                  variant="ghost"
+                />
+              </Tooltip>
+            </NavLink>
+          )}
+          {hasKeyword && (
+            <IconButton
+              onClick={() => setKeyword('')}
+              icon={<CloseIcon />}
+              size="sm"
+              aria-label={t('websites--reset-search-keyword')}
+              variant="ghost"
             />
-          </ModalBody>
-          <ModalFooter>
-            <HStack>
-              <Button
-                variant="solid"
-                colorScheme="red"
-                onClick={onRemoveSiteConfirm}
-              >
-                {t('modal--remove-website-confirm')}
-              </Button>
-              <Button variant="outline" onClick={onClose}>
-                {t('modal--cancel')}
-              </Button>
-            </HStack>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-      <Box>
-        <InputGroup>
-          <InputLeftElement children={<SearchIcon />} />
-          <Input
-            placeholder={t('websites--search-keyword-placeholder')}
-            variant="flushed"
-            value={keyword}
-            onChange={(ev) => setKeyword(ev.target.value)}
-            key="website-search-keyword"
-          />
-          <InputRightElement>
-            {siteAddable && (
-              <NavLink
-                to={keyword === '' ? '/website' : `/website?title=${keyword}`}
-              >
-                <Tooltip label={t('add-new-site')}>
-                  <IconButton
-                    icon={<AddIcon />}
-                    size="sm"
-                    aria-label={t('add-new-site')}
-                    variant="ghost"
-                  />
-                </Tooltip>
-              </NavLink>
-            )}
-            {hasKeyword && (
-              <IconButton
-                onClick={() => setKeyword('')}
-                icon={<CloseIcon />}
-                size="sm"
-                aria-label={t('websites--reset-search-keyword')}
-                variant="ghost"
-              />
-            )}
-          </InputRightElement>
-        </InputGroup>
-        <Box height="30px" />
-        {loadState !== LOAD_SUCCESS && (
-          <Stack>
-            <Skeleton height="20px"></Skeleton>
-            <Skeleton height="20px"></Skeleton>
-            <Skeleton height="20px"></Skeleton>
-          </Stack>
-        )}
-        {loadState === LOAD_SUCCESS && noSite && (
-          <Center mt="150">
-            <Text>{t('websites--no-website')}</Text>
-          </Center>
-        )}
-        {loadState === LOAD_SUCCESS && !noSite && (
-          <Stack divider={<StackDivider borderColor="gray.200" />} spacing={2}>
-            {sites.map((site) => (
-              <SiteItem key={site.id} {...{ site, onRemoveSite }} />
-            ))}
-          </Stack>
-        )}
-      </Box>
-    </>
+          )}
+        </InputRightElement>
+      </InputGroup>
+      <Box height="30px" />
+      {loadState !== LOAD_SUCCESS && (
+        <Stack>
+          <Skeleton height="20px"></Skeleton>
+          <Skeleton height="20px"></Skeleton>
+          <Skeleton height="20px"></Skeleton>
+        </Stack>
+      )}
+      {loadState === LOAD_SUCCESS && noSite && (
+        <Center mt="150">
+          <Text>{t('websites--no-website')}</Text>
+        </Center>
+      )}
+      {loadState === LOAD_SUCCESS && !noSite && (
+        <Stack divider={<StackDivider borderColor="gray.200" />} spacing={2}>
+          {sites.map((site) => (
+            <SiteItem key={site.id} {...{ site, onRemoveSite }} />
+          ))}
+        </Stack>
+      )}
+    </Box>
   );
 };
 

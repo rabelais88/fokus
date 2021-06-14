@@ -1,50 +1,46 @@
-import React, { useState } from 'react';
-import makeLogger from '@/lib/makeLogger';
-import { useHistory, useParams } from 'react-router-dom';
-import { Controller, useForm } from 'react-hook-form';
-import useQuery from '@/lib/useQuery';
-import {
-  Button,
-  FormControl,
-  FormLabel,
-  HStack,
-  Input,
-  Stack,
-  Tag,
-  TagCloseButton,
-  TagLabel,
-  Switch,
-  NumberInput,
-  NumberInputField,
-  Text,
-  RadioGroup,
-  Radio,
-  useToast,
-  ButtonGroup,
-  Box,
-  IconButton,
-} from '@chakra-ui/react';
-import useTask from '@/lib/useTask';
-import storage from '@/lib/storage';
-import { STORE_TASK_HISTORY_NOW, STORE_WEBSITES } from '@/constants/storeKey';
-import useSite from '@/lib/useSite';
+import AutoComplete from '@/components/AutoComplete';
+import Emote from '@/components/Emote';
+import EmotePicker from '@/components/EmotePicker';
 import {
   BLOCK_MODE_ALLOW_ALL,
   BLOCK_MODE_BLOCK_ALL,
   LOAD_SUCCESS,
 } from '@/constants';
-import addTask from '@/lib/swr/addTask';
-import editTask from '@/lib/swr/editTask';
 import { makeResult } from '@/lib';
+import { searchSiteTitle } from '@/lib/controller/site';
+import { addTask, editTask } from '@/lib/controller/task';
+import makeLogger from '@/lib/makeLogger';
+import useSite from '@/lib/swr/useSite';
+import useTask from '@/lib/swr/useTask';
 import useTaskNow from '@/lib/swr/useTaskNow';
-import startTask from '@/lib/swr/startTask';
-import endTask from '@/lib/swr/endTask';
-import AutoComplete from '@/components/AutoComplete';
-import Emote from '@/components/Emote';
-import EmotePicker from '@/components/EmotePicker';
-import { EmojiData } from 'emoji-mart';
+import useQuery from '@/lib/useQuery';
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import {
+  Button,
+  ButtonGroup,
+  FormControl,
+  FormLabel,
+  HStack,
+  IconButton,
+  Input,
+  NumberInput,
+  NumberInputField,
+  Radio,
+  RadioGroup,
+  Stack,
+  Switch,
+  Tag,
+  TagCloseButton,
+  TagLabel,
+  Text,
+  useToast,
+} from '@chakra-ui/react';
+import { EmojiData } from 'emoji-mart';
+import React, { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
+import useRouter from '@/lib/useRouter';
 
 const logger = makeLogger('pages/Options/Task');
 
@@ -66,27 +62,30 @@ const SelectedSite: React.FC<{ siteId: string; onClick: () => void }> = ({
 const Task: React.FC = (props) => {
   const { taskId } = useParams<{ taskId: string | undefined }>();
   const isNewTask = !taskId;
-  const { taskNow, hasTask, loadState: taskNowLoadState } = useTaskNow();
+  const {
+    task: taskNow,
+    hasTask,
+    loadState: taskNowLoadState,
+    startTask,
+    endTask,
+  } = useTaskNow();
   let taskInProgress = false;
   if (taskNowLoadState === LOAD_SUCCESS && hasTask && !isNewTask) {
-    taskInProgress = taskNow.taskId === taskId;
+    taskInProgress = taskNow.id === taskId;
   }
 
   const { handleSubmit, errors, register, control, watch } = useForm();
   const query = useQuery();
   const [loading, setLoading] = useState(false);
-  const history = useHistory();
+  const { redirect } = useRouter();
   const toast = useToast();
   const [openEmotePicker, setOpenEmotePicker] = useState(false);
   const { t } = useTranslation();
 
   const suggestSites = async (keyword: string) => {
-    const reqSites = await storage.get(STORE_WEBSITES);
-    const reKeyword = new RegExp(keyword, 'i');
-    const matchSites = Object.values(reqSites).filter(
-      (site) => reKeyword.test(site.title) || reKeyword.test(site.description)
-    );
-    const result: any = matchSites.map((site) => ({
+    const reqSites = await searchSiteTitle(keyword).getAll({ size: 50 });
+
+    const result: any = reqSites.items.map((site) => ({
       key: site.id,
       text: site.title,
     }));
@@ -110,7 +109,7 @@ const Task: React.FC = (props) => {
     setLoading(true);
     await addTask(taskData);
     setLoading(false);
-    history.push('/tasks');
+    redirect('/tasks');
     toast({ status: 'success', title: t('toast--new-task-added') });
   };
 
@@ -118,7 +117,7 @@ const Task: React.FC = (props) => {
     setLoading(true);
     await editTask(taskData);
     setLoading(false);
-    history.push('/tasks');
+    redirect('/tasks');
     toast({ status: 'success', title: t('toast--task-edited') });
   };
 
@@ -144,7 +143,7 @@ const Task: React.FC = (props) => {
   const tempBlockMode = watch('blockMode', task.blockMode);
 
   const onAddNewSite = () => {
-    history.push('/website');
+    redirect('/website');
   };
 
   return (
@@ -236,7 +235,12 @@ const Task: React.FC = (props) => {
             defaultValue={task.blockMode}
             render={({ onChange: _onChange, value: _value }) => {
               return (
-                <RadioGroup spacing="10px" onChange={_onChange} value={_value}>
+                <RadioGroup
+                  spacing="10px"
+                  onChange={_onChange}
+                  value={_value}
+                  data-intro--task--block-mode
+                >
                   <Stack direction="row">
                     <Radio value={BLOCK_MODE_ALLOW_ALL}>
                       {t('edit-task--allow-all-sites')}
@@ -268,7 +272,7 @@ const Task: React.FC = (props) => {
                 _onChange([..._value, siteId]);
               };
               return (
-                <Stack spacing="10px">
+                <Stack spacing="10px" data-intro--task--allowed-mode>
                   <HStack>
                     {_value.map((allowedSiteId: string) => (
                       <SelectedSite
@@ -314,7 +318,7 @@ const Task: React.FC = (props) => {
                 _onChange([..._value, siteId]);
               };
               return (
-                <Stack spacing="10px">
+                <Stack spacing="10px" data-intro--task--blocked-sites>
                   <HStack>
                     {_value.map((blockedSiteId: string) => (
                       <SelectedSite
@@ -353,7 +357,7 @@ const Task: React.FC = (props) => {
             render={({ onChange: _onChange, value: _value }) => {
               const isUsed = _value !== -1;
               return (
-                <Stack spacing="10px">
+                <Stack spacing="10px" data-intro--task--max-duration>
                   <Switch
                     onChange={(ev) => {
                       logger({ ev, target: ev.target });
@@ -379,7 +383,12 @@ const Task: React.FC = (props) => {
           />
         </FormControl>
         {isNewTask && (
-          <Button type="submit" isLoading={loading} variant="solid">
+          <Button
+            type="submit"
+            isLoading={loading}
+            variant="solid"
+            data-intro--task--submit
+          >
             {t('edit-task--submit-new')}
           </Button>
         )}

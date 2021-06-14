@@ -1,49 +1,93 @@
-import useSWR from 'swr';
-import storage from '@/lib/storage';
-import { STORE_TASKS, STORE_TASK_HISTORY } from '@/constants/storeKey';
+import useSWR, { mutate } from 'swr';
 import {
-  BLOCK_MODE_BLOCK_ALL,
   LOAD_FAIL,
+  LOAD_INIT,
   LOAD_LOADING,
   LOAD_SUCCESS,
+  STORE_TASKS,
+  STORE_TASK_HISTORY,
+  SWR_TASK_NOW,
+  SWR_VARIOUS,
 } from '@/constants';
 import makeLogger from '@/lib/makeLogger';
+import { getVarious } from '@/lib/controller/various';
+import {
+  endTask,
+  getTaskHistory,
+  startTask,
+} from '@/lib/controller/taskHistory';
+import { getTask } from '@/lib/controller/task';
+import getDefaultValues from '@/constants/getStoreDefault';
 
 const logger = makeLogger('lib/swr/useTaskNow');
 
-export function useTaskNow() {
-  let taskNow: taskNowType = {
-    title: '',
-    id: '',
-    emojiId: '',
-    description: '',
-    blockedSiteIds: [],
-    allowedSiteIds: [],
-    maxDuration: -1,
-    timeStart: -1,
-    timeEnd: -1,
-    taskId: '',
-    blockMode: BLOCK_MODE_BLOCK_ALL,
-  };
-  const taskHistory = useSWR<taskHistory[]>(STORE_TASK_HISTORY, storage.get);
-  const tasks = useSWR<tasksData>(STORE_TASKS, storage.get);
-  logger({ taskHistory, tasks });
-  if (taskHistory.error || tasks.error)
-    return { taskNow, hasTask: false, loadState: LOAD_LOADING };
-  if (!taskHistory.data || !tasks.data)
-    return { taskNow, hasTask: false, loadState: LOAD_SUCCESS };
-  const lastTask = taskHistory.data[taskHistory.data.length - 1];
-  if (!lastTask) return { taskNow, hasTask: false, loadState: LOAD_SUCCESS };
-  logger({ lastTask });
-  if (lastTask && lastTask.timeEnd !== -1)
-    return { taskNow, hasTask: false, loadState: LOAD_SUCCESS };
+const getTaskNow = async () => {
+  const nowTaskHistoryId = await getVarious('nowTaskHistoryId');
+  const taskHistory = await getTaskHistory(nowTaskHistoryId);
+  const { taskId } = taskHistory;
+  const task = await getTask(taskId);
+  return { task, taskHistory };
+};
 
-  // task history is in tact, but task detail does not exist
-  const taskData = tasks.data[lastTask.taskId];
-  if (!taskData) return { taskNow, hasTask: false, loadState: LOAD_FAIL };
-  logger({ taskData });
-  taskNow = { ...taskData, ...lastTask };
-  return { taskNow, hasTask: true, loadState: LOAD_SUCCESS };
+interface useTaskNowResult {
+  task: taskData;
+  taskHistory: taskHistory;
+  loadState: loadStateType;
+  startTask: typeof startTask;
+  endTask: typeof endTask;
+  hasTask: boolean;
+  revalidate: revalidateTypeAlt;
 }
+
+const _startTask: typeof startTask = async (taskId) => {
+  const { taskHistory, various } = await startTask(taskId);
+  const task = await getTask(taskId);
+  mutate(SWR_TASK_NOW, { taskHistory, task });
+  mutate(SWR_VARIOUS, various);
+  return { taskHistory, various };
+};
+
+const _endTask: typeof endTask = async () => {
+  const various = await endTask();
+  mutate(SWR_VARIOUS, various);
+  mutate(SWR_TASK_NOW, {
+    task: getDefaultValues()[STORE_TASKS],
+    taskHistory: getDefaultValues()[STORE_TASK_HISTORY],
+  });
+  return various;
+};
+
+const useTaskNow = (): useTaskNowResult => {
+  const { data, error, revalidate } = useSWR(SWR_TASK_NOW, getTaskNow);
+
+  const result: useTaskNowResult = {
+    task: getDefaultValues()[STORE_TASKS],
+    taskHistory: getDefaultValues()[STORE_TASK_HISTORY],
+    loadState: LOAD_INIT,
+    startTask: _startTask,
+    endTask: _endTask,
+    hasTask: false,
+    revalidate,
+  };
+
+  if (error) {
+    result.loadState = LOAD_FAIL;
+    return result;
+  }
+
+  if (!data && !error) {
+    result.loadState = LOAD_LOADING;
+    return result;
+  }
+  if (!data) {
+    return result;
+  }
+  result.loadState = LOAD_SUCCESS;
+  result.task = data.task;
+  result.taskHistory = data.taskHistory;
+  result.hasTask = data.task.id !== '';
+
+  return result;
+};
 
 export default useTaskNow;

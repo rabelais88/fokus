@@ -7,7 +7,7 @@ import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 const Blocked = () => {
   const blockedUrl = useQuery().get(QUERY_BLOCKED_URL) || '';
-  const { hasTask, taskNow } = useTaskNow();
+  const { hasTask, task: taskNow } = useTaskNow();
   const { t } = useTranslation();
 
   return (

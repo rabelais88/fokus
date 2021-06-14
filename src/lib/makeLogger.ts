@@ -14,12 +14,12 @@ interface consoleInterface {
   (...arg: any[]): void;
 }
 
-const makeLogger = (loggerName: string): consoleInterface => {
+const makeLogger = (loggerName: string, forceDebugMode: boolean = false) => {
   const colorIndex = strToRangedNumber(loggerName, colors.length);
   const color = colors[colorIndex];
   const colorStyle = `color: ${color};`;
-  return (...args: any[]) => {
-    if (!getDebugMode()) return;
+  return async (...args: any[]) => {
+    if (!(await getDebugMode()) && forceDebugMode === false) return;
     return console.log(`%c${loggerName}:`, colorStyle, ...args);
   };
 };

@@ -12,9 +12,13 @@ import strToHexColor from '@/lib/_strToHexColor';
 import { useTranslation } from 'react-i18next';
 import { analyzeTime } from '@/lib';
 
+interface tasksById {
+  [key: string]: taskData;
+}
+
 interface TaskHistoryChartProps {
   history: taskHistory[];
-  tasks: tasksData;
+  tasks: tasksById;
   width: number;
   height: number;
   padding?: number;

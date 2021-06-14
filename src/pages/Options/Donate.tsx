@@ -1,5 +1,5 @@
 import Emote from '@/components/Emote';
-import { Box, Link, List, ListItem, Text } from '@chakra-ui/layout';
+import { Box, Link, Text } from '@chakra-ui/layout';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 const Donate = () => {

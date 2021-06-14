@@ -1,4 +1,15 @@
 import {
+  URL_MODE_REGEX,
+  URL_MODE_REGEX_IGNORE_PROTOCOL,
+  URL_MODE_TEXT,
+} from '@/constants';
+import { addSite, editSite } from '@/lib/controller/site';
+import makeLogger from '@/lib/makeLogger';
+import matchUrlRegex from '@/lib/matchUrlRegex';
+import useSite from '@/lib/swr/useSite';
+import useQuery from '@/lib/useQuery';
+import useRouter from '@/lib/useRouter';
+import {
   Button,
   FormControl,
   FormErrorMessage,
@@ -9,24 +20,12 @@ import {
   Radio,
   RadioGroup,
   Stack,
-  Text,
   useToast,
 } from '@chakra-ui/react';
-import React, { ChangeEvent, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import {
-  URL_MODE_TEXT,
-  URL_MODE_REGEX,
-  URL_MODE_REGEX_IGNORE_PROTOCOL,
-} from '@/constants';
-import useQuery from '@/lib/useQuery';
-import makeLogger from '@/lib/makeLogger';
-import addSite from '@/lib/swr/addSite';
-import useSite from '@/lib/useSite';
-import editSite from '@/lib/swr/editSite';
-import matchUrlRegex from '@/lib/matchUrlRegex';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 
 const logger = makeLogger('pages/Options/Website');
 
@@ -48,15 +47,15 @@ const Website: React.FC = (props) => {
   const query = useQuery();
   const [loading, setLoading] = useState(false);
   const [sampleUrl, setSampleUrl] = useState('');
-  const history = useHistory();
   const toast = useToast();
   const { t } = useTranslation();
+  const { redirect } = useRouter();
 
   const _addNewSite = async (siteData: websiteData) => {
     setLoading(true);
     await addSite(siteData);
     setLoading(false);
-    history.push('/websites');
+    redirect('/websites');
     toast({ status: 'success', title: t('toast--new-website-added') });
   };
 
@@ -64,7 +63,7 @@ const Website: React.FC = (props) => {
     setLoading(true);
     await editSite({ ...siteData, id: site.id });
     setLoading(false);
-    history.push('/websites');
+    redirect('/websites');
     toast({ status: 'success', title: t('toast--website-edited') });
   };
 
@@ -116,7 +115,11 @@ const Website: React.FC = (props) => {
           <FormLabel as="legend" htmlFor="urlMode">
             {t('edit-website--url-detection-mode')}
           </FormLabel>
-          <RadioGroup name="urlMode" defaultValue={site.urlMode}>
+          <RadioGroup
+            name="urlMode"
+            defaultValue={site.urlMode}
+            data-intro--website--url-mode
+          >
             <HStack spacing="24px">
               <Radio name="urlMode" value={URL_MODE_TEXT} ref={register}>
                 {t('edit-website--url-mode-plain-url')}
@@ -145,6 +148,7 @@ const Website: React.FC = (props) => {
             placeholder={t('edit-website--url-regex-placeholder')}
             defaultValue={site.urlRegex}
             ref={register({ required: true })}
+            data-intro--website--url-regex
           />
           {tempUrlMode === URL_MODE_REGEX && (
             <FormHelperText>
@@ -176,6 +180,7 @@ const Website: React.FC = (props) => {
             onChange={(ev) => {
               if (ev.target) setSampleUrl(ev.target.value);
             }}
+            data-intro--website--url-test
           />
           {sampleUrlMatch && (
             <FormHelperText>{t('edit-website--url-match')}</FormHelperText>

@@ -1,56 +1,49 @@
 import storage from '@/lib/storage';
-import {
-  STORE_TASK_HISTORY,
-  STORE_TASK_HISTORY_NOW,
-} from '@/constants/storeKey';
-import getTime from '@/lib/getTime';
-import makeResult from '@/lib/makeResult';
-import makeError from '@/lib/makeError';
+import { STORE_TASKS } from '@/constants/storeKey';
 import _cloneDeep from 'lodash/cloneDeep';
+import { makeId } from '@/lib';
 
-interface startTaskArg {
-  (taskId: string): Promise<
-    resolvable<{ history: taskHistory[]; now: taskNowType }>
-  >;
+interface getTasksArg extends pagingArg {
+  searchFunc?: pagingSearchFunc<taskData>;
 }
-export const startTask: startTaskArg = async (taskId: string) => {
-  try {
-    const history = await storage.get(STORE_TASK_HISTORY);
-    const timeNow = getTime();
 
-    const currentTask = { taskId, timeStart: timeNow, timeEnd: -1 };
-
-    const newHistory = [...history, currentTask];
-    await storage.set(STORE_TASK_HISTORY, newHistory);
-    await storage.set(STORE_TASK_HISTORY_NOW, currentTask);
-    return makeResult({ history: newHistory, now: currentTask });
-  } catch (error) {
-    return makeError(undefined, error);
-  }
+export const getTasks = ({
+  size = Infinity,
+  cursorId,
+  searchFunc,
+}: getTasksArg = {}) => {
+  return storage.getAll(STORE_TASKS, size, cursorId, searchFunc);
 };
 
-interface endTaskArg {
-  (): Promise<resolvable<taskHistory[]>>;
-}
-export const endTask: endTaskArg = async () => {
-  try {
-    const history = await storage.get(STORE_TASK_HISTORY);
-    const lastHistory = history[history.length - 1];
-    if (!lastHistory) return makeError('NO_CURRENT_TASK');
-    if (lastHistory.timeStart === -1) return makeError('NO_START_TIME');
-    const newLastHistory = _cloneDeep(lastHistory);
-    const timeNow = getTime();
-    newLastHistory.timeEnd = timeNow;
-    const newHistory = _cloneDeep(history);
-    newHistory[history.length - 1] = newLastHistory;
-    await storage.set(STORE_TASK_HISTORY, newHistory);
-    await storage.set(STORE_TASK_HISTORY_NOW, {
-      taskId: '',
-      timeStart: -1,
-      timeEnd: -1,
-    });
-    return makeResult(newHistory);
-  } catch (error) {
-    return makeError(undefined, error);
-  }
+/**
+ * @example
+ * tasks.searchTaskTitle('abc').getAll({ size: 12, cursor: 'aaaa11111' })
+ */
+export const searchTaskTitle = (title: string) => {
+  const searchFunc = (task: taskData) => {
+    const re = new RegExp(title, 'i');
+    return re.test(task.title);
+  };
+  return {
+    getAll: (arg: pagingArg) => getTasks({ ...(arg || {}), searchFunc }),
+  };
+};
+
+export const getTask = (taskId: string) => {
+  return storage.get(STORE_TASKS, taskId);
+};
+
+export const addTask = (newTask: newTaskData) => {
+  const id = makeId();
+  const _newTask = { ...newTask, id };
+  return storage.add(STORE_TASKS, _newTask);
+};
+
+export const removeTask = (taskId: string) => {
+  return storage.remove(STORE_TASKS, taskId);
+};
+
+export const editTask = async (targetTask: taskData) => {
+  await storage.set(STORE_TASKS, targetTask);
+  return targetTask;
 };

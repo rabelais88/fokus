@@ -1,19 +1,47 @@
 import useSWR from 'swr';
-import storage from '@/lib/storage';
-import { STORE_TASK_HISTORY } from '@/constants/storeKey';
-import { LOAD_FAIL, LOAD_LOADING, LOAD_SUCCESS } from '@/constants';
+import {
+  LOAD_FAIL,
+  LOAD_INIT,
+  LOAD_LOADING,
+  LOAD_SUCCESS,
+  STORE_TASK_HISTORY,
+  SWR_TASK_HISTORY,
+} from '@/constants';
+import { getTaskHistory } from '@/lib/controller/taskHistory';
+import getDefaultValues from '@/constants/getStoreDefault';
 
-const useTaskHistory = () => {
-  const { data, error } = useSWR<taskHistory[]>(
-    STORE_TASK_HISTORY,
-    storage.get
+interface useTaskHistoryResult {
+  taskHistory: taskHistory;
+  loadState: loadStateType;
+  revalidate: revalidateTypeAlt;
+}
+
+const useTaskHistory = (taskHistoryId: string) => {
+  const { data, error, revalidate } = useSWR<taskHistory>(
+    [SWR_TASK_HISTORY, taskHistoryId],
+    async () => await getTaskHistory(taskHistoryId)
   );
-  let loadState = LOAD_LOADING;
-  const taskHistory = data || [];
-  if (error) loadState = LOAD_FAIL;
-  if (!error && data) loadState = LOAD_SUCCESS;
-  const noTaskHistory = taskHistory.length === 0;
-  return { taskHistory, loadState, noTaskHistory };
+
+  let result: useTaskHistoryResult = {
+    loadState: LOAD_INIT,
+    taskHistory: getDefaultValues()[STORE_TASK_HISTORY],
+    revalidate,
+  };
+
+  if (error && !data) {
+    result.loadState = LOAD_LOADING;
+    return result;
+  }
+  if (error) {
+    result.loadState = LOAD_FAIL;
+    return result;
+  }
+  if (!data) {
+    return result;
+  }
+  result.loadState = LOAD_SUCCESS;
+  result.taskHistory = data;
+  return result;
 };
 
 export default useTaskHistory;

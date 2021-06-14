@@ -1,49 +1,47 @@
-import React from 'react';
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  useLocation,
-  useHistory,
-  Redirect,
-} from 'react-router-dom';
-import { render } from 'react-dom';
-
+import { ACTION_REVALIDATE, QUERY_BLOCKED_URL } from '@/constants';
 import Document from '@/containers/Document';
 import { OptionsLayout } from '@/containers/layout';
+import { MiscContext } from '@/lib/context/MiscContext';
+import { env, isCypress } from '@/lib/env';
+import exportSettings from '@/lib/exportSettings';
+// import send from '@/lib/senders/fromOptions';
+// import { EXPORT_SETTINGS } from '@/constants/messages';
+import importSettings from '@/lib/importSettings';
+import makeLogger from '@/lib/makeLogger';
+import useQuery from '@/lib/useQuery';
+import { AttachmentIcon, DownloadIcon } from '@chakra-ui/icons';
 import {
   Box,
-  Button,
   Flex,
   Heading,
   HStack,
   IconButton,
-  Link,
-  List,
-  ListItem,
   Tab,
   TabList,
   Tabs,
-  Text,
   Tooltip,
   useToast,
 } from '@chakra-ui/react';
-import Websites from './Websites';
-import Website from './Website';
-import Tasks from './Tasks';
-import Stats from './Stats';
-import makeLogger from '@/lib/makeLogger';
-import Task from './Task';
-import { useTranslation, Trans } from 'react-i18next';
-import useQuery from '@/lib/useQuery';
-import { QUERY_BLOCKED_URL } from '@/constants';
+import React, { useContext } from 'react';
+import { render } from 'react-dom';
+import { useTranslation } from 'react-i18next';
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+  useHistory,
+  useLocation,
+} from 'react-router-dom';
 import Blocked from './Blocked';
-import { env } from '@/lib/env';
-import { AttachmentIcon, DownloadIcon } from '@chakra-ui/icons';
-import send from '@/lib/senders/fromOptions';
-import { EXPORT_SETTINGS } from '@/constants/messages';
-import importSettings from '@/lib/importSettings';
 import Donate from './Donate';
+import Stats from './Stats';
+import Task from './Task';
+import Tasks from './Tasks';
+import Website from './Website';
+import Websites from './Websites';
+import _Tutorial from '@/components/Tutorial';
+const Tutorial: any = _Tutorial;
 
 const logger = makeLogger('pages/Options/index.tsx');
 logger({ env });
@@ -79,22 +77,25 @@ const NavMenu: React.FC = (props) => {
       flexGrow={1}
     >
       <TabList>
-        <Tab>{t('tab-tasks')}</Tab>
-        <Tab>{t('tab-websites')}</Tab>
-        <Tab>{t('tab-stats')}</Tab>
-        <Tab>{t('tab-donate')}</Tab>
+        <Tab data-intro--tab-tasks>{t('tab-tasks')}</Tab>
+        <Tab data-intro--tab-websites>{t('tab-websites')}</Tab>
+        <Tab data-intro--tab-stats>{t('tab-stats')}</Tab>
+        <Tab data-intro--tab-donate>{t('tab-donate')}</Tab>
       </TabList>
     </Tabs>
   );
 };
 
-const exportSettings = () => {
-  send(EXPORT_SETTINGS);
+const onExportSettings = async () => {
+  // send(EXPORT_SETTINGS);
+  const data = await exportSettings();
+  logger('exportSettings', data);
 };
 
 const ToolMenu = () => {
   const toast = useToast();
   const { t } = useTranslation();
+  const { dispatch } = useContext(MiscContext);
 
   const _importSettings = async () => {
     const req = await importSettings();
@@ -104,6 +105,8 @@ const ToolMenu = () => {
     }
     toast({ status: 'success', title: t('json-import-success') });
     logger(req.result);
+
+    dispatch({ type: ACTION_REVALIDATE });
   };
   return (
     <HStack>
@@ -112,7 +115,7 @@ const ToolMenu = () => {
           variant="ghost"
           icon={<DownloadIcon />}
           aria-label={t('export-json-description')}
-          onClick={exportSettings}
+          onClick={onExportSettings}
         />
       </Tooltip>
       <Tooltip label={t('import-json')}>
@@ -131,6 +134,7 @@ const Options = () => {
   return (
     <Router>
       <Document>
+        <Tutorial />
         <OptionsLayout>
           <Flex>
             <Box display="inline-block" marginRight="3" role="logo">

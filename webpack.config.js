@@ -6,7 +6,9 @@ var webpack = require('webpack'),
   CopyWebpackPlugin = require('copy-webpack-plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   TerserPlugin = require('terser-webpack-plugin'),
-  Dotenv = require('dotenv-webpack');
+  Dotenv = require('dotenv-webpack'),
+  SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
+const { ESBuildMinifyPlugin } = require('esbuild-loader');
 
 const ASSET_PATH = process.env.ASSET_PATH || '/';
 
@@ -16,19 +18,26 @@ const envFiles = {
   development: './.env.development',
 };
 
-const isDevEnv = env.NODE_ENV === 'development';
-const isProdEnv = env.NODE_ENV === 'production';
+// const isCypress = env.CYPRESS_MODE === 'true';
+const smpOption = {
+  disable: env.skipBuildLog,
+  compareLoadersBuild: {
+    filePath: './build-perf.json',
+  },
+};
+const smp = new SpeedMeasurePlugin(smpOption);
 
 var alias = {
   'react-dom': '@hot-loader/react-dom',
   '@': rootPath,
 };
-if (isDevEnv)
-  alias[path.join(rootPath, 'lib', 'storage')] = path.join(
+if (env.isCypress) {
+  alias[path.join(rootPath, 'components', 'Tutorial')] = path.join(
     rootPath,
-    'lib',
-    'storageDev'
+    'components',
+    'Stub'
   );
+}
 
 // load the secrets
 var secretsPath = path.join(__dirname, 'secrets.' + env.NODE_ENV + '.js');
@@ -50,6 +59,20 @@ if (fileSystem.existsSync(secretsPath)) {
   alias['secrets'] = secretsPath;
 }
 
+let moduleRulesTsLoader = {
+  test: /\.(ts|tsx)$/,
+  loader: 'ts-loader',
+  exclude: /node_modules/,
+};
+// if (process.env.CYPRESS_MODE === 'true') {
+if (true) {
+  moduleRulesTsLoader.loader = 'esbuild-loader';
+  moduleRulesTsLoader.options = {
+    loader: 'tsx',
+    target: 'es2015',
+  };
+}
+
 var options = {
   mode: process.env.NODE_ENV || 'development',
   entry: {
@@ -58,10 +81,15 @@ var options = {
     popup: path.join(__dirname, 'src', 'pages', 'Popup', 'index.jsx'),
     background: path.join(__dirname, 'src', 'pages', 'Background', 'index.js'),
     // contentScript: path.join(__dirname, 'src', 'pages', 'Content', 'index.js'),
+    devtools: path.join(__dirname, 'src', 'pages', 'Devtools', 'index.js'),
+    panel: path.join(__dirname, 'src', 'pages', 'Panel', 'index.jsx'),
   },
   // chromeExtensionBoilerplate: {
   //   notHotReload: ['contentScript'],
   // },
+  chromeExtensionBoilerplate: {
+    notHotReload: ['devtools'],
+  },
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: '[name].bundle.js',
@@ -86,6 +114,13 @@ var options = {
               sourceMap: true,
             },
           },
+          {
+            loader: 'esbuild-loader',
+            options: {
+              loader: 'css',
+              minify: true,
+            },
+          },
         ],
       },
       {
@@ -101,7 +136,7 @@ var options = {
         loader: 'html-loader',
         exclude: /node_modules/,
       },
-      { test: /\.(ts|tsx)$/, loader: 'ts-loader', exclude: /node_modules/ },
+      moduleRulesTsLoader,
       {
         test: /\.(js|jsx)$/,
         use: [
@@ -109,7 +144,11 @@ var options = {
             loader: 'source-map-loader',
           },
           {
-            loader: 'babel-loader',
+            loader: 'esbuild-loader',
+            options: {
+              loader: 'jsx',
+              target: 'es2015',
+            },
           },
         ],
         exclude: /node_modules/,
@@ -159,6 +198,15 @@ var options = {
     //     },
     //   ],
     // }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: 'src/lib/bg-loader.js',
+          to: path.join(__dirname, 'build'),
+          force: true,
+        },
+      ],
+    }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'src', 'pages', 'Newtab', 'index.html'),
       filename: 'newtab.html',
@@ -178,15 +226,15 @@ var options = {
       cache: false,
     }),
     new HtmlWebpackPlugin({
-      template: path.join(
-        __dirname,
-        'src',
-        'pages',
-        'Background',
-        'index.html'
-      ),
-      filename: 'background.html',
-      chunks: ['background'],
+      template: path.join(__dirname, 'src', 'pages', 'Devtools', 'index.html'),
+      filename: 'devtools.html',
+      chunks: ['devtools'],
+      cache: false,
+    }),
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, 'src', 'pages', 'Panel', 'index.html'),
+      filename: 'panel.html',
+      chunks: ['panel'],
       cache: false,
     }),
     new Dotenv({
@@ -204,11 +252,15 @@ if (env.NODE_ENV === 'development') {
   options.optimization = {
     minimize: true,
     minimizer: [
-      new TerserPlugin({
-        extractComments: false,
+      // new TerserPlugin({
+      //   extractComments: false,
+      // }),
+      new ESBuildMinifyPlugin({
+        target: 'es2015',
+        css: true,
       }),
     ],
   };
 }
 
-module.exports = options;
+module.exports = smp.wrap(options);

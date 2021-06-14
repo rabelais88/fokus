@@ -1,12 +1,13 @@
 {
+  "manifest_version": 3,
   "name": "Fokus",
   "description": "extension for managing web browsing time",
-  "version": "0.24",
+  "version": "0.32",
   "options_page": "options.html",
   "background": {
-    "page": "background.html"
+    "service_worker": "bg-loader.js"
   },
-  "browser_action": {
+  "action": {
     "default_popup": "popup.html",
     "default_icon": "icon-34.png"
   },
@@ -16,8 +17,12 @@
   "icons": {
     "128": "icon-128.png"
   },
-  "web_accessible_resources": ["icon-128.png", "icon-34.png"],
-  "manifest_version": 2,
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "devtools_page": "devtools.html",
+  "web_accessible_resources": [
+    {
+      "resources": ["content.styles.css", "icon-128.png", "icon-34.png"],
+      "matches": []
+    }
+  ],
   "permissions": ["storage", "tabs", "downloads"]
 }

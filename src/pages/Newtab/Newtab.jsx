@@ -2,7 +2,8 @@ import React from 'react';
 import Document from '@/containers/Document';
 import { Heading, Center, Text, Button } from '@chakra-ui/react';
 import { NewtabLayout } from '@/containers/layout';
-import openSettings from '@/lib/openSettings';
+import changeCurrentTab from '@/lib/changeCurrentTab'
+import getSettingsUrl from '@/lib/getSettingsUrl';
 import Emote from '@/components/Emote';
 import { useTranslation } from 'react-i18next';
 
@@ -23,7 +24,7 @@ const Newtab = () => {
           ></Text>
         </Center>
         <Center>
-          <Button onClick={() => openSettings()}>
+          <Button onClick={() => changeCurrentTab(getSettingsUrl())}>
             {t('newtab-open-settings')}
           </Button>
         </Center>

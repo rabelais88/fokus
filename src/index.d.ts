@@ -28,9 +28,7 @@ interface websiteData {
   urlMode: 'URL_MODE_TEXT' | 'URL_MODE_REGEX';
 }
 
-interface websitesData {
-  [key: string]: websiteData;
-}
+type newWebsiteData = Omit<websiteData, 'id'>;
 
 // stores order of website ids
 type websitesIndex = string[];
@@ -46,9 +44,7 @@ interface taskData {
   maxDuration: number;
 }
 
-interface tasksData {
-  [key: string]: taskData;
-}
+type newTaskData = Omit<taskData, 'id'>;
 
 type tasksIndex = string[];
 
@@ -76,17 +72,41 @@ interface AutoCompleteProps<T = any> {
 }
 
 interface taskHistory {
+  id: string;
   timeStart: number;
   timeEnd: number;
   taskId: string;
 }
 
-type taskNowType = taskData & taskHistory;
+type newTaskHistory = Omit<taskHistory, 'id'>;
 
 type queryType = {
   [key: string]: string;
 };
 
+interface paging<V> {
+  items: V[];
+  count: number;
+  hasNext: boolean;
+}
+
+interface pagingArg {
+  size?: number;
+  cursorId?: string;
+}
+
+type pagingSearchFunc<V> = (arg: V) => boolean;
+type loadStateType =
+  | 'LOAD_SUCCESS'
+  | 'LOAD_FAIL'
+  | 'LOAD_LOADING'
+  | 'LOAD_INIT';
+
+type mapAsArray<Type> = {
+  [Property in keyof Type]: Type[Property][];
+};
+
+type revalidateTypeAlt = () => Promise<boolean>;
 // interface openModalFunc {
 //   (arg: { type: string; onYes?: () => {}; onNo?: () => {} }): void;
 // }
