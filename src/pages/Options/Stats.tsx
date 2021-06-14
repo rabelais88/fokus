@@ -2,7 +2,11 @@ import DailyTask from '@/components/chart/DailyTask';
 import DatePicker from '@/components/DatePicker';
 import { LOAD_SUCCESS } from '@/constants';
 import analyzeTime from '@/lib/analyzeTime';
+import changeCurrentTab from '@/lib/changeCurrentTab';
 import { MiscContext } from '@/lib/context/MiscContext';
+import { setDebugMode } from '@/lib/controller';
+import getSettingsUrl from '@/lib/getSettingsUrl';
+import miscStorage from '@/lib/miscStorage';
 import useDebugMode from '@/lib/swr/useDebugMode';
 import useTask from '@/lib/swr/useTask';
 import useTaskHistories from '@/lib/swr/useTaskHistories';
@@ -11,6 +15,7 @@ import useTaskNow from '@/lib/swr/useTaskNow';
 import useLogger from '@/lib/useLogger';
 import {
   Box,
+  Button,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -159,11 +164,16 @@ const Stats: React.FC = () => {
 
   const hasEnoughTask = useMemo(() => todayHistory.length >= 2, [todayHistory]);
 
-  const { debugMode, setDebugMode } = useDebugMode();
+  const { debugMode } = useDebugMode();
 
   const tableLoaded = taskHistoryLoadState === LOAD_SUCCESS;
   const logger = useLogger('pages/Options/Stats.tsx');
   logger({ todayHistory });
+
+  const onRestartTutorial = async () => {
+    await miscStorage.set('skipTutorial', false);
+    changeCurrentTab(getSettingsUrl());
+  };
 
   return (
     <Box mt={5} pb={5}>
@@ -231,8 +241,13 @@ const Stats: React.FC = () => {
             if (!ev.target) return;
             setDebugMode(ev.target.checked);
           }}
-          isChecked={debugMode}
+          defaultChecked={debugMode}
         />
+        <FormHelperText>{t('debug-mode-description')}</FormHelperText>
+      </FormControl>
+      <FormControl mt={5}>
+        <FormLabel htmlFor="debug-mode">restart tutorial</FormLabel>
+        <Button onClick={onRestartTutorial}>restart tutorial</Button>
         <FormHelperText>{t('debug-mode-description')}</FormHelperText>
       </FormControl>
     </Box>

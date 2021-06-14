@@ -5,7 +5,7 @@ var webpack = require('webpack'),
   { CleanWebpackPlugin } = require('clean-webpack-plugin'),
   CopyWebpackPlugin = require('copy-webpack-plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
-  TerserPlugin = require('terser-webpack-plugin'),
+  // TerserPlugin = require('terser-webpack-plugin'),
   Dotenv = require('dotenv-webpack'),
   SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const { ESBuildMinifyPlugin } = require('esbuild-loader');
@@ -35,6 +35,14 @@ if (env.isCypress) {
     rootPath,
     'components',
     'Stub'
+  );
+}
+
+if (env.isDevelop) {
+  alias[path.join(rootPath, 'lib', 'miscStorage')] = path.join(
+    rootPath,
+    'lib',
+    'miscStorageDev'
   );
 }
 

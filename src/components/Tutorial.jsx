@@ -1,3 +1,4 @@
+import miscStorage from '@/lib/miscStorage';
 import { Steps } from 'intro.js-react';
 import React from 'react';
 import { withRouter } from 'react-router-dom';
@@ -12,10 +13,19 @@ import { withRouter } from 'react-router-dom';
 class Tutorial extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      enabled: false,
+    };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     console.log('Tutorial mounted!');
+    this.updateValue();
+  }
+
+  async updateValue() {
+    const skipTutorial = await miscStorage.get('skipTutorial');
+    this.setState({ enabled: !skipTutorial });
   }
 
   render() {
@@ -68,8 +78,9 @@ class Tutorial extends React.Component {
       { element: '[data-intro--website--url-test]', intro: 'url test' },
       { element: '[data-intro--tab-donate]', intro: '' },
     ];
-    const onExit = () => {
-      // blank
+    const onExit = async (stepIndex) => {
+      await miscStorage.set('skipTutorial', true);
+      this.updateValue();
     };
     function onBeforeChange(nextStepIndex) {
       console.log('current route', this?.props.location);
@@ -95,10 +106,14 @@ class Tutorial extends React.Component {
       return (this.steps = _steps);
     }
 
+    if (!this.state.enabled) {
+      return <div data-tutorial-loading></div>;
+    }
+
     return (
       <Steps
         steps={steps}
-        onExit={onExit}
+        onExit={onExit.bind(this)}
         initialStep={0}
         onBeforeChange={onBeforeChange.bind(this)}
         ref={setRef.bind(this)}

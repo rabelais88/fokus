@@ -1,17 +1,17 @@
 import makeLogger from './makeLogger';
-import getDefaultValues, { storageState } from '@/constants/getStoreDefault';
+import getMiscDefault, { miscState } from '@/constants/getMiscDefault';
 
 const logger = makeLogger('storage(dev)');
 
 const storage = () => {
-  function set<K extends keyof storageState>(key: K, value: storageState[K]) {
+  function set<K extends keyof miscState>(key: K, value: miscState[K]) {
     return new Promise((resolve, reject) => {
       localStorage.setItem(key, JSON.stringify(value));
       resolve(true);
     });
   }
 
-  function get<K extends keyof storageState>(key: K): Promise<storageState[K]> {
+  function get<K extends keyof miscState>(key: K): Promise<miscState[K]> {
     return new Promise((resolve, reject) => {
       logger('get()', { key });
       if (typeof key !== 'string') {
@@ -21,7 +21,7 @@ const storage = () => {
 
       const _value = localStorage.getItem(key);
       if (!_value) {
-        const defaultValues = getDefaultValues();
+        const defaultValues = getMiscDefault();
         return resolve(defaultValues[key]);
       }
       return resolve(JSON.parse(_value));
