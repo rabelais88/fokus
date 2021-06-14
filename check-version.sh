@@ -14,7 +14,7 @@ if [ "$LATEST_VERSION" != "$NOW_VERSION" ]; then
 	cd fokus-build
 	# hide secrets from console
 	# must use escape secret value with $$
-	GIT_URL=https://rabelais88:$${GITHUB_TOKEN}@github.com/rabelais88/fokus.git printenv GIT_URL | git remote set-url origin
+	echo https://rabelais88:$${GITHUB_TOKEN}@github.com/rabelais88/fokus.git | git remote set-url origin $1
 	git checkout master
 	git pull origin develop
 	# delete pre-existing release file
