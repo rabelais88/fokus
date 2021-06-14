@@ -33,37 +33,42 @@ class Tutorial extends React.Component {
     console.log('translation', { t });
     const steps = [
       {
-        title: 'welcome!',
-        intro:
-          'learn how to use this extension from this short tutorial. click next when you are ready!',
+        title: t('tutorial--welcome-title'),
+        // title: 'welcome!',
+        intro: t('tutorial--welcome'),
+        // 'learn how to use this extension from this short tutorial. click next when you are ready!',
       },
       {
         element: '[data-intro--tab-websites]',
-        intro:
-          'this is where you have to visit first. this tab shows all the website groups you have registered. try create website group first before creating a task.',
+        intro: t('tutorial--tab-websites'),
+        // 'this is where you have to visit first. this tab shows all the website groups you have registered. try create website group first before creating a task.',
       },
       {
         element: '[data-intro--tab-tasks]',
-        intro:
-          'this tab shows all the tasks you have registered. create task that blocks websites according to website groups you have created earlier.',
+        intro: t('tutorial--tab-tasks'),
+        // 'this tab shows all the tasks you have registered. create task that blocks websites according to website groups you have created earlier.',
       },
       {
         element: '[data-intro--tab-stats]',
-        intro:
-          'this tab shows statistics of your daily task assignments, and provides miscellaneous options.',
+        intro: t('tutorial--tab-stats'),
+        // 'this tab shows statistics of your daily task assignments, and provides miscellaneous options.',
       },
       {
         element: '[data-intro--tasks--search-box]',
-        intro: 'searchbox',
+        intro: t('tutorial--tasks--searchbox'),
+        // intro: 'searchbox',
       },
       // 5
       {
         element: '[data-intro--tasks--btn-add]',
-        intro: 'addbutton',
+        intro: t('tutorial--tasks--btn-add'),
+        // intro: 'addbutton',
       },
       {
-        title: 'adding/editing task',
-        intro: '...',
+        title: t('tutorial--task-title'),
+        intro: t('tutorial--task'),
+        // title: 'adding/editing task',
+        // intro: '...',
       },
       { element: '[data-intro--task--block-mode]', intro: 'block mode' },
       { element: '[data-intro--task--allowed-mode]', intro: 'allowed sites' },
