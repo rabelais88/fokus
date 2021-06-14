@@ -12,7 +12,6 @@ if [ "$LATEST_VERSION" != "$NOW_VERSION" ]; then
 	apt install zip
 	git clone https://github.com/rabelais88/fokus fokus-build
 	cd fokus-build
-	git checkout develop
 	# hide secrets from console
 	# must use escape secret value with $$
 	GIT_URL=https://rabelais88:$${GITHUB_TOKEN}@github.com/rabelais88/fokus.git printenv GIT_URL | git remote set-url origin
