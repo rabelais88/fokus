@@ -11,8 +11,8 @@ if [ "$LATEST_VERSION" != "$NOW_VERSION" ]; then
 	apt-get update
 	apt install zip
 	git clone https://github.com/rabelais88/fokus fokus-build
-	git checkout master
 	cd fokus-build
+	git checkout master
 	# hide secrets from console
 	# must use escape secret value with $$
 	git remote set-url origin https://rabelais88:${GITHUB_TOKEN}@github.com/rabelais88/fokus.git
@@ -26,7 +26,7 @@ if [ "$LATEST_VERSION" != "$NOW_VERSION" ]; then
 	zip -r ${VERSION_TAG}.zip release
 	git add .
 	git commit -am "versioning ${VERSION_TAG} for release"
-	git push origin master
+	git push -u origin master
 	git tag -a $VERSION_TAG -m "build version ${VERSION_TAG} from drone.io"
 	git push origin $VERSION_TAG
 	echo "build success!"
