@@ -13,12 +13,12 @@ steps:
   - name: "jest unit test"
     image: cypress/included:3.4.0
     commands:
-      - yarn install
+      - CYPRESS_CACHE_FOLDER=./tmp/Cypress yarn install
       - yarn test-unit-ci
   - name: "cypress e2e test"
     image: cypress/included:3.4.0
     commands:
-      - yarn test-e2e-ci
+      - CYPRESS_CACHE_FOLDER=./tmp/Cypress yarn test-e2e-ci
   - name: "push to git(master)"
     image: node:12.20.2
     environment:
