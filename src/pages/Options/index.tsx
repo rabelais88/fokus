@@ -2,7 +2,7 @@ import { ACTION_REVALIDATE, QUERY_BLOCKED_URL } from '@/constants';
 import Document from '@/containers/Document';
 import { OptionsLayout } from '@/containers/layout';
 import { MiscContext } from '@/lib/context/MiscContext';
-import { env } from '@/lib/env';
+import { env, isCypress } from '@/lib/env';
 import exportSettings from '@/lib/exportSettings';
 // import send from '@/lib/senders/fromOptions';
 // import { EXPORT_SETTINGS } from '@/constants/messages';
@@ -40,7 +40,7 @@ import Task from './Task';
 import Tasks from './Tasks';
 import Website from './Website';
 import Websites from './Websites';
-import _Tutorial from './Tutorial';
+import _Tutorial from '@/components/Tutorial';
 const Tutorial: any = _Tutorial;
 
 const logger = makeLogger('pages/Options/index.tsx');

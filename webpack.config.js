@@ -18,27 +18,26 @@ const envFiles = {
   development: './.env.development',
 };
 
-const isDevEnv = env.NODE_ENV === 'development';
-const isProdEnv = env.NODE_ENV === 'production';
-const buildPerformanceLog = './build-perf.json';
-const smp = new SpeedMeasurePlugin({
-  // outputFormat: 'json',
-  // outputTarget: buildPerformanceLog,
+// const isCypress = env.CYPRESS_MODE === 'true';
+const smpOption = {
+  disable: env.skipBuildLog,
   compareLoadersBuild: {
-    filePath: buildPerformanceLog,
+    filePath: './build-perf.json',
   },
-});
+};
+const smp = new SpeedMeasurePlugin(smpOption);
 
 var alias = {
   'react-dom': '@hot-loader/react-dom',
   '@': rootPath,
 };
-// if (isDevEnv)
-//   alias[path.join(rootPath, 'lib', 'storage')] = path.join(
-//     rootPath,
-//     'lib',
-//     'storageDev'
-//   );
+if (env.isCypress) {
+  alias[path.join(rootPath, 'components', 'Tutorial')] = path.join(
+    rootPath,
+    'components',
+    'Stub'
+  );
+}
 
 // load the secrets
 var secretsPath = path.join(__dirname, 'secrets.' + env.NODE_ENV + '.js');
