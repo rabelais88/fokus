@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import { ChakraProvider, Modal } from '@chakra-ui/react';
 import '@/i18n';
 import chakraTheme from '@/lib/chakraTheme';
-import 'emoji-mart/css/emoji-mart.css';
 import { MiscContextProvider } from '@/lib/context/MiscContext';
 import { ModalContextProvider } from '@/lib/context/ModalContext';
-import 'intro.js/introjs.css';
+import { ChakraProvider } from '@chakra-ui/react';
+import 'emoji-mart/css/emoji-mart.css';
+import React from 'react';
 
 interface DocumentProp {
   resetCSS?: boolean;
