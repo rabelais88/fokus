@@ -55,6 +55,7 @@
   "add-new-task" : "add new task",
   "edit-website--test-url-regex-placeholder" : "test any url with given url(regex)",
   "json-import-fail" : "failed while importing json settings",
+  "add-task--add-icon" : "add icon",
   "tutorial--task-title" : "task creation/edit page",
   "stats-task-start-time" : "start time",
   "edit-website--website-name-placeholder" : "website name",

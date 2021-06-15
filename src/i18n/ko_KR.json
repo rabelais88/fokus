@@ -55,6 +55,7 @@
   "add-new-task" : "새 작업 만들기",
   "edit-website--test-url-regex-placeholder" : "URL을 입력하고 설정한 URL(또는 정규식)을 통해서 구분되는지 확인하세요.",
   "json-import-fail" : "json 설정을 불러오는 과정에서 오류가 발생했습니다.",
+  "add-task--add-icon" : "아이콘 추가하기",
   "tutorial--task-title" : "작업 생성/편집 페이지",
   "stats-task-start-time" : "시작 시간",
   "edit-website--website-name-placeholder" : "웹사이트 이름",
