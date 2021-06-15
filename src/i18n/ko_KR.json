@@ -39,6 +39,7 @@
   "edit-task--maximum-duration" : "최대 시간(분)",
   "cancel-task" : "취소",
   "toast--new-website-added" : "웹사이트를 편집했습니다",
+  "restart-tutorial-description" : "실수로 모르는 새에 튜토리얼을 건너 뛰었다면, 여기에서 다시 시작하세요.",
   "full-date" : "{{year}}/{{month, pad2digit}}/{{day, pad2digit}}",
   "tab-donate" : "기부",
   "no-task-heading" : "잠깐만!",
