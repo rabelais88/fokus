@@ -180,7 +180,7 @@ const Task: React.FC = (props) => {
               if (_value === '')
                 return (
                   <Button size="sm" onClick={onAddIcon}>
-                    Add Icon
+                    {t('edit-task--add-icon')}
                   </Button>
                 );
 
@@ -272,7 +272,7 @@ const Task: React.FC = (props) => {
                 _onChange([..._value, siteId]);
               };
               return (
-                <Stack spacing="10px" data-intro--task--allowed-mode>
+                <Stack spacing="10px" data-intro--task--allowed-sites>
                   <HStack>
                     {_value.map((allowedSiteId: string) => (
                       <SelectedSite

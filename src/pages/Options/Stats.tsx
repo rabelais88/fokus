@@ -41,6 +41,7 @@ import React, {
   useReducer,
 } from 'react';
 import { useTranslation } from 'react-i18next';
+import Emote from '@/components/Emote';
 
 type CurrentTaskDisplayArg = {
   taskId: string;
@@ -185,6 +186,8 @@ const Stats: React.FC = () => {
       )}
       {!hasEnoughTask && <Text>{t('stats-not-sufficient-record')}</Text>}
       <HStack>
+        <Emote emoji="mag" size={14} />
+        <Text>{t('stats--time-scope')}</Text>
         <DatePicker
           selected={new Date(timeStart)}
           onChange={(v) => {
@@ -196,6 +199,7 @@ const Stats: React.FC = () => {
             dispatch({ type: 'setTimeStart', timeStart: v.getTime() });
           }}
         />
+        <Text>-</Text>
         <DatePicker
           selected={new Date(timeEnd)}
           onChange={(v) => {
@@ -246,9 +250,13 @@ const Stats: React.FC = () => {
         <FormHelperText>{t('debug-mode-description')}</FormHelperText>
       </FormControl>
       <FormControl mt={5}>
-        <FormLabel htmlFor="debug-mode">restart tutorial</FormLabel>
-        <Button onClick={onRestartTutorial}>restart tutorial</Button>
-        <FormHelperText>{t('debug-mode-description')}</FormHelperText>
+        <FormLabel htmlFor="btn-restart-tutorial">
+          {t('restart-tutorial')}
+        </FormLabel>
+        <Button name="btn-restart-tutorial" onClick={onRestartTutorial}>
+          {t('restart-tutorial')}
+        </Button>
+        <FormHelperText>{t('restart-tutorial-description')}</FormHelperText>
       </FormControl>
     </Box>
   );

@@ -43,7 +43,8 @@ i18n
     },
     // https://github.com/i18next/i18next-browser-languageDetector
     detection: {
-      order: ['navigator'],
+      order: ['localStorage', 'navigator'],
+      caches: ['localStorage'],
     },
   });
 
