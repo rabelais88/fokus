@@ -14,7 +14,9 @@ import useSite from '@/lib/swr/useSite';
 import useTask from '@/lib/swr/useTask';
 import useTaskNow from '@/lib/swr/useTaskNow';
 import useQuery from '@/lib/useQuery';
+import useRouter from '@/lib/useRouter';
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import { Center } from '@chakra-ui/layout';
 import {
   Button,
   ButtonGroup,
@@ -27,6 +29,7 @@ import {
   NumberInputField,
   Radio,
   RadioGroup,
+  Spinner,
   Stack,
   Switch,
   Tag,
@@ -40,7 +43,6 @@ import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import useRouter from '@/lib/useRouter';
 
 const logger = makeLogger('pages/Options/Task');
 
@@ -145,6 +147,13 @@ const Task: React.FC = (props) => {
   const onAddNewSite = () => {
     redirect('/website');
   };
+
+  if (loadState !== LOAD_SUCCESS)
+    return (
+      <Center>
+        <Spinner />
+      </Center>
+    );
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
