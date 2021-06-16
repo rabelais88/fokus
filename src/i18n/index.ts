@@ -12,6 +12,8 @@ const resources = {
   'ko-KR': { translation: koKR },
 };
 
+export const availableLanguages = Object.keys(resources);
+
 const paddit = (num: number, digit: number = 2) => {
   return _padStart(num.toString(), digit, '0');
 };
