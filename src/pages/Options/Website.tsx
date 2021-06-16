@@ -3,6 +3,7 @@ import {
   URL_MODE_REGEX_IGNORE_PROTOCOL,
   URL_MODE_TEXT,
 } from '@/constants';
+import { LOAD_SUCCESS } from '@/constants/loadState';
 import { addSite, editSite } from '@/lib/controller/site';
 import makeLogger from '@/lib/makeLogger';
 import matchUrlRegex from '@/lib/matchUrlRegex';
@@ -21,7 +22,9 @@ import {
   RadioGroup,
   Stack,
   useToast,
+  Spinner,
 } from '@chakra-ui/react';
+import { Center } from '@chakra-ui/layout';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -80,6 +83,13 @@ const Website: React.FC = (props) => {
   const tempUrlMode = watch('urlMode', URL_MODE_TEXT);
   const sampleUrlMatch = matchUrlRegex(tempUrlMode, tempUrlRegex, sampleUrl);
   logger({ sampleUrlMatch });
+
+  if (loadState !== LOAD_SUCCESS)
+    return (
+      <Center>
+        <Spinner />
+      </Center>
+    );
 
   // https://codesandbox.io/s/chakra-ui-react-hook-form-v382z?file=/src/HookForm.js
   return (
