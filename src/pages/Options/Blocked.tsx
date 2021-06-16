@@ -1,7 +1,10 @@
 import Emote from '@/components/Emote';
 import { QUERY_BLOCKED_URL } from '@/constants';
+import changeCurrentTab from '@/lib/changeCurrentTab';
+import getSettingsUrl from '@/lib/getSettingsUrl';
 import useTaskNow from '@/lib/swr/useTaskNow';
 import useQuery from '@/lib/useQuery';
+import { Button } from '@chakra-ui/react';
 import { Center, Heading, HStack, Link, Text, VStack } from '@chakra-ui/layout';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -36,11 +39,13 @@ const Blocked = () => {
             components={[<b />]}
           />
         </Text>
-
         <Link color="teal" href={blockedUrl}>
           {t('site-blocked-try-again')}
         </Link>
         <Text color="gray.500">{t('site-blocked-try-again-description')}</Text>
+        <Button onClick={() => changeCurrentTab(getSettingsUrl())}>
+          {t('newtab-open-settings')}
+        </Button>
       </VStack>
     </Center>
   );

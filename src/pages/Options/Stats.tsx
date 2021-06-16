@@ -1,6 +1,10 @@
+import AutoComplete from '@/components/AutoComplete';
 import DailyTask from '@/components/chart/DailyTask';
 import DatePicker from '@/components/DatePicker';
+import Emote from '@/components/Emote';
 import { LOAD_SUCCESS } from '@/constants';
+import i18n, { availableLanguages } from '@/i18n';
+import { makeResult } from '@/lib';
 import analyzeTime from '@/lib/analyzeTime';
 import changeCurrentTab from '@/lib/changeCurrentTab';
 import { MiscContext } from '@/lib/context/MiscContext';
@@ -40,8 +44,7 @@ import React, {
   useMemo,
   useReducer,
 } from 'react';
-import { useTranslation } from 'react-i18next';
-import Emote from '@/components/Emote';
+import { Trans, useTranslation } from 'react-i18next';
 
 type CurrentTaskDisplayArg = {
   taskId: string;
@@ -176,6 +179,23 @@ const Stats: React.FC = () => {
     changeCurrentTab(getSettingsUrl());
   };
 
+  const suggestLanguages = async (keyword: string) => {
+    const re = new RegExp(keyword, 'i');
+    const langs = availableLanguages
+      .map((key) => ({
+        key,
+        text: t(`lang-${key}`),
+      }))
+      .filter(({ text }) => re.test(text));
+
+    return makeResult(langs);
+  };
+
+  const setLanguage = async (key: string) => {
+    await i18n.changeLanguage(key);
+    changeCurrentTab(getSettingsUrl());
+  };
+
   return (
     <Box mt={5} pb={5}>
       <Heading as="h2" size="md">
@@ -257,6 +277,16 @@ const Stats: React.FC = () => {
           {t('restart-tutorial')}
         </Button>
         <FormHelperText>{t('restart-tutorial-description')}</FormHelperText>
+      </FormControl>
+      <FormControl mt={5}>
+        <FormLabel htmlFor="language">{t('language')}</FormLabel>
+        <AutoComplete onSuggest={suggestLanguages} onChange={setLanguage} />
+        <FormHelperText>
+          <Trans
+            i18nKey={'lang-current'}
+            values={[t(`lang-${i18n.language}`)]}
+          />
+        </FormHelperText>
       </FormControl>
     </Box>
   );
