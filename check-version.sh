@@ -23,7 +23,7 @@ if [ "$LATEST_VERSION" != "$NOW_VERSION" ]; then
 	yarn build-release
 	VERSION_TAG="v${NOW_VERSION}"
 	mv build release
-	zip -r ${VERSION_TAG}.zip release
+	zip -j -r ${VERSION_TAG}.zip release
 	git add .
 	git commit -am "versioning ${VERSION_TAG} for release"
 	git push -u origin master
