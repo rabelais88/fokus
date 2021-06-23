@@ -15,6 +15,15 @@ steps:
     commands:
       - yarn install
       - yarn test-unit-ci
+  - name: "coveralls"
+    image: lizheming/drone-coveralls
+    environment:
+      COVERALLS_REPO_TOKEN:
+        from_secret: coveralls_token
+    settings:
+      files:
+        - ./coverage/lcov.info
+      debug: true
 ---
 kind: pipeline
 type: docker
