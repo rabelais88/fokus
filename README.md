@@ -1,6 +1,7 @@
 # Fokus(chrome extension)
 
-[![Build Status](https://cloud.drone.io/api/badges/rabelais88/fokus/status.svg)](https://cloud.drone.io/rabelais88/fokus)<br/>
+[![Build Status](https://cloud.drone.io/api/badges/rabelais88/fokus/status.svg)](https://cloud.drone.io/rabelais88/fokus)
+[![Coverage Status](https://coveralls.io/repos/github/rabelais88/fokus/badge.svg?branch=code-coverage)](https://coveralls.io/github/rabelais88/fokus?branch=code-coverage)<br />
 Chrome Extension that blocks websites based on current task
 
 # Installing Nightly Build
