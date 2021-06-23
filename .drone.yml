@@ -1,21 +1,60 @@
 kind: pipeline
 type: docker
-name: "unit-test"
+name: 'unit-test'
 
 platform:
   os: linux
   arch: amd64
 
 workspace:
-  path: "/drone/src"
+  path: '/drone/src'
 
 steps:
-  - name: "jest unit test"
+  - name: 'jest unit test'
     image: node:12.20.2
     commands:
       - yarn install
       - yarn test-unit-ci
-  - name: "coveralls"
+    volumes:
+      - name: coverage
+        path: ./coverage
+      - name: node_modules
+        path: ./node_modules
+---
+kind: pipeline
+type: docker
+name: 'e2e-test'
+steps:
+  - name: 'cypress e2e test'
+    # image: cypress/included:3.4.0
+    # https://hub.docker.com/r/cypress/browsers/tags?page=1&ordering=last_updated
+    image: cypress/browsers:node14.16.0-chrome90-ff88
+    commands:
+      - yarn install
+      - yarn test-e2e-ci
+    volumes:
+      - name: coverage
+        path: ./coverage
+---
+kind: pipeline
+type: docker
+name: 'build'
+steps:
+  - name: 'push to git(master)'
+    image: node:12.20.2
+    environment:
+      GITHUB_TOKEN:
+        from_secret: github_token
+    commands:
+      - . ./check-version.sh
+    volumes:
+      - name: node_modules
+        path: ./node_modules
+---
+kind: pipeline
+type: docker
+name: 'make-report'
+  - name: 'coveralls'
     image: lizheming/drone-coveralls
     environment:
       COVERALLS_REPO_TOKEN:
@@ -24,31 +63,18 @@ steps:
       files:
         - ./coverage/lcov.info
       debug: true
----
-kind: pipeline
-type: docker
-name: "e2e-test"
-steps:
-  - name: "cypress e2e test"
-    # image: cypress/included:3.4.0
-    # https://hub.docker.com/r/cypress/browsers/tags?page=1&ordering=last_updated
-    image: cypress/browsers:node14.16.0-chrome90-ff88
-    commands:
-      - yarn install
-      - yarn test-e2e-ci
----
-kind: pipeline
-type: docker
-name: "build"
-steps:
-  - name: "push to git(master)"
-    image: node:12.20.2
-    environment:
-      GITHUB_TOKEN:
-        from_secret: github_token
-    commands:
-      - . ./check-version.sh
+    volumes:
+      - name: coverage
+        path: ./coverage
+      - name: node_modules
+        path: ./node_modules
 
 depends_on:
-  - "unit-test"
-  - "e2e-test"
+  - 'unit-test'
+  - 'e2e-test'
+
+volumes:
+  - name: coverage
+    temp: {}
+  - name: node_modules
+    temp: {}

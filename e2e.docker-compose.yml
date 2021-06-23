@@ -3,10 +3,11 @@ version: '3.8'
 services:
   extension-runner:
     build: ./
-    ports:
-      - 3000:3000
   cypress:
-    image: cypress/included:3.4.0
+    # image: cypress/included:3.4.0
+    build:
+      context: ./
+      dockerfile: ./cypress.Dockerfile
     depends_on:
       - extension-runner
     environment:

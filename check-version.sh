@@ -10,8 +10,8 @@ if [ "$LATEST_VERSION" != "$NOW_VERSION" ]; then
 	echo "build started"
 	apt-get update
 	apt install zip
-	git clone https://github.com/rabelais88/fokus fokus-build
-	cd fokus-build
+	# git clone https://github.com/rabelais88/fokus fokus-build
+	# cd fokus-build
 	git checkout master
 	# hide secrets from console
 	# must use escape secret value with $$
@@ -19,7 +19,7 @@ if [ "$LATEST_VERSION" != "$NOW_VERSION" ]; then
 	# delete pre-existing release file
 	rm -rf release
 	rm -f *.zip
-	yarn install
+	# yarn install
 	yarn build-release
 	VERSION_TAG="v${NOW_VERSION}"
 	mv build release

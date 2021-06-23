@@ -18,6 +18,9 @@ module.exports = (on, config) => {
   // ignore examples/
   config.ignoreTestFiles = '**/examples/*.spec.js';
 
+  require('@cypress/code-coverage/task')(on, config);
+  // on('file:preprocessor', require('@cypress/code-coverage/use-babelrc'));
+
   // https://github.com/cypress-io/cypress/issues/349
   // add --disable-dev-shm-usage chrome flag
   on('before:browser:launch', (browser, launchOptions) => {
