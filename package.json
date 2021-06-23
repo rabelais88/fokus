@@ -11,6 +11,7 @@
     "build-release": "BUILD_PERFORMANCE_LOG=true NODE_ENV=production node utils/build.js",
     "start": "NODE_ENV=development node utils/webserver.js",
     "prettier": "prettier --write '**/*.{js,jsx,css,html}'",
+    "test-coverage": "jest --collect-coverage",
     "test-unit": "jest",
     "test-unit-ci": "jest",
     "test-cypress": "cypress open --project ./e2e --browser chrome",
