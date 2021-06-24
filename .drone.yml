@@ -16,6 +16,8 @@ steps:
       - yarn install
       - yarn test-unit-ci
     volumes:
+      - name: source
+        path: ./
       - name: coverage
         path: ./coverage
       - name: node_modules-unit
@@ -40,6 +42,10 @@ steps:
 kind: pipeline
 type: docker
 name: "build"
+
+clone:
+  disable: true
+
 steps:
   - name: "push to git(master)"
     image: node:12.20.2
@@ -52,6 +58,8 @@ steps:
       branch:
         - master
     volumes:
+      - name: source
+        path: ./
       - name: node_modules-unit
         path: ./node_modules
 depends_on:
@@ -61,6 +69,10 @@ depends_on:
 kind: pipeline
 type: docker
 name: "make-report"
+
+clone:
+  disable: true
+
 steps:
   - name: "coveralls"
     failure: ignore
@@ -75,11 +87,12 @@ steps:
       - name: coverage
         path: ./coverage
 depends_on:
-  - "unit-test"
-  - "e2e-test"
+  - "push to git(master)"
 
 volumes:
   - name: coverage
     temp: {}
   - name: node_modules-unit
+    temp: {}
+  - name: source
     temp: {}
