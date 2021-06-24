@@ -2,7 +2,7 @@ import { storageState } from '@/constants/getStoreDefault';
 import storage from '@/lib/storage';
 import saveJson from '@/lib/file/saveJson';
 
-const exportSettings = async () => {
+const exportSettings = async (debug = false) => {
   console.log('exportSettings');
   const db = await storage.getDB();
   const exportObj: any = {};
@@ -28,7 +28,8 @@ const exportSettings = async () => {
   }
   await Promise.all(schedules);
   console.log('exportObj', exportObj);
-  saveJson(exportObj, 'settings.json');
+  /* istanbul ignore next */
+  if (!debug) saveJson(exportObj, 'settings.json');
   return exportObj;
 };
 
