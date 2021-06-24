@@ -43,6 +43,9 @@ name: "build"
 steps:
   - name: "push to git(master)"
     image: node:12.20.2
+    when:
+      branch:
+        - master
     environment:
       GITHUB_TOKEN:
         from_secret: github_token
