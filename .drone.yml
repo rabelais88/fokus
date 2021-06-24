@@ -23,7 +23,8 @@ steps:
     settings:
       files:
         - ./coverage/lcov.info
-      debug: true
+      token:
+        from_secret: coveralls_token
 ---
 kind: pipeline
 type: docker
