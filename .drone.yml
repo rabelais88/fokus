@@ -62,19 +62,7 @@ steps:
         path: ./
       - name: node_modules-unit
         path: ./node_modules
-depends_on:
-  - "unit-test"
-  - "e2e-test"
----
-kind: pipeline
-type: docker
-name: "make-report"
-
-clone:
-  disable: true
-
-steps:
-  - name: "coveralls"
+  - name: "make report(coveralls)"
     failure: ignore
     image: lizheming/drone-coveralls
     environment:
@@ -87,7 +75,8 @@ steps:
       - name: coverage
         path: ./coverage
 depends_on:
-  - "push to git(master)"
+  - "unit-test"
+  - "e2e-test"
 
 volumes:
   - name: coverage
