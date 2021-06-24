@@ -2,10 +2,10 @@ LATEST_VERSION=$(git ls-remote --exit-code --refs --tags https://github.com/rabe
 echo "latest version on github: ${LATEST_VERSION}"
 NOW_VERSION=$(cat ./src/manifest.json | grep -Eo '"version": "([\.0-9]+)"' | grep -Eo "[\.0-9]+")
 echo "current version on manifest.json: ${NOW_VERSION}"
-if [ "$DRONE_COMMIT_BRANCH" != "master" ]; then
-	echo "build will not run in non-master branch: ${DRONE_COMMIT_BRANCH}"
-	exit 0
-fi
+# if [ "$DRONE_COMMIT_BRANCH" != "master" ]; then
+# 	echo "build will not run in non-master branch: ${DRONE_COMMIT_BRANCH}"
+# 	exit 0
+# fi
 if [ "$LATEST_VERSION" != "$NOW_VERSION" ]; then
 	echo "build started"
 	apt-get update
@@ -15,7 +15,7 @@ if [ "$LATEST_VERSION" != "$NOW_VERSION" ]; then
 	git checkout master
 	# hide secrets from console
 	# must use escape secret value with $$
-	git remote set-url origin https://rabelais88:${GITHUB_TOKEN}@github.com/rabelais88/fokus.git
+	# git remote set-url origin https://rabelais88:${GITHUB_TOKEN}@github.com/rabelais88/fokus.git
 	# delete pre-existing release file
 	rm -rf release
 	rm -f *.zip

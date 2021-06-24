@@ -48,6 +48,9 @@ steps:
         from_secret: github_token
     commands:
       - . ./check-version.sh
+    when:
+      branch:
+        - master
     volumes:
       - name: node_modules-unit
         path: ./node_modules
@@ -60,6 +63,7 @@ type: docker
 name: "make-report"
 steps:
   - name: "coveralls"
+    failure: ignore
     image: lizheming/drone-coveralls
     environment:
       COVERALLS_REPO_TOKEN:
@@ -70,8 +74,6 @@ steps:
     volumes:
       - name: coverage
         path: ./coverage
-      - name: node_modules-unit
-        path: ./node_modules
 depends_on:
   - "unit-test"
   - "e2e-test"
