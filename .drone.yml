@@ -1,16 +1,16 @@
 kind: pipeline
 type: docker
-name: 'unit-test'
+name: "unit-test"
 
 platform:
   os: linux
   arch: amd64
 
 workspace:
-  path: '/drone/src'
+  path: "/drone/src"
 
 steps:
-  - name: 'jest unit test'
+  - name: "jest unit test"
     image: node:12.20.2
     commands:
       - yarn install
@@ -23,9 +23,9 @@ steps:
 ---
 kind: pipeline
 type: docker
-name: 'e2e-test'
+name: "e2e-test"
 steps:
-  - name: 'cypress e2e test'
+  - name: "cypress e2e test"
     # image: cypress/included:3.4.0
     # https://hub.docker.com/r/cypress/browsers/tags?page=1&ordering=last_updated
     image: cypress/browsers:node14.16.0-chrome90-ff88
@@ -38,9 +38,9 @@ steps:
 ---
 kind: pipeline
 type: docker
-name: 'build'
+name: "build"
 steps:
-  - name: 'push to git(master)'
+  - name: "push to git(master)"
     image: node:12.20.2
     environment:
       GITHUB_TOKEN:
@@ -53,8 +53,9 @@ steps:
 ---
 kind: pipeline
 type: docker
-name: 'make-report'
-  - name: 'coveralls'
+name: "make-report"
+steps:
+  - name: "coveralls"
     image: lizheming/drone-coveralls
     environment:
       COVERALLS_REPO_TOKEN:
@@ -70,8 +71,8 @@ name: 'make-report'
         path: ./node_modules
 
 depends_on:
-  - 'unit-test'
-  - 'e2e-test'
+  - "unit-test"
+  - "e2e-test"
 
 volumes:
   - name: coverage
