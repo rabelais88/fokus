@@ -19,7 +19,7 @@ module.exports = (on, config) => {
   config.ignoreTestFiles = '**/examples/*.spec.js';
 
   require('@cypress/code-coverage/task')(on, config);
-  // on('file:preprocessor', require('@cypress/code-coverage/use-babelrc'));
+  on('file:preprocessor', require('@cypress/code-coverage/use-babelrc'));
 
   // https://github.com/cypress-io/cypress/issues/349
   // add --disable-dev-shm-usage chrome flag
@@ -28,6 +28,12 @@ module.exports = (on, config) => {
       console.log('Adding Chrome flag: --disable-dev-shm-usage');
       launchOptions.args.push('--disable-dev-shm-usage');
     }
+
+    // supply the absolute path to an unpacked extension's folder
+    // NOTE: extensions cannot be loaded in headless Chrome
+    // const extPath = path.join(__dirname, 'build');
+    // launchOptions.extensions.push(extPath);
+
     return launchOptions;
   });
 

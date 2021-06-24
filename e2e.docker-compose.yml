@@ -3,6 +3,8 @@ version: '3.8'
 services:
   extension-runner:
     build: ./
+    environment:
+      - CYPRESS_MODE=true
   cypress:
     # image: cypress/included:3.4.0
     build:

@@ -24,3 +24,9 @@ import '@testing-library/cypress/add-commands';
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('changeLang', (lang = 'en-US') => {
+  cy.get('body').then((body) => {
+    window.localStorage.setItem('i18nextLng', lang);
+  });
+});

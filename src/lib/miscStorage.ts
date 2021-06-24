@@ -6,7 +6,6 @@ const logger = makeLogger('storage');
 const storage = () => {
   function set<K extends keyof miscState>(key: K, value: miscState[K]) {
     return new Promise((resolve, reject) => {
-      // localStorage.setItem(key, JSON.stringify(value));
       chrome.storage.sync.set({ [key]: value }, () => {
         resolve(true);
       });

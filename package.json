@@ -14,7 +14,7 @@
     "test-coverage": "jest --collect-coverage",
     "test-unit": "jest",
     "test-unit-ci": "jest",
-    "test-cypress": "cypress open --project ./e2e --browser chrome",
+    "test-cypress": "CYPRESS_BASE_URL=http://localhost:3000 cypress open --project ./e2e --browser chrome",
     "test-cypress-ci": "cypress run --project ./e2e --browser chrome --headless",
     "test-e2e-ci": "CYPRESS_MODE=true CYPRESS_baseUrl=http://localhost:3000 start-server-and-test start http://localhost:3000 test-cypress-ci",
     "storybook": "start-storybook -p 6006",

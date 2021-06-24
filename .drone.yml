@@ -18,7 +18,7 @@ steps:
     volumes:
       - name: coverage
         path: ./coverage
-      - name: node_modules
+      - name: node_modules-unit
         path: ./node_modules
 ---
 kind: pipeline
@@ -31,6 +31,7 @@ steps:
     image: cypress/browsers:node14.16.0-chrome90-ff88
     commands:
       - yarn install
+      - yarn build
       - yarn test-e2e-ci
     volumes:
       - name: coverage
@@ -48,8 +49,11 @@ steps:
     commands:
       - . ./check-version.sh
     volumes:
-      - name: node_modules
+      - name: node_modules-unit
         path: ./node_modules
+    depends_on:
+      - "unit-test"
+      - "e2e-test"
 ---
 kind: pipeline
 type: docker
@@ -66,15 +70,11 @@ steps:
     volumes:
       - name: coverage
         path: ./coverage
-      - name: node_modules
+      - name: node_modules-unit
         path: ./node_modules
-
-depends_on:
-  - "unit-test"
-  - "e2e-test"
 
 volumes:
   - name: coverage
     temp: {}
-  - name: node_modules
+  - name: node_modules-unit
     temp: {}

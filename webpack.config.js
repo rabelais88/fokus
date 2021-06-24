@@ -31,19 +31,17 @@ var alias = {
   'react-dom': '@hot-loader/react-dom',
   '@': rootPath,
 };
+
+if (env.isDevelop || env.isCypress) {
+  const altPath = path.join(rootPath, 'lib', 'miscStorageDev');
+  alias[path.join(rootPath, 'lib', 'miscStorage')] = altPath;
+}
+
 if (env.isCypress) {
   alias[path.join(rootPath, 'components', 'Tutorial')] = path.join(
     rootPath,
     'components',
     'Stub'
-  );
-}
-
-if (env.isDevelop) {
-  alias[path.join(rootPath, 'lib', 'miscStorage')] = path.join(
-    rootPath,
-    'lib',
-    'miscStorageDev'
   );
 }
 

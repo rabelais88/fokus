@@ -1,19 +1,6 @@
-// it('examples', () => {
-//   cy.findByRole('button', { name: /Jackie Chan/i }).click();
-//   cy.findByRole('button', { name: /Button Text/i }).should('exist');
-//   cy.findByRole('button', { name: /Non-existing Button Text/i }).should(
-//     'not.exist'
-//   );
-//   cy.findByLabelText(/Label text/i, { timeout: 7000 }).should('exist');
-
-//   // findAllByText _inside_ a form element
-//   cy.get('form')
-//     .findByText('button', { name: /Button Text/i })
-//     .should('exist');
-//   cy.findByRole('dialog').within(() => {
-//     cy.findByRole('button', { name: /confirm/i });
-//   });
-// });
+beforeEach(() => {
+  cy.changeLang();
+});
 
 it('options.html should load properly', () => {
   cy.visit('/options.html');
