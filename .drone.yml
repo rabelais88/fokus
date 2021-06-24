@@ -51,9 +51,9 @@ steps:
     volumes:
       - name: node_modules-unit
         path: ./node_modules
-    depends_on:
-      - "unit-test"
-      - "e2e-test"
+depends_on:
+  - "unit-test"
+  - "e2e-test"
 ---
 kind: pipeline
 type: docker
@@ -72,6 +72,9 @@ steps:
         path: ./coverage
       - name: node_modules-unit
         path: ./node_modules
+depends_on:
+  - "unit-test"
+  - "e2e-test"
 
 volumes:
   - name: coverage
